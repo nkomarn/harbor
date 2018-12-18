@@ -30,7 +30,7 @@ import techtoolbox.Harbor.Listeners.QuitEvent;
 
 public class Main extends JavaPlugin implements Listener {
 	public static Main plugin;
-	public static String version = "1.4.2";
+	public static String version = "1.4.3";
 	public static HashMap<World, Integer> worlds = new HashMap<World, Integer>();
 	public static ArrayList<String> bypassers = new ArrayList<String>();
 	public static Actionbar actionbar;

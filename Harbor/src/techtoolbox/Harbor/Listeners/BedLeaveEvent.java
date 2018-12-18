@@ -24,11 +24,6 @@ public class BedLeaveEvent implements Listener {
 	    
 	    if (!event.getPlayer().hasPermission("harbor.bypass")) {
 	    	Main.worlds.put(event.getPlayer().getWorld(), Integer.valueOf((Main.worlds.get(event.getPlayer().getWorld())).intValue() - 1));
-	    }
-	    
-	    // Reset value if below zero (plugin glitch)
-	    if ((Main.worlds.get(event.getPlayer().getWorld())).intValue() < 0) {
-	    	Main.worlds.put(event.getPlayer().getWorld(), Integer.valueOf(0));
-	    }
+	    } 
 	}
 }

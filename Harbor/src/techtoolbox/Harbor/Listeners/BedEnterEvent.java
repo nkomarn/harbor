@@ -67,11 +67,6 @@ public class BedEnterEvent implements Listener {
 			    else if (Main.plugin.getConfig().getString("messages.chat.bypass").length() != 0) {
 			      event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', Main.plugin.getConfig().getString("messages.chat.bypass")));
 			    }
-			    
-				// Reset value if below zero (plugin glitch)
-				if ((Main.worlds.get(event.getPlayer().getWorld())).intValue() < 0) {
-					Main.worlds.put(event.getPlayer().getWorld(), Integer.valueOf(0));
-				}
 			}
 		}
 		catch (NoSuchMethodError e){
@@ -120,12 +115,7 @@ public class BedEnterEvent implements Listener {
 			}
 		    else if (Main.plugin.getConfig().getString("messages.chat.bypass").length() != 0) {
 		      event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', Main.plugin.getConfig().getString("messages.chat.bypass")));
-		    }
-		    
-			// Reset value if below zero (plugin glitch)
-			if ((Main.worlds.get(event.getPlayer().getWorld())).intValue() < 0) {
-				Main.worlds.put(event.getPlayer().getWorld(), Integer.valueOf(0));
-			}
+		    }	
 		}
 	}
 }

@@ -12,9 +12,11 @@ public class JoinEvent implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Main.bypassers.clear();
-		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-			if (player.hasPermission("harbor.bypass")) {
-				Main.bypassers.add(player.getName());
+		if (Main.plugin.getConfig().getBoolean("features.bypass")) {
+			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+				if (player.hasPermission("harbor.bypass")) {
+					Main.bypassers.add(player.getName());
+				}
 			}
 		}
 	}

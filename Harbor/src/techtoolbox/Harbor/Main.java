@@ -7,7 +7,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import techtoolbox.Harbor.Actionbar.Actionbar;
@@ -27,7 +30,7 @@ import techtoolbox.Harbor.Listeners.QuitEvent;
 
 public class Main extends JavaPlugin implements Listener {
 	public static Main plugin;
-	public static String version = "1.4";
+	public static String version = "1.4.2";
 	public static HashMap<World, Integer> worlds = new HashMap<World, Integer>();
 	public static ArrayList<String> bypassers = new ArrayList<String>();
 	public static Actionbar actionbar;
@@ -41,20 +44,11 @@ public class Main extends JavaPlugin implements Listener {
 	    Bukkit.getPluginManager().registerEvents(new BedEnterEvent(), this);
 	    Bukkit.getPluginManager().registerEvents(new BedLeaveEvent(), this);
 	    
-	    // Detect old configuration version
-	    try {
-	    	if (Float.valueOf(getConfig().getString("version")) > Float.valueOf(version)) {
-	    		Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.miscellaneous.prefix") + "&7Configuration version is incompatible. Running Harbor version " + version + " while the configuration version is " + getConfig().getString("version") + "."));
-	    	}
-	    }
-	    catch (Exception e) {
-	    	// Config older than version 1.4
-	    	Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.miscellaneous.prefix") + "&7Incompatible configuration. Delete the current configuration to generate a valid one."));
-	    }
-	    
 	    // Fill up worlds list
-	    for (int i = 0; Bukkit.getServer().getWorlds().size() > i; i++) {
-	    	worlds.put(Bukkit.getServer().getWorlds().get(i), Integer.valueOf(0));
+	    if (getConfig().getBoolean("features.bypass")) {
+		    for (int i = 0; Bukkit.getServer().getWorlds().size() > i; i++) {
+		    	worlds.put(Bukkit.getServer().getWorlds().get(i), Integer.valueOf(0));
+		    }
 	    }
 
 	    // Start actionbar message check
@@ -112,7 +106,8 @@ public class Main extends JavaPlugin implements Listener {
 		}
 	    
 		Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.miscellaneous.prefix") + plugin.getConfig().getString("messages.miscellaneous.running").replace("[version]", version)));
-
+		
+		// Actionbar
 		if (version.equals("v1_8_R1")) {
 			actionbar = new Actionbar_1_8_R1();
 		}else if (version.equals("v1_8_R2")) {

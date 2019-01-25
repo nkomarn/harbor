@@ -22,7 +22,7 @@ public class BedLeaveEvent implements Listener {
 		    }
 		}
 	    
-	    if (!event.getPlayer().hasPermission("harbor.bypass")) {
+	    if (!Main.plugin.getConfig().getBoolean("features.bypass") || !event.getPlayer().hasPermission("harbor.bypass")) {
 	    	Main.worlds.put(event.getPlayer().getWorld(), Integer.valueOf((Main.worlds.get(event.getPlayer().getWorld())).intValue() - 1));
 	    } 
 	}

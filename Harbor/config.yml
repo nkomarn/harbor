@@ -26,6 +26,8 @@ features:
   clearWeather: true
   # Toggle exclusion of operators/players with permission "harbor.bypass" from sleep count
   bypass: false
+  # Prevent any players from entering a bed (1.13.2 OR NEWER)
+  blockSleep: false
   # Display debug information in console
   debug: false
 
@@ -37,6 +39,8 @@ messages:
     skipped: "&eThe night has been skipped."
     # Display which player went to bed in chat
     sleeping: "&e[player] is now sleeping ([sleeping]/[online]. [needed] more needed to skip)."
+    # Shown when a player tries to sleep and sleeping is blocked
+    blocked: "&cSleeping is disabled."
     # Sent to player when they sleep with "harbor.bypass" permission
     bypass: "&eYou've been excluded from the sleep count."
   actionbar:
@@ -46,6 +50,8 @@ messages:
     sleeping: "&e[sleeping] out of [online] players are sleeping ([needed] more needed to skip)."
     # Shown when all players are in bed
     everyone: "&eEveryone is sleeping. Sweet dreams!"
+    # Shown when a player tries to sleep and sleeping is blocked
+    blocked: "&cSleeping is disabled."
   miscellaneous:
     # Prefix for Harbor command messages
     prefix: "&8&l(&6&lHarbor&8&l) "
@@ -60,4 +66,4 @@ messages:
     permission: "&7Insufficient permissions."
 
 # Version identifier (do not change)
-version: 1.4.3
+version: 1.4.4

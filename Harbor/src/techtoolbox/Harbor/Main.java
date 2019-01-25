@@ -7,10 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import techtoolbox.Harbor.Actionbar.Actionbar;
@@ -30,7 +27,7 @@ import techtoolbox.Harbor.Listeners.QuitEvent;
 
 public class Main extends JavaPlugin implements Listener {
 	public static Main plugin;
-	public static String version = "1.4.3";
+	public static String version = "1.4.4";
 	public static HashMap<World, Integer> worlds = new HashMap<World, Integer>();
 	public static ArrayList<String> bypassers = new ArrayList<String>();
 	public static Actionbar actionbar;
@@ -73,7 +70,7 @@ public class Main extends JavaPlugin implements Listener {
 	    }
 	}
 	
-	public static void sendActionbar(String type, World world) {
+	public static void sendActionbar(String type, World world, Player player) {
 		if (type.equals("playersInBed")) {
 			for (Player p : world.getPlayers()) {
 				actionbar.sendActionbar(p, plugin.getConfig().getString("messages.actionbar.sleeping")
@@ -89,6 +86,9 @@ public class Main extends JavaPlugin implements Listener {
 		          .replace("[online]", String.valueOf(world.getPlayers().size() - bypassers.size()))
 		          .replace("[needed]", String.valueOf(Math.max(0, Math.round(world.getPlayers().size() * Float.parseFloat(plugin.getConfig().getString("values.percent")) - bypassers.size() - ((Integer)worlds.get(world)).intValue())))));
 			}
+		}
+		else if (type.equals("sleepingBlocked")) {
+			actionbar.sendActionbar(player, plugin.getConfig().getString("messages.actionbar.blocked"));
 		}
 	}
 	

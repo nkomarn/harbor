@@ -30,7 +30,11 @@ public class Command implements CommandExecutor {
 			else {
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Main.plugin.getConfig().getString("messages.miscellaneous.prefix") + Main.plugin.getConfig().getString("messages.miscellaneous.permission")));
 			}
-	}
+		}
+		else if (args[0].equalsIgnoreCase("test")) {
+			System.out.println(Main.worlds.size());
+			System.out.println(Main.bypassers.size());
+		}
 	return true;
 	}
 }

@@ -10,6 +10,7 @@ import mykyta.Harbor.Actionbar.Actionbar;
 public class Util implements Actionbar {
     public static HashMap<World, Integer> sleeping = new HashMap<World, Integer>();
     public String version = "1.5";
+    public static boolean debug = false;
     private Actionbar actionbar;
 
     Harbor harbor;

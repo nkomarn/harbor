@@ -71,3 +71,4 @@ messages:
 
 # Version identifier (do not change)
 version: 1.5
+debug: true

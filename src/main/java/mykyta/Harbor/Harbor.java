@@ -17,9 +17,12 @@ public class Harbor extends JavaPlugin {
 
         // Check for updates
         if (this.getConfig().getBoolean("features.notifier")) {
-            System.out.println("Checking for updates.");
+            log.info("Checking for updates.");
             updater.check();
         }
+        
+        // Enable debugging if set in config
+        if (this.getConfig().getBoolean("debug")) Util.debug = true; 
     }
 
     public void onDisable() {

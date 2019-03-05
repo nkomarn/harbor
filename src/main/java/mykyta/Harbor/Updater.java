@@ -14,6 +14,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class Updater {
+    Harbor harbor;
+    public Updater(Harbor instance) {
+        harbor = instance;
+    }
+
     /**
      * Checks for an update using the Spiget API
      * @see https://spiget.org/
@@ -24,7 +29,7 @@ public class Updater {
             URLConnection request = url.openConnection();
             request.connect();
         
-            Util util = new Util();
+            Util util = new Util(harbor);
             ArrayList<String> releases = new ArrayList<String>();
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(new InputStreamReader((InputStream) request.getContent())); 

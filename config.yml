@@ -4,8 +4,8 @@
 # / __  / (_| | |  | |_) | (_) | |   
 # \/ /_/ \__,_|_|  |_.__/ \___/|_|   
 #                                                       
-# An open-source project by TechToolbox
-# https://techtoolbox.tk/
+# An open-source project by Mykyta (TechToolbox)
+# https://mykyta.tk/
 #
 # Ahoy, matey! You've arrived at the configuration file, where things get scary. 
 # Every single thing within this plugin is customizable (at least I tried to make it that way),
@@ -26,10 +26,14 @@ features:
   clearWeather: true
   # Toggle exclusion of operators/players with permission "harbor.bypass" from sleep count
   bypass: false
-  # Prevent any players from entering a bed (1.13.2 OR NEWER)
-  blockSleep: false
+  # Prevent all players from entering a bed
+  block: false
   # Display debug information in console
   debug: false
+  # Displays a notification when a new update is released
+  notifier: true
+  # Automatically updates the plugin when a newer version is available
+  updater: true
 
 messages:
   chat:

@@ -41,8 +41,10 @@ messages:
     chat: true
     # "Night skipped" chat message
     skipped: "&eThe night has been skipped."
-    # Display which player went to bed in chat
+    # Display which player went to bed
     sleeping: "&e[player] is now sleeping ([sleeping]/[online]. [needed] more needed to skip)."
+    # Display when a player left their bed
+    left: "&e[player] got out of bed ([sleeping]/[online]. [needed] more needed to skip)."
     # Shown when a player tries to sleep and sleeping is blocked
     blocked: "&cSleeping is disabled."
     # Sent to player when they sleep with "harbor.bypass" permission

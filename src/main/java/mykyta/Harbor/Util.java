@@ -59,6 +59,17 @@ public class Util {
     }
 
     /**
+     * Fetch the sleeping count for a world
+     * @param world World to fetch count for
+     */
+    public int fetch(World world) {
+        int count;
+        try {count = Util.sleeping.get(world);}
+        catch (Exception e){count = 0;}
+        return count;
+    }
+
+    /**
      * Sends an actionbar message to the given player
      * @param player Player to show actionbar to
      * @param message Actionbar message with color codes

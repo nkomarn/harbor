@@ -39,6 +39,10 @@ public class Updater {
                 System.out.println("Running latest version.");
                 return false;
             }
+            else if (!releases.contains(util.version)) {
+                System.out.println("Hmm... looks like you're using some sort of time travel technology. Welp, at least you don't have updates to worry about any time soon.");
+                return false;
+            }
             else {
                 System.out.println("Running an outdated version! Latest is " + releases.get(releases.size() - 1));
                 return true;

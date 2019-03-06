@@ -1,8 +1,11 @@
 package mykyta.Harbor.Events;
 
+import java.util.ArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -18,14 +21,22 @@ public class BedLeave implements Listener {
         Config config = new Config();
         World world = event.getPlayer().getWorld();
         
-        // Decrement the sleeping count
-        if (!config.getBoolean("features.bypass") || !event.getPlayer().hasPermission("harbor.bypass")) {
+        // Create list of players included in sleep count
+        ArrayList<Player> players = new ArrayList<Player>();
+        world.getPlayers().stream().filter(p -> util.isSurvival(event.getPlayer())).forEach(p -> {
+            if (true) {
+                players.add(p);
+            }
+        });
+
+        // Decrement the sleeping count TODO bypass stuff
+        if (players.contains(event.getPlayer())) {
             util.decrement(world);
         }
         else if (config.getString("messages.chat.bypass").length() != 0) event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.bypass")));
         
-        // Send a chat message 
-		if (config.getBoolean("messages.chat.chat") && (config.getString("messages.chat.sleeping").length() != 0)) {
+        // Send a chat message when player gets out of bed (if it's not day)
+		if (config.getBoolean("messages.chat.chat") && (config.getString("messages.chat.sleeping").length() != 0) && Bukkit.getServer().getWorld(world.getName()).getTime() < 1000L) {
             Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.left")
             .replace("[sleeping]", String.valueOf(util.fetch(world))))
             .replace("[online]", String.valueOf(world.getPlayers().size()))

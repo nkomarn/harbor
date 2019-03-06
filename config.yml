@@ -16,16 +16,18 @@
 values:
   # How often (in seconds) to check if a player is in a bed (increase for slower servers)
   check: 1
-  # Percent of players that need to sleep to skip night (must be 0.0 to 1.0)
-  percent: 0.5
+  # Percent of players that need to sleep to skip night (must be between 0 to 100)
+  percent: 50
 
 features: 
   # Toggle night skipping feature. Configure amount of players needed to skip above (percent)
-  skipNight: true
+  skip: true
   # Clear weather when skipping night
   clearWeather: true
   # Toggle exclusion of operators/players with permission "harbor.bypass" from sleep count
   bypass: false
+  # Toggle exclusion of players in creative and spectator mode
+  ignoreCreative: true
   # Prevent all players from entering a bed
   block: false
   # Display debug information in console

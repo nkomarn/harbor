@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -93,5 +94,14 @@ public class Util {
         //  .replace("[needed]", String.valueOf(Math.max(0, Math.round(world.getPlayers().size() * Float.parseFloat(plugin.getConfig().getString("values.percent")) - bypassers.size() - ((Integer)worlds.get(world)).intValue())))));
         .replace("[online]", String.valueOf(world.getPlayers().size()))
         .replace("[needed]", String.valueOf(Math.max(0, Math.round(world.getPlayers().size() * Float.parseFloat(config.getString("values.percent")) - (sleeping.get(world)).intValue())))));
+    }
+
+    /**
+     * Returns true if player is in survival mode
+     * @param player Target player
+     */
+    public boolean isSurvival(Player player) {
+        if (player.getGameMode() == GameMode.SURVIVAL) return true;
+        else return false;
     }
 }

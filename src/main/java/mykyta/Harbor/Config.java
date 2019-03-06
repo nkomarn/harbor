@@ -67,4 +67,18 @@ public class Config {
             return 0;
         }
     }
+
+    /**
+     * Fetches a double from the configuration
+     * @param location Configuration location of the double
+     */
+    public double getDouble(String location) {
+        try {
+            return Double.parseDouble(harbor.getConfig().getString(location));
+        }
+        catch (Exception e) {
+            error(e);
+            return 0.0;
+        }
+    }
 }

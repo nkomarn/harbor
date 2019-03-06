@@ -3,7 +3,6 @@ package mykyta.Harbor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -14,11 +13,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class Updater {
-    Harbor harbor;
-    public Updater(Harbor instance) {
-        harbor = instance;
-    }
-
     /**
      * Checks for an update using the Spiget API
      * @see https://spiget.org/
@@ -29,7 +23,7 @@ public class Updater {
             URLConnection request = url.openConnection();
             request.connect();
         
-            Util util = new Util(harbor);
+            Util util = new Util();
             ArrayList<String> releases = new ArrayList<String>();
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(new InputStreamReader((InputStream) request.getContent())); 

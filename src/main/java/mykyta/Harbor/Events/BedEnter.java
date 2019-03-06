@@ -1,5 +1,6 @@
 package mykyta.Harbor.Events;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
@@ -8,26 +9,22 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent.BedEnterResult;
 
-import mykyta.Harbor.Harbor;
+import mykyta.Harbor.Config;
 import mykyta.Harbor.Util;
 
 public class BedEnter implements Listener {
-    
-    Harbor harbor;
-    public BedEnter(Harbor instance) {
-        harbor = instance;
-    }
 
     @EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerBedEnterEvent(PlayerBedEnterEvent event) {
-        Util util = new Util(harbor);
+        Util util = new Util();
+        Config config = new Config();
 
         /**
-         * Prevent bed entry if "blockSleep" is enabled in the config
+         * Prevent bed entry if "block" is enabled in the config
          */
-		if (harbor.getConfig().getBoolean("features.block")) {
-			if (harbor.getConfig().getString("messages.chat.blocked").length() > 0) event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', harbor.getConfig().getString("messages.chat.blocked")));	
-			util.sendActionbar(event.getPlayer(), harbor.getConfig().getString("messages.actionbar.blocked"));
+		if (config.getBoolean("features.block")) {
+			if (config.getString("messages.chat.blocked").length() > 0) event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.blocked")));	
+			util.sendActionbar(event.getPlayer(), config.getString("messages.actionbar.blocked"));
             event.setCancelled(true);	
         }
         
@@ -35,11 +32,20 @@ public class BedEnter implements Listener {
          * Increment world's sleeping count if player isn't excluded
          */
         if (event.getBedEnterResult() == BedEnterResult.OK) {
-            if (!harbor.getConfig().getBoolean("features.bypass") || !event.getPlayer().hasPermission("harbor.bypass")) {
-                World world = event.getPlayer().getWorld();
-                Util.sleeping.put(world, Util.sleeping.get(world) + 1);
+            // Add one to the sleeping list
+            if (!config.getBoolean("features.bypass") || !event.getPlayer().hasPermission("harbor.bypass")) {
+                util.increment(event.getPlayer().getWorld());
             }
-            else if (harbor.getConfig().getString("messages.chat.bypass").length() != 0) event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', harbor.getConfig().getString("messages.chat.bypass")));
+            else if (config.getString("messages.chat.bypass").length() != 0) event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.bypass")));
+        
+            // Send a chat message 
+			if (config.getBoolean("messages.chat.chat") && (config.getString("messages.chat.sleeping").length() != 0)) {
+                Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.sleeping")
+                .replace("[sleeping]", String.valueOf(Util.sleeping.get(event.getPlayer().getWorld())))
+                .replace("[online]", String.valueOf(event.getPlayer().getWorld().getPlayers().size()))
+                .replace("[player]", event.getPlayer().getName())
+                .replace("[needed]", String.valueOf(Math.max(0, Math.round(event.getPlayer().getWorld().getPlayers().size() * Float.parseFloat(Main.plugin.getConfig().getString("values.percent")) - Main.bypassers.size() - (Main.worlds.get(event.getPlayer().getWorld())).intValue()))))));
+            }
         }
     }
 }

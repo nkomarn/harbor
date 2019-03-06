@@ -9,11 +9,16 @@ import mykyta.Harbor.Events.BedEnter;
 
 public class Harbor extends JavaPlugin {
     private Logger log = Bukkit.getLogger();
-    private Updater updater = new Updater(this);
+    private Updater updater = new Updater();
 
     public void onEnable() {
+        Config config = new Config();
+        Util util = new Util();
+        config.setInstance(this);
         saveDefaultConfig();
-        Bukkit.getPluginManager().registerEvents(new BedEnter(this), this);
+        Bukkit.getPluginManager().registerEvents(new BedEnter(), this);
+        
+        util.setupNMS();
 
         // Check for updates
         if (this.getConfig().getBoolean("features.notifier")) {
@@ -21,7 +26,7 @@ public class Harbor extends JavaPlugin {
             updater.check();
         }
         
-        // Enable debugging if set in config
+        // Enable debugging if set in configuration
         if (this.getConfig().getBoolean("debug")) Util.debug = true; 
     }
 

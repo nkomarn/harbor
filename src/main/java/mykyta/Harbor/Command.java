@@ -29,6 +29,8 @@ public class Command implements CommandExecutor {
             return true;
         }
         
+        // Unrecognized message if nothing else worked
+        
         return true;
     }
 }

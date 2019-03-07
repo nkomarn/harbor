@@ -72,6 +72,8 @@ messages:
     reloadError: "&7Error reloading Harbor."
     # Sent when player doesn't have permissions to run command
     permission: "&7Insufficient permissions."
+    # Sent when command argument isn't recognized
+    unrecognized: "&7Not recognized."
     
 # Version identifier (do not change)
 version: 1.5

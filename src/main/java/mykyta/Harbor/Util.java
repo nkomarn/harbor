@@ -8,16 +8,16 @@ import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import mykyta.Harbor.Actionbar.Actionbar;
-import mykyta.Harbor.Actionbar.Actionbar_1_13_R2;
+import mykyta.Harbor.NMS.NMS;
+import mykyta.Harbor.NMS.NMS_1_13_R2;
 import net.md_5.bungee.api.ChatColor;
 
 public class Util {
     public static HashMap<World, Integer> sleeping = new HashMap<World, Integer>();
-    public String version = "1.5";
+    public String version = "1.4.2";
     public static boolean debug = false;
     private Logger log = Bukkit.getLogger();
-    private static Actionbar actionbar;
+    private static NMS nms;
     Config config = new Config();
 
     /**
@@ -33,7 +33,7 @@ public class Util {
         Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.miscellaneous.prefix") + config.getString("messages.miscellaneous.running").replace("[version]", version)));
             
         if (version.equals("v1_13_R2")) {
-            actionbar = new Actionbar_1_13_R2();
+            nms = new NMS_1_13_R2();
         }
     }
 
@@ -76,7 +76,7 @@ public class Util {
      * @param message Actionbar message with color codes
      */
     public void sendActionbar(Player player, String message) {
-        actionbar.sendActionbar(player, message);
+        nms.sendActionbar(player, message);
     }
 
     /**
@@ -88,12 +88,21 @@ public class Util {
      */
     public void sendActionbar(Player player, String message, World world) {
         Config config = new Config();
-        actionbar.sendActionbar(player, message
+        nms.sendActionbar(player, message
         .replace("[sleeping]", String.valueOf(sleeping.get(world)))
         //TODO add bypassers functionaliyt .replace("[online]", String.valueOf(world.getPlayers().size() - bypassers.size()))
         //  .replace("[needed]", String.valueOf(Math.max(0, Math.round(world.getPlayers().size() * Float.parseFloat(plugin.getConfig().getString("values.percent")) - bypassers.size() - ((Integer)worlds.get(world)).intValue())))));
         .replace("[online]", String.valueOf(world.getPlayers().size()))
         .replace("[needed]", String.valueOf(Math.max(0, Math.round(world.getPlayers().size() * Float.parseFloat(config.getString("values.percent")) - (sleeping.get(world)).intValue())))));
+    }
+
+    /**
+     * Sends a custom JSON message to selected player
+     * @param player Player to send message to
+     * @param JSON Message in JSON format
+     */
+    public void sendJSONMessage(Player player, String JSON) {
+        nms.sendJSONMessage(player, JSON);
     }
 
     /**

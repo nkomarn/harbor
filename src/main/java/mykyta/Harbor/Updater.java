@@ -13,6 +13,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class Updater {
+    private String latest = "";
+    
     /**
      * Checks for an update using the Spiget API
      * @see https://spiget.org/
@@ -44,32 +46,21 @@ public class Updater {
                 return false;
             }
             else {
-                System.out.println("Running an outdated version! Latest is " + releases.get(releases.size() - 1));
+                latest = releases.get(releases.size() - 1);
+                System.out.println("Running an outdated version! Latest is " + latest);
                 return true;
             }
-            
-
-            /*
-            int current = Integer.parseInt(String.valueOf(util.version).replace(".", ""));
-            int latest = releases.get(releases.size() - 1);
-            System.out.println("Current version: " + current);
-            System.out.println("Latest release: "  + latest);
-            if (util.version < latest) {
-                System.out.println("Update available! Version " + String.valueOf(latest));
-                return true;    
-            }
-            else if (util.version < latest) {
-                System.out.println("Hmm... you're using some sort of time travel technology (your version is newer than the latest release). Welp, at least you don't have updates to worry about any time soon.");
-                return true;   
-            }
-            else {
-                System.out.println("Using the latest version.");
-                return false; 
-            }  */
         }
         catch (IOException e) {
             System.out.println("Failed to check for updates.");
             return false;
         }
+    }
+
+    /**
+     * Returns the latest version number
+     */
+    public String getLatest() {
+        return latest;
     }
 }

@@ -61,7 +61,7 @@ messages:
     # Shown when a player tries to sleep and sleeping is blocked
     blocked: "&cSleeping is disabled."
   miscellaneous:
-    # Prefix for Harbor command messages
+    # Prefix for Harbor command/miscellaneous messages
     prefix: "&8&l(&6&lHarbor&8&l) "
     # Display server version in console
     running: "&7Running on version [version]."
@@ -72,7 +72,7 @@ messages:
     reloadError: "&7Error reloading Harbor."
     # Sent when player doesn't have permissions to run command
     permission: "&7Insufficient permissions."
-
+    
 # Version identifier (do not change)
 version: 1.5
 debug: true

@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import mykyta.Harbor.Events.BedEnter;
 import mykyta.Harbor.Events.BedLeave;
+import mykyta.Harbor.Events.PlayerJoin;
 
 public class Harbor extends JavaPlugin {
     private Logger log = Bukkit.getLogger();
@@ -19,6 +20,7 @@ public class Harbor extends JavaPlugin {
         saveDefaultConfig();
         Bukkit.getPluginManager().registerEvents(new BedEnter(), this);
         Bukkit.getPluginManager().registerEvents(new BedLeave(), this);
+        if (config.getBoolean("features.notifier")) Bukkit.getPluginManager().registerEvents(new PlayerJoin(), this);
         util.setupNMS();
 
         // Check for updates

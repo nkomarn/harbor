@@ -18,6 +18,7 @@ public class Harbor extends JavaPlugin {
         Util util = new Util();
         config.setInstance(this);
         saveDefaultConfig();
+        this.getCommand("harbor").setExecutor(new Command());
         Bukkit.getPluginManager().registerEvents(new BedEnter(), this);
         Bukkit.getPluginManager().registerEvents(new BedLeave(), this);
         if (config.getBoolean("features.notifier")) Bukkit.getPluginManager().registerEvents(new PlayerJoin(), this);

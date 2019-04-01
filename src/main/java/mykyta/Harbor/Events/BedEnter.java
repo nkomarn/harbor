@@ -29,45 +29,27 @@ public class BedEnter implements Listener {
         }
         
         if (event.getBedEnterResult() == BedEnterResult.OK) {
-            World world = event.getPlayer().getWorld();
-            ArrayList<Player> included = util.getIncluded(world);
-            int excluded = world.getPlayers().size() - included.size();
+            World w = event.getPlayer().getWorld();
+            ArrayList<Player> included = util.getIncluded(w);
+            int excluded = w.getPlayers().size() - included.size();
 
             // Increment the sleeping count TODO bypass stuff
             if (included.contains(event.getPlayer())) {
-                util.add(world, event.getPlayer());
+                util.add(w, event.getPlayer());
 
                 // Send a chat message when a player is sleeping
                 if (config.getBoolean("messages.chat.chat") && (config.getString("messages.chat.sleeping").length() != 0)) {
                     Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.sleeping")
-                    .replace("[sleeping]", String.valueOf(util.getSleeping(world))))
+                    .replace("[sleeping]", String.valueOf(util.getSleeping(w))))
                     .replace("[online]", String.valueOf(included.size()))
                     .replace("[player]", event.getPlayer().getName())
-                    .replace("[needed]", String.valueOf(util.getNeeded(world) - excluded)));
+                    .replace("[needed]", String.valueOf(util.getNeeded(w) - excluded)));
                 }
             }
             else if (config.getString("messages.chat.bypass").length() != 0) event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.bypass")));
-        
-            // Skip night if threshold is reached
-            if (config.getBoolean("features.skip") && (util.getNeeded(world) - excluded) == 0) {
-                Bukkit.getServer().getWorld(event.getPlayer().getWorld().getName()).setTime(1000L);
-                
-                // Clear weather when it turns day
-                if (config.getBoolean("features.clearWeather")) {
-                    event.getPlayer().getWorld().setStorm(false);
-                    event.getPlayer().getWorld().setThundering(false);
-                }
-                    
-                // Send a chat message when night is skipped
-                if (config.getBoolean("messages.chat.chat") && (config.getString("messages.chat.skipped").length() != 0)) Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.skipped")));
 
-                // Display title messages
-                if (config.getBoolean("features.title")) {
-                    for (Player p : event.getPlayer().getWorld().getPlayers()) {
-                        util.sendTitle(p, config.getString("messages.title.morning.top"), config.getString("messages.title.morning.bottom"));
-                    }
-                }
-            }
+            // Skip night if possible
+            util.skip(w, excluded, util.getNeeded(w));
         }
     }
 }

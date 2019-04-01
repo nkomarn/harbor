@@ -7,16 +7,16 @@
 # An open-source project by Mykyta (TechToolbox)
 # https://mykyta.tk/
 #
-# Ahoy, matey! You've arrived at the configuration file, where things get scary. 
+# Ahoy, matey! You've arrived at the configuration file, where things get a bit scary. 
 # Every single thing within this plugin is customizable (at least I tried to make it that way),
 # so every message and plugin module can be modified here. If you would like to report a bug
 # or suggest a feature, make sure to add an issue on the GitHub page for this plugin!
 # GitHub URL: https://github.com/nkomarn/Harbor/issues
 
 values:
-  # How often to run the clock task (used to detect many things, such as AFK, and to time actionbar)
-  # If your server is relatively slower, increase this value
-  check: 1
+  # How often to run the clock task (used to detect sleep, AFK players, time actionbar, etc.)
+  # Lower this value for relatively slow servers
+  clock: 1
   # Percent of players that need to sleep to skip night (must be between 0 to 100)
   percent: 50
   # Time that it takes to be considered AFK (in minutes)
@@ -26,7 +26,7 @@ features:
   # Toggle night skipping feature. Configure amount of players needed to skip above (percent)
   skip: true
   # Clear weather when skipping night
-  clearWeather: true
+  weather: true
   # Toggle exclusion of operators/players with permission "harbor.bypass" from sleep count
   bypass: false
   # Toggle exclusion of players in creative and spectator mode
@@ -90,6 +90,10 @@ messages:
     # Sent when command argument isn't recognized
     unrecognized: "&7Not recognized."
     
+gui:
+  # Title for menu that shows when a player executes /sleeping
+  sleeping: "Sleeping players"
+
 # Version identifier (do not change)
 version: 1.5
 debug: true

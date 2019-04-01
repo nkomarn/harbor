@@ -16,9 +16,8 @@ public class PlayerJoin implements Listener {
         Util util = new Util();
 
         String json = "[{\"text\":\"[prefix]§7Hey there, Harbor [version] was released! \"},{\"text\":\"§7§oClick §7§ome §7§oto §7§oupdate!\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/harbor update\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"§a§l↑ §7Update Harbor.\"}}]";
-        if (event.getPlayer().isOp() && updater.check()) util.sendJSONMessage(event.getPlayer(), json.replace("[version]", updater.getLatest()).replace("[prefix]", config.getString("messages.miscellaneous.prefix")).replace("&", "§"));
+        if (event.getPlayer().isOp() && updater.check() && config.getBoolean("features.notifier")) util.sendJSONMessage(event.getPlayer(), json.replace("[version]", updater.getLatest()).replace("[prefix]", config.getString("messages.miscellaneous.prefix")).replace("&", "§"));
 
-        // Add activity entry
         Util.activity.put(event.getPlayer(), System.currentTimeMillis());
     }
 }

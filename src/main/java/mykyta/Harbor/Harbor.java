@@ -9,11 +9,15 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import mykyta.Harbor.Commands.Command;
 import mykyta.Harbor.Commands.Sleeping;
 import mykyta.Harbor.Events.BedEnter;
 import mykyta.Harbor.Events.BedLeave;
+import mykyta.Harbor.Events.GUIClick;
+import mykyta.Harbor.Events.GUIDrag;
 import mykyta.Harbor.Events.Move;
 import mykyta.Harbor.Events.PlayerJoin;
+import mykyta.Harbor.Events.PlayerLeave;
 
 public class Harbor extends JavaPlugin {
     private Logger log = Bukkit.getLogger();
@@ -29,24 +33,23 @@ public class Harbor extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new BedEnter(), this);
         Bukkit.getPluginManager().registerEvents(new BedLeave(), this);
         Bukkit.getPluginManager().registerEvents(new Move(), this);
-        if (config.getBoolean("features.notifier")) Bukkit.getPluginManager().registerEvents(new PlayerJoin(), this);
+        Bukkit.getPluginManager().registerEvents(new GUIClick(), this);
+        Bukkit.getPluginManager().registerEvents(new GUIDrag(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerJoin(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerLeave(), this);
         util.setupNMS();
 
         // Enable debugging if set in configuration
         if (this.getConfig().getBoolean("debug")) Util.debug = true; 
 
         // Start timer task
-	    Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Task(), 0L, config.getInteger("values.check") * 20);
+	    Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Task(), 0L, config.getInteger("values.clock") * 20);
 
         // Check for updates
         if (this.getConfig().getBoolean("features.notifier")) {
             if (Util.debug) Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', this.getConfig().getString("messages.miscellaneous.prefix")) + "Checking for new updates...");
             updater.check();
         }
-        
-       
-
-        // TODO "Damage" players to kick them out of bed (reset counter)--- may not need to do cause of new system
 
         // FIXME Initialize HashMap items for every world
         for (World w : Bukkit.getServer().getWorlds()) {

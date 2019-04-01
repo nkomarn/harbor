@@ -1,8 +1,11 @@
-package mykyta.Harbor;
+package mykyta.Harbor.Commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+
+import mykyta.Harbor.Config;
+import mykyta.Harbor.Util;
 
 public class Command implements CommandExecutor {
     @Override

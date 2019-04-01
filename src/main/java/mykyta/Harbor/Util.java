@@ -79,6 +79,14 @@ public class Util {
     public int getNeeded(World world) {
         return Math.max(0, (int) Math.ceil(world.getPlayers().size() * (config.getDouble("values.percent") / 100) - this.getSleeping(world)));
     }
+
+    /**
+     * Fetch the amount of players needed to skip night (minus one)
+     * @param world World to fetch count for
+     */
+    public int getNeededDecremented(World world) {
+        return Math.max(0, (int) Math.ceil((world.getPlayers().size() - 1) * (config.getDouble("values.percent") / 100) - this.getSleeping(world)));
+    }
     
     /**
      * Fetch the included players in a world
@@ -162,5 +170,36 @@ public class Util {
      */
     public void sendTitle(Player player, String top, String bottom) {
         nms.sendTitle(player, top, bottom);
+    }
+
+    /**
+     * Skips the night in the specified world (if possible)
+     * @param World to return value for
+     */
+    public void skip(World w, int excluded, int needed) {
+        System.out.println("needed: "+ needed);
+        System.out.println("Exclkuded: " + excluded);
+        System.out.println("difference: " + (needed - excluded));
+
+        if (config.getBoolean("features.skip") && (needed - excluded) == 0) {
+            System.out.println("set time");
+            w.setTime(1000L);
+            
+            
+            // Set weather to clear
+            if (config.getBoolean("features.weather")) {
+                w.setStorm(false);
+                w.setThundering(false);
+            }
+                
+            // Display messages
+            if (config.getBoolean("messages.chat.chat") && (config.getString("messages.chat.skipped").length() != 0)) Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.skipped")));
+            if (config.getBoolean("features.title")) {
+                System.out.println("sent message");
+                w.getPlayers().forEach(p -> {
+                    this.sendTitle(p, config.getString("messages.title.morning.top"), config.getString("messages.title.morning.bottom"));
+                });
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 package mykyta.Harbor;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
@@ -25,6 +26,7 @@ public class Task implements Runnable {
             }
         }
 
+        /*
         // TODO if player hasnt moved for x minutes then put in afk
         Bukkit.getServer().getWorlds().forEach(w -> {
             w.getPlayers().forEach(p -> {
@@ -34,7 +36,7 @@ public class Task implements Runnable {
                     System.out.println(p.getName() + " is AFK.");
                 }
             });
-        }); 
+        });*/ 
     }
 
    /* @Override

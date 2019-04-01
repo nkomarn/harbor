@@ -14,6 +14,9 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import mykyta.Harbor.Config;
+import mykyta.Harbor.EncodingUtils;
+import mykyta.Harbor.GUI;
 import mykyta.Harbor.Util;
 
 public class Sleeping implements CommandExecutor {
@@ -22,11 +25,13 @@ public class Sleeping implements CommandExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             World world = player.getWorld();
-            Inventory gui = Bukkit.createInventory(player, 9, "Sleeping players");
+            Config config = new Config();
+            String title = config.getString("gui.sleeping") + " " + EncodingUtils.encodeString("{'GUIType': 'SLEEPING'}");
+            Inventory gui = Bukkit.createInventory(player, 9, title);
 
             ArrayList<Player> sleeping = Util.sleeping.get(world);
             if (sleeping.size() > 0) sleeping.forEach(p -> {
-                ItemStack item = new ItemStack(Material.LEGACY_SKULL_ITEM, 1, (short) 3);
+                ItemStack item = new ItemStack(Material.LEGACY_SKULL_ITEM, 1, (short) 3); //FIXME deprecated
                 SkullMeta skull = (SkullMeta) item.getItemMeta();
                 skull.setDisplayName(p.getName());
                 /*ArrayList<String> lore = new ArrayList<String>();

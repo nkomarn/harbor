@@ -36,7 +36,7 @@ public class Updater {
                 releases.add(id.get("name").getAsString());
             }
 
-            // TODO add super secret message for when the version is newer than the latest published one
+            // TODO Beautify console messages
             if (util.version.equals(releases.get(releases.size() - 1))) {
                 System.out.println("Running latest version.");
                 return false;

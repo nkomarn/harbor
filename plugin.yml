@@ -9,4 +9,7 @@ commands:
   harbor:
     description: List information and control Harbor.
     usage: /<command>
+  sleeping:
+    description: Show a list of the sleeping players in your world.
+    usage: /<command>
 

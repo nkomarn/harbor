@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,35 +30,26 @@ public class BedEnter implements Listener {
         
         if (event.getBedEnterResult() == BedEnterResult.OK) {
             World world = event.getPlayer().getWorld();
-
-            // Create list of players included in sleep count
-            ArrayList<Player> players = new ArrayList<Player>();
-            world.getPlayers().stream().filter(p -> util.isSurvival(event.getPlayer())).forEach(p -> {
-                if (true) {
-                    players.add(p);
-                }
-            });
-
-            System.out.println(players);
-            System.out.println("Included players: " + players.size());
+            ArrayList<Player> included = util.getIncluded(world);
+            int excluded = world.getPlayers().size() - included.size();
 
             // Increment the sleeping count TODO bypass stuff
-            if (players.contains(event.getPlayer())) {
-                util.increment(world);
+            if (included.contains(event.getPlayer())) {
+                util.add(world, event.getPlayer());
 
                 // Send a chat message when a player is sleeping
                 if (config.getBoolean("messages.chat.chat") && (config.getString("messages.chat.sleeping").length() != 0)) {
                     Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.sleeping")
-                    .replace("[sleeping]", String.valueOf(util.fetch(world))))
-                    .replace("[online]", String.valueOf(world.getPlayers().size()))
+                    .replace("[sleeping]", String.valueOf(util.getSleeping(world))))
+                    .replace("[online]", String.valueOf(included.size()))
                     .replace("[player]", event.getPlayer().getName())
-                    .replace("[needed]", String.valueOf(Math.max(0, (int) Math.ceil(world.getPlayers().size() * (config.getDouble("values.percent") / 100) - util.fetch(world))))));
+                    .replace("[needed]", String.valueOf(util.getNeeded(world) - excluded)));
                 }
             }
             else if (config.getString("messages.chat.bypass").length() != 0) event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.bypass")));
         
             // Skip night if threshold is reached
-            if (config.getBoolean("features.skip") && (util.fetch(world) >= (int) Math.ceil(world.getPlayers().size() * (config.getDouble("values.percent") / 100) - util.fetch(world)))) {
+            if (config.getBoolean("features.skip") && (util.getNeeded(world) - excluded) == 0) {
                 Bukkit.getServer().getWorld(event.getPlayer().getWorld().getName()).setTime(1000L);
                 
                 // Clear weather when it turns day
@@ -69,8 +59,13 @@ public class BedEnter implements Listener {
                 }
                     
                 // Send a chat message when night is skipped
-                if (config.getBoolean("messages.chat.chat") && (config.getString("messages.chat.skipped").length() != 0)) {
-                    Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.skipped")));
+                if (config.getBoolean("messages.chat.chat") && (config.getString("messages.chat.skipped").length() != 0)) Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.skipped")));
+
+                // Display title messages
+                if (config.getBoolean("features.title")) {
+                    for (Player p : event.getPlayer().getWorld().getPlayers()) {
+                        util.sendTitle(p, config.getString("messages.title.morning.top"), config.getString("messages.title.morning.bottom"));
+                    }
                 }
             }
         }

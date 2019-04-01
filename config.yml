@@ -14,10 +14,13 @@
 # GitHub URL: https://github.com/nkomarn/Harbor/issues
 
 values:
-  # How often (in seconds) to check if a player is in a bed (increase for slower servers)
+  # How often to run the clock task (used to detect many things, such as AFK, and to time actionbar)
+  # If your server is relatively slower, increase this value
   check: 1
   # Percent of players that need to sleep to skip night (must be between 0 to 100)
   percent: 50
+  # Time that it takes to be considered AFK (in minutes)
+  timeout: 1
 
 features: 
   # Toggle night skipping feature. Configure amount of players needed to skip above (percent)
@@ -27,9 +30,11 @@ features:
   # Toggle exclusion of operators/players with permission "harbor.bypass" from sleep count
   bypass: false
   # Toggle exclusion of players in creative and spectator mode
-  ignoreCreative: true
+  ignore: true
   # Prevent all players from entering a bed
   block: false
+  # Display a title in the morning and when going to bed
+  title: true
   # Display debug information in console
   debug: false
   # Displays a notification when a new update is released
@@ -60,9 +65,19 @@ messages:
     everyone: "&eEveryone is sleeping. Sweet dreams!"
     # Shown when a player tries to sleep and sleeping is blocked
     blocked: "&cSleeping is disabled."
+  title:
+    morning:
+      top: "&6Good morning!"
+      bottom: "&7Ah, such wonderful weather."
+    evening:
+      top: "&cIt's getting a bit late."
+      bottom: "&7Might want to hit the hay..."
+    sleeping:
+      top: "&8ZZZZZZ..."
+      bottom: "&7Sweet dreams."
   miscellaneous:
     # Prefix for Harbor command/miscellaneous messages
-    prefix: "&8&l(&6&lHarbor&8&l) "
+    prefix: "&8&l(&6&lHarbor&8&l)&r "
     # Display server version in console
     running: "&7Running on version [version]."
     # Sent in console when the plugin isn't compatible with the server

@@ -25,12 +25,8 @@ public class Command implements CommandExecutor {
         }
 
         // Command arguments
-        if (args[0].equalsIgnoreCase("reload")) {
-            return true;
-        }
-        else if (args[0].equalsIgnoreCase("update")) {
-            return true;
-        }
+        if (args[0].equalsIgnoreCase("reload")) return true;
+        else if (args[0].equalsIgnoreCase("update")) return true;
         
         // Unrecognized message if nothing else worked
         

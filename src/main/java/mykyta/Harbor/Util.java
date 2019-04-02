@@ -1,9 +1,6 @@
 package mykyta.Harbor;
 
-import java.time.Instant;
-import java.time.temporal.Temporal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -93,19 +90,11 @@ public class Util {
      * @param world World to fetch count for
      */
     public ArrayList<Player> getIncluded(World world) {
-        //TODO convert to a foreach
         ArrayList<Player> players = new ArrayList<Player>();
-        for (Player player : world.getPlayers()) {
-            if (this.isIncluded(player)) players.add(player);
-        }
+        world.getPlayers().forEach(p -> {
+            if (this.isIncluded(p)) players.add(p);
+        });
         return players;
-
-        // FIXME 2 fancy 4 me to understand
-        /*world.getPlayers().stream().filter(p -> this.isIncluded(world.getPlayers)).forEach(p -> {
-            if (true) {
-                players.add(p);
-            }
-        });*/
     }
 
 
@@ -113,19 +102,12 @@ public class Util {
      * Returns true if player should be included in count
      * @param player Target player
      */
-    public boolean isIncluded(Player player) {
-        if (config.getBoolean("features.ignore")) {
-            if (player.getGameMode() == GameMode.SURVIVAL) return true;
-            else return false;
-        }
-        else if (config.getBoolean("features.bypass")) {
-            if (player.hasPermission("harbor.bypass")) return false;
-            else return true;
-        }
-        else if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - activity.get(player)) > config.getInteger("values.timeout")) {
-            return false;
-        }
-        else return true;
+    public boolean isIncluded(Player p) {
+        boolean state = true;
+        if (config.getBoolean("features.ignore")) if (p.getGameMode() == GameMode.SURVIVAL) state = true; else state = false;
+        if (config.getBoolean("features.bypass")) if (p.hasPermission("harbor.bypass")) state = false; else state = true;
+        if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - activity.get(p)) > config.getInteger("values.timeout")) state = false;
+        return state;
     }
 
     /**
@@ -144,14 +126,14 @@ public class Util {
      * @param message Actionbar message with color codes
      * @param world World to fetch information for
      */
-    public void sendActionbar(Player player, String message, World world) {
-        Config config = new Config();
-        nms.sendActionbar(player, message
-        .replace("[sleeping]", String.valueOf(sleeping.get(world)))
-        //TODO add bypassers functionaliyt .replace("[online]", String.valueOf(world.getPlayers().size() - bypassers.size()))
-        //  .replace("[needed]", String.valueOf(Math.max(0, Math.round(world.getPlayers().size() * Float.parseFloat(plugin.getConfig().getString("values.percent")) - bypassers.size() - ((Integer)worlds.get(world)).intValue())))));
-        .replace("[online]", String.valueOf(world.getPlayers().size()))
-        .replace("[needed]", String.valueOf(Math.max(0, Math.round(world.getPlayers().size() * Float.parseFloat(config.getString("values.percent")) - sleeping.get(world).size())))));
+    public void sendActionbar(Player p, String message, World w) {
+        ArrayList<Player> included = this.getIncluded(w);
+        int excluded = w.getPlayers().size() - included.size();
+
+        nms.sendActionbar(p, message
+        .replace("[sleeping]", String.valueOf(this.getSleeping(w)))
+        .replace("[online]", String.valueOf(included.size()))
+        .replace("[needed]", String.valueOf(this.getNeeded(w) - excluded)));
     }
 
     /**
@@ -177,14 +159,9 @@ public class Util {
      * @param World to return value for
      */
     public void skip(World w, int excluded, int needed) {
-        System.out.println("needed: "+ needed);
-        System.out.println("Exclkuded: " + excluded);
-        System.out.println("difference: " + (needed - excluded));
-
         if (config.getBoolean("features.skip") && (needed - excluded) == 0) {
             System.out.println("set time");
             w.setTime(1000L);
-            
             
             // Set weather to clear
             if (config.getBoolean("features.weather")) {

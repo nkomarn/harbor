@@ -27,6 +27,8 @@ features:
   skip: true
   # Clear weather when skipping night
   weather: true
+  # Toggle the spawning of phantoms
+  phantoms: false
   # Toggle exclusion of operators/players with permission "harbor.bypass" from sleep count
   bypass: false
   # Toggle exclusion of players in creative and spectator mode

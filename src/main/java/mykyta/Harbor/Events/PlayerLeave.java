@@ -14,5 +14,6 @@ public class PlayerLeave implements Listener {
         World w = event.getPlayer().getWorld();
         int excluded = (w.getPlayers().size() - 1) - (util.getIncluded(w).size() - 1);
         util.skip(event.getPlayer().getWorld(), excluded, util.getNeededDecremented(w));
+        Util.activity.remove(event.getPlayer());
     }
 }

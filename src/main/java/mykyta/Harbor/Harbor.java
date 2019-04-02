@@ -18,6 +18,7 @@ import mykyta.Harbor.Events.GUIDrag;
 import mykyta.Harbor.Events.Move;
 import mykyta.Harbor.Events.PlayerJoin;
 import mykyta.Harbor.Events.PlayerLeave;
+import mykyta.Harbor.Events.Spawn;
 
 public class Harbor extends JavaPlugin {
     private Logger log = Bukkit.getLogger();
@@ -33,6 +34,7 @@ public class Harbor extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new BedEnter(), this);
         Bukkit.getPluginManager().registerEvents(new BedLeave(), this);
         Bukkit.getPluginManager().registerEvents(new Move(), this);
+        Bukkit.getPluginManager().registerEvents(new Spawn(), this);
         Bukkit.getPluginManager().registerEvents(new GUIClick(), this);
         Bukkit.getPluginManager().registerEvents(new GUIDrag(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerJoin(), this);

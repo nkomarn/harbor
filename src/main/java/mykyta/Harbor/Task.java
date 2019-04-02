@@ -19,10 +19,10 @@ public class Task implements Runnable {
             });
 
             // Fix time if players leave bed naturally
-            if (w.getTime() >= 0 && w.getTime() <= 100) {
+            /*if (w.getTime() >= 0 && w.getTime() <= 100) {
                 ArrayList<Player> list = new ArrayList<Player>();
                 Util.sleeping.put(w, list);
-            }
+            }*/
 
             // Send actionbar if someone's sleeping
             if (util.getSleeping(w) > 0 && util.getSleeping(w) < w.getPlayers().size()) {w.getPlayers().forEach(p -> {util.sendActionbar(p, config.getString("messages.actionbar.sleeping"), w);});} 

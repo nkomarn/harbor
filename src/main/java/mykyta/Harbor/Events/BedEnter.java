@@ -30,26 +30,26 @@ public class BedEnter implements Listener {
         }
 
         if (event.getBedEnterResult() == BedEnterResult.OK) {
-            World w = event.getPlayer().getWorld();
-            ArrayList<Player> included = util.getIncluded(w);
-            int excluded = w.getPlayers().size() - included.size();
+            Player p = event.getPlayer();
+            World w = p.getWorld();
+            ArrayList<Player> excluded = util.getExcluded(w);
 
-            if (included.contains(event.getPlayer())) {
-                util.add(w, event.getPlayer());
+            if (!excluded.contains(p)) {
+                util.add(w, p);
 
                 // Chat messages
                 if (config.getBoolean("messages.chat.chat") && (config.getString("messages.chat.sleeping").length() != 0)) {
                     Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.sleeping")
                     .replace("[sleeping]", String.valueOf(util.getSleeping(w))))
-                    .replace("[online]", String.valueOf(included.size()))
-                    .replace("[player]", event.getPlayer().getName())
-                    .replace("[needed]", String.valueOf(util.getNeeded(w) - excluded)));
+                    .replace("[online]", String.valueOf(util.getOnline(w) - excluded.size()))
+                    .replace("[player]", p.getName())
+                    .replace("[needed]", String.valueOf(util.getNeeded(w) - excluded.size())));
                 }
 
                 // Skip night if possible
-                util.skip(w, excluded, util.getNeeded(w));
+                util.skip(w);
             }
-            else if (config.getString("messages.chat.bypass").length() != 0) event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.bypass")));
+            else if (config.getString("messages.chat.bypass").length() != 0) p.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.bypass")));
         }
     }
 }

@@ -15,10 +15,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import mykyta.Harbor.Config;
-import mykyta.Harbor.EncodingUtils;
 import mykyta.Harbor.Util;
 
 public class Sleeping implements CommandExecutor {
+
+    private Inventory gui;
+
+    @SuppressWarnings("deprecation")
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (sender instanceof Player) {
@@ -26,19 +29,19 @@ public class Sleeping implements CommandExecutor {
             World world = player.getWorld();
             Config config = new Config();
             ArrayList<Player> sleeping = Util.sleeping.get(world);
-            int slots = (((sleeping.size()) % 9)) * 9; //FIXME bad brok bad
-            System.out.println(slots);
-            Inventory gui = Bukkit.createInventory(player, slots, config.getString("gui.sleeping"));
+            int slots = Math.min(54, ((sleeping.size() - 1) / 9 + 1) * 9);
+            gui = Bukkit.createInventory(player, slots, config.getString("gui.sleeping"));
+            
             if (sleeping.size() > 0) sleeping.forEach(p -> {
-                ItemStack item = new ItemStack(Material.LEGACY_SKULL_ITEM, 1, (short) 3); //FIXME deprecated
-                SkullMeta skull = (SkullMeta) item.getItemMeta();
-                skull.setDisplayName(p.getName());
+                ItemStack item = new ItemStack(Material.PLAYER_HEAD, 1);
+                SkullMeta meta = (SkullMeta) item.getItemMeta();
+                meta.setDisplayName(ChatColor.GRAY + p.getName());
                 /*ArrayList<String> lore = new ArrayList<String>();
                 lore.add("Custom head");
                 skull.setLore(lore);
                 */
-                skull.setOwner(p.getName());
-                item.setItemMeta(skull);
+                meta.setOwner(p.getName());
+                item.setItemMeta(meta);
                 gui.setItem(sleeping.indexOf(p), item);
             });
 
@@ -62,11 +65,6 @@ public class Sleeping implements CommandExecutor {
                     else Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.miscellaneous.prefix") + "There aren't any currently sleeping players in &o" + args[0] + "&r."));
                 }
             }
-            /*
-            StringBuilder sb = new StringBuilder();
-            ArrayList<Player> sleeping = Util.sleeping.get(w);
-            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.miscellaneous.prefix")));
-            */
         }
         return true;
     }

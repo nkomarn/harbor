@@ -18,7 +18,8 @@ public class Util {
     public static HashMap<World, ArrayList<Player>> sleeping = new HashMap<World, ArrayList<Player>>();
     public static HashMap<Player, Long> activity = new HashMap<Player, Long>();
     public static ArrayList<Player> afk = new ArrayList<Player>();
-    public String version = "1.5";
+
+    public String version = "1.1";
     public static boolean debug = false;
     private Logger log = Bukkit.getLogger();
     private static NMS nms;
@@ -31,7 +32,7 @@ public class Util {
         String version = "";
         try {version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];} 
         catch (ArrayIndexOutOfBoundsException e) { 
-            log.severe("Could not get server version. The plugin may not function correctly as a result.");
+            Bukkit.getServer().getConsoleSender().sendMessage(config.getString("messages.miscellaneous.prefix") + "Could not get server version. The plugin may not function correctly as a result.");
             if (Util.debug) System.err.println(e);
         }
         Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.miscellaneous.prefix") + config.getString("messages.miscellaneous.running").replace("[version]", version)));
@@ -58,56 +59,62 @@ public class Util {
     public void remove(World world, Player player) {
         ArrayList<Player> list = Util.sleeping.get(world);
         list.remove(player);
-        Util.sleeping.put(world, list);
     }
 
     /**
      * Fetch the sleeping count for a world
      * @param world World to fetch count for
      */
-    public int getSleeping(World world) {
-        return Util.sleeping.get(world).size();
+    public int getSleeping(World w) {
+        return Util.sleeping.get(w).size();
     }
 
     /**
      * Fetch the amount of players needed to skip night
      * @param world World to fetch count for
      */
-    public int getNeeded(World world) {
-        return Math.max(0, (int) Math.ceil(world.getPlayers().size() * (config.getDouble("values.percent") / 100) - this.getSleeping(world)));
+    public int getNeeded(World w) {
+        //FIXME i think its broke
+        return Math.max(0, (int) Math.ceil(w.getPlayers().size() * (config.getDouble("values.percent") / 100) - this.getSleeping(w)));
     }
 
     /**
-     * Fetch the amount of players needed to skip night (minus one)
-     * @param world World to fetch count for
+     * Get players in a world (returns zero if negative)
+     * @param world World to check player count for
      */
-    public int getNeededDecremented(World world) {
-        return Math.max(0, (int) Math.ceil((world.getPlayers().size() - 1) * (config.getDouble("values.percent") / 100) - this.getSleeping(world)));
+    public int getOnline(World w) {
+        return Math.max(0, w.getPlayers().size());
     }
-    
+
     /**
-     * Fetch the included players in a world
+     * Fetch the excluded players in a world
      * @param world World to fetch count for
      */
-    public ArrayList<Player> getIncluded(World world) {
-        ArrayList<Player> players = new ArrayList<Player>();
-        world.getPlayers().forEach(p -> {
-            if (this.isIncluded(p)) players.add(p);
+    public ArrayList<Player> getExcluded(World w) {
+        ArrayList<Player> excluded = new ArrayList<Player>();
+        w.getPlayers().forEach(p -> {
+            if (this.isExcluded(p)) excluded.add(p);
         });
-        return players;
+        return excluded;
     }
 
-
     /**
-     * Returns true if player should be included in count
+     * Returns whether or not a player should be excluded from the sleep count
      * @param player Target player
      */
-    public boolean isIncluded(Player p) {
+    public boolean isExcluded(Player p) {
         boolean state = true;
-        if (config.getBoolean("features.ignore")) if (p.getGameMode() == GameMode.SURVIVAL) state = true; else state = false;
-        if (config.getBoolean("features.bypass")) if (p.hasPermission("harbor.bypass")) state = false; else state = true;
-        if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - activity.get(p)) > config.getInteger("values.timeout")) state = false;
+        if (config.getBoolean("features.ignore")) if (p.getGameMode() == GameMode.SURVIVAL) state = false; else state = true;
+        if (config.getBoolean("features.bypass")) if (p.hasPermission("harbor.bypass")) state = true; else state = false;
+        if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - activity.get(p)) > config.getInteger("values.timeout")) state = true;
         return state;
+    }
+
+    /**
+     * Returns if player is considered AFK
+     */
+    public void isAFK(Player p) {
+
     }
 
     /**
@@ -127,13 +134,12 @@ public class Util {
      * @param world World to fetch information for
      */
     public void sendActionbar(Player p, String message, World w) {
-        ArrayList<Player> included = this.getIncluded(w);
-        int excluded = w.getPlayers().size() - included.size();
+        ArrayList<Player> excluded = this.getExcluded(w);
 
         nms.sendActionbar(p, message
         .replace("[sleeping]", String.valueOf(this.getSleeping(w)))
-        .replace("[online]", String.valueOf(included.size()))
-        .replace("[needed]", String.valueOf(this.getNeeded(w) - excluded)));
+        .replace("[online]", String.valueOf(w.getPlayers().size() - excluded.size()))
+        .replace("[needed]", String.valueOf(this.getNeeded(w) - excluded.size())));
     }
 
     /**
@@ -158,9 +164,8 @@ public class Util {
      * Skips the night in the specified world (if possible)
      * @param World to return value for
      */
-    public void skip(World w, int excluded, int needed) {
-        if (config.getBoolean("features.skip") && (needed - excluded) == 0) {
-            System.out.println("set time");
+    public void skip(World w) {
+        if (config.getBoolean("features.skip") && this.getNeeded(w) - this.getExcluded(w).size() == 0) {
             w.setTime(1000L);
             
             // Set weather to clear
@@ -172,7 +177,6 @@ public class Util {
             // Display messages
             if (config.getBoolean("messages.chat.chat") && (config.getString("messages.chat.skipped").length() != 0)) Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.skipped")));
             if (config.getBoolean("features.title")) {
-                System.out.println("sent message");
                 w.getPlayers().forEach(p -> {
                     this.sendTitle(p, config.getString("messages.title.morning.top"), config.getString("messages.title.morning.bottom"));
                 });

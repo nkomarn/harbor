@@ -37,12 +37,8 @@ features:
   block: false
   # Display a title in the morning and when going to bed
   title: true
-  # Display debug information in console
-  debug: false
   # Displays a notification when a new update is released
   notifier: true
-  # Automatically updates the plugin when a newer version is available
-  updater: true
 
 messages:
   chat:
@@ -86,11 +82,11 @@ messages:
     incompatible: "&7Spigot version [version] isn't compatible with Harbor."
     # Harbor reload message
     reloaded: "&7Reloaded Harbor"
-    reloadError: "&7Error reloading Harbor."
+    reloaderror: "&7Error reloading Harbor."
     # Sent when player doesn't have permissions to run command
     permission: "&7Insufficient permissions."
     # Sent when command argument isn't recognized
-    unrecognized: "&7Not recognized."
+    unrecognized: "&7Command not recognized."
     
 gui:
   # Title for menu that shows when a player executes /sleeping

@@ -21,11 +21,15 @@ public class Task implements Runnable {
             } 
             if (util.getSleeping(w) > 0 && util.getSleeping(w) < w.getPlayers().size()) {w.getPlayers().forEach(p -> {util.sendActionbar(p, config.getString("messages.actionbar.sleeping"), w);});} 
             else if (util.getSleeping(w) == w.getPlayers().size()) {w.getPlayers().forEach(p -> {util.sendActionbar(p, config.getString("messages.actionbar.everyone"), w);});}
-            /*if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - Util.activity.get(p)) > config.getInteger("values.timeout")) {
+            
+            /*w.getPlayers().forEach(p -> {
+
+            });*/
+            if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - Util.activity.get(p)) > config.getInteger("values.timeout")) {
                 ///TODO custom afk prefix
-                p.setPlayerListName(ChatColor.GRAY + "[AFK] - " + ChatColor.RESET + p.getDisplayName());
+                //p.setPlayerListName(ChatColor.GRAY + "[AFK] - " + ChatColor.RESET + p.getDisplayName());
                 System.out.println(p.getName() + " is AFK.");
-            }*/
+            }
         });
     }
 }

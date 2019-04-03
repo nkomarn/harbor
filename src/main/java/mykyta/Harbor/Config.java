@@ -1,16 +1,12 @@
 package mykyta.Harbor;
 
-import java.util.logging.Logger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 
 public class Config {
-    private Logger log = Bukkit.getLogger();
-    private Config config = new Config();
     private String error = "An error occured while trying to read the configuration. Harbor may not function correctly as a result.";
-    private static Harbor harbor;
+    public static Harbor harbor;
     private ConsoleCommandSender c = Bukkit.getServer().getConsoleSender();
 
     /**
@@ -26,7 +22,7 @@ public class Config {
      * @param e Exception generated from reading configuration
      */
     private void error(Exception e) {
-        c.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.miscellaneous.prefix") + error));
+        c.sendMessage(ChatColor.translateAlternateColorCodes('&', this.getString("messages.miscellaneous.prefix") + error));
         if (Util.debug) e.printStackTrace();
     }
 

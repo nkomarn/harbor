@@ -19,9 +19,8 @@ public class Util {
     public static HashMap<Player, Long> activity = new HashMap<Player, Long>();
     public static ArrayList<Player> afk = new ArrayList<Player>();
 
-    public String version = "1.1";
+    public String version = "1.5";
     public static boolean debug = false;
-    private Logger log = Bukkit.getLogger();
     private static NMS nms;
     Config config = new Config();
 
@@ -33,12 +32,16 @@ public class Util {
         try {version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];} 
         catch (ArrayIndexOutOfBoundsException e) { 
             Bukkit.getServer().getConsoleSender().sendMessage(config.getString("messages.miscellaneous.prefix") + "Could not get server version. The plugin may not function correctly as a result.");
-            if (Util.debug) System.err.println(e);
+            if (debug) System.err.println(e);
         }
-        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.miscellaneous.prefix") + config.getString("messages.miscellaneous.running").replace("[version]", version)));
+        if (debug) Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.miscellaneous.prefix") + config.getString("messages.miscellaneous.running").replace("[version]", version)));
             
         if (version.equals("v1_13_R2")) {
             nms = new NMS_1_13_R2();
+        }
+        else {
+            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.miscellaneous.prefix") + "This version of Harbor is incompatible with your server version. As such, Harbor will be disabled."));
+            Bukkit.getPluginManager().disablePlugin(Config.harbor);
         }
     }
 
@@ -108,13 +111,6 @@ public class Util {
         if (config.getBoolean("features.bypass")) if (p.hasPermission("harbor.bypass")) state = true; else state = false;
         if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - activity.get(p)) > config.getInteger("values.timeout")) state = true;
         return state;
-    }
-
-    /**
-     * Returns if player is considered AFK
-     */
-    public void isAFK(Player p) {
-
     }
 
     /**

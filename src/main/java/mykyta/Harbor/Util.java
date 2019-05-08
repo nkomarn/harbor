@@ -16,6 +16,7 @@ import mykyta.Harbor.NMS.NMS_1_12_R1;
 import mykyta.Harbor.NMS.NMS_1_13_R1;
 import mykyta.Harbor.NMS.NMS_1_13_R2;
 import mykyta.Harbor.NMS.NMS_1_14_R1;
+import mykyta.Harbor.NMS.NMS_1_7_R1;
 import mykyta.Harbor.NMS.NMS_1_8_R1;
 import mykyta.Harbor.NMS.NMS_1_9_R1;
 import mykyta.Harbor.NMS.NMS_1_9_R2;
@@ -44,12 +45,9 @@ public class Util {
             enabled = false;
         }
         if (debug) Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.miscellaneous.prefix") + config.getString("messages.miscellaneous.running").replace("[version]", version)));
-          
-        // FIXME maybe later
-        /*if (version.equals("v1_7_R1")) {
-            nms = new NMS_1_7_R1();
-        }*/
-        if (version.equals("v1_8_R1")) {nms = new NMS_1_8_R1();}
+
+        if (version.equals("v1_7_R1")) {nms = new NMS_1_7_R1();}
+        else if (version.equals("v1_8_R1")) {nms = new NMS_1_8_R1();}
         //TODO more 1.8 versions
         else if (version.equals("v1_9_R1")) {nms = new NMS_1_9_R1();}
         else if (version.equals("v1_9_R2")) {nms = new NMS_1_9_R2();}

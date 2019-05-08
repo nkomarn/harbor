@@ -20,7 +20,7 @@ values:
   # Percent of players that need to sleep to skip night (must be between 0 to 100)
   percent: 50
   # Time that it takes to be considered AFK (in minutes)
-  timeout: 1
+  timeout: 10
 
 features: 
   # Toggle night skipping feature. Configure amount of players needed to skip above (percent)
@@ -85,14 +85,14 @@ messages:
     # Display server version in console
     running: "&7Running on version [version]."
     # Sent in console when the plugin isn't compatible with the server
-    incompatible: "&7Spigot version [version] isn't compatible with Harbor."
+    incompatible: "&7Spigot [version] isn't compatible with Harbor."
     # Harbor reload message
     reloaded: "&7Reloaded Harbor."
     reloaderror: "&7Error reloading Harbor."
     # Sent when player doesn't have permissions to run command
     permission: "&7Insufficient permissions."
     # Sent when command argument isn't recognized
-    unrecognized: "&7Command not recognized."
+    unrecognized: "&7Urecognized command."
     
 gui:
   # Title for menu that shows when a player executes /sleeping

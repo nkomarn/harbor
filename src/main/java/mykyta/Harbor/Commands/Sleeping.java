@@ -11,7 +11,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -39,10 +38,6 @@ public class Sleeping implements CommandExecutor {
                 ItemStack item = new ItemStack(Material.PLAYER_HEAD, 1);
                 SkullMeta meta = (SkullMeta) item.getItemMeta();
                 meta.setDisplayName(ChatColor.GRAY + pl.getName());
-                /*ArrayList<String> lore = new ArrayList<String>();
-                lore.add("Custom head");
-                skull.setLore(lore);
-                */
                 meta.setOwner(pl.getName());
                 item.setItemMeta(meta);
                 gui.setItem(sleeping.indexOf(pl), item);

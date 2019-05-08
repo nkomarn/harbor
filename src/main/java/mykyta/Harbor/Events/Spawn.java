@@ -11,6 +11,11 @@ public class Spawn implements Listener {
     @EventHandler
     public void onSpawn(CreatureSpawnEvent event) {
         Config config = new Config();
-        if (event.getEntityType().equals(EntityType.PHANTOM) && !config.getBoolean("features.phantoms")) event.setCancelled(true);  
+        try {
+            if (event.getEntityType().equals(EntityType.PHANTOM) && !config.getBoolean("features.phantoms")) event.setCancelled(true);  
+        }
+        catch (NoSuchFieldError e) {
+            // Do nothing, Phantom only exists in 1.13+
+        }
     }
 }

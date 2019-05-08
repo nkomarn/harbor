@@ -33,9 +33,9 @@ public class BedLeave implements Listener {
 		if (config.getBoolean("messages.chat.chat") && (config.getString("messages.chat.left").length() != 0) && !(w.getTime() > 0 && w.getTime() < 12300) && !excluded.contains(p)) {
             Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.left")
             .replace("[sleeping]", String.valueOf(util.getSleeping(w))))
-            .replace("[online]", String.valueOf(util.getOnline(w) - excluded.size()))
+            .replace("[online]", String.valueOf(util.getOnline(w)))
             .replace("[player]", event.getPlayer().getName())
-            .replace("[needed]", String.valueOf(util.getNeeded(w) - excluded.size())));
+            .replace("[needed]", String.valueOf(util.getNeeded(w))));
         }
     }
 }

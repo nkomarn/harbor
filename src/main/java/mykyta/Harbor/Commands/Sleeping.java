@@ -11,10 +11,13 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import mykyta.Harbor.Config;
+import mykyta.Harbor.GUIType;
+import mykyta.Harbor.Holder;
 import mykyta.Harbor.Util;
 
 public class Sleeping implements CommandExecutor {
@@ -25,27 +28,27 @@ public class Sleeping implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (sender instanceof Player) {
-            Player player = (Player) sender;
-            World world = player.getWorld();
+            Player p = (Player) sender;
+            World w = p.getWorld();
             Config config = new Config();
-            ArrayList<Player> sleeping = Util.sleeping.get(world);
+            ArrayList<Player> sleeping = Util.sleeping.get(w);
             int slots = Math.min(54, ((sleeping.size() - 1) / 9 + 1) * 9);
-            gui = Bukkit.createInventory(player, slots, config.getString("gui.sleeping"));
+            gui = Bukkit.createInventory(new Holder(GUIType.SLEEPING), slots, config.getString("gui.sleeping"));
             
-            if (sleeping.size() > 0) sleeping.forEach(p -> {
+            if (sleeping.size() > 0) sleeping.forEach(pl -> {
                 ItemStack item = new ItemStack(Material.PLAYER_HEAD, 1);
                 SkullMeta meta = (SkullMeta) item.getItemMeta();
-                meta.setDisplayName(ChatColor.GRAY + p.getName());
+                meta.setDisplayName(ChatColor.GRAY + pl.getName());
                 /*ArrayList<String> lore = new ArrayList<String>();
                 lore.add("Custom head");
                 skull.setLore(lore);
                 */
-                meta.setOwner(p.getName());
+                meta.setOwner(pl.getName());
                 item.setItemMeta(meta);
-                gui.setItem(sleeping.indexOf(p), item);
+                gui.setItem(sleeping.indexOf(pl), item);
             });
 
-            player.openInventory(gui);
+            p.openInventory(gui);
         }
         else {
             Config config = new Config();

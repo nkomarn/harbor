@@ -20,16 +20,22 @@ public class Task implements Runnable {
                 util.skip(w);  
             } 
             if (util.getSleeping(w) > 0 && util.getSleeping(w) < w.getPlayers().size()) {w.getPlayers().forEach(p -> {util.sendActionbar(p, config.getString("messages.actionbar.sleeping"), w);});} 
-            else if (util.getSleeping(w) == w.getPlayers().size()) {w.getPlayers().forEach(p -> {util.sendActionbar(p, config.getString("messages.actionbar.everyone"), w);});}
+            else if (util.getSleeping(w) == util.getNeeded(w)) {w.getPlayers().forEach(p -> {util.sendActionbar(p, config.getString("messages.actionbar.everyone"), w);});}
             
-            /*w.getPlayers().forEach(p -> {
-
-            });*/
-            if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - Util.activity.get(p)) > config.getInteger("values.timeout")) {
-                ///TODO custom afk prefix
-                //p.setPlayerListName(ChatColor.GRAY + "[AFK] - " + ChatColor.RESET + p.getDisplayName());
-                System.out.println(p.getName() + " is AFK.");
-            }
+            w.getPlayers().forEach(p -> {
+                if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - Util.activity.get(p)) >= config.getInteger("values.timeout")) {
+                    if (Util.sleeping.get(w).contains(p)) {
+                        Util.activity.put(p, System.currentTimeMillis());
+                        return;
+                    }
+                    if (!Util.afk.contains(p)) {
+                        Util.afk.add(p);
+                        p.setPlayerListName(ChatColor.translateAlternateColorCodes('&', config.getString("messages.miscellaneous.afkprefix") + p.getName()));
+                        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.afk")
+                        .replace("[player]", p.getName())));
+                    }
+                }
+            });
         });
     }
 }

@@ -29,7 +29,16 @@ public class BedEnter implements Listener {
             return;	
         }
 
-        if (event.getBedEnterResult() == BedEnterResult.OK) {
+        // 1.13.2 API change bypass
+        boolean success = false;
+        try {
+            if (event.getBedEnterResult() == BedEnterResult.OK) success = true;
+        }
+        catch (NoSuchMethodError e) {
+            success = true;
+        }
+
+        if (success) {
             Player p = event.getPlayer();
             World w = p.getWorld();
             ArrayList<Player> excluded = util.getExcluded(w);
@@ -41,9 +50,9 @@ public class BedEnter implements Listener {
                 if (config.getBoolean("messages.chat.chat") && (config.getString("messages.chat.sleeping").length() != 0)) {
                     Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.sleeping")
                     .replace("[sleeping]", String.valueOf(util.getSleeping(w))))
-                    .replace("[online]", String.valueOf(util.getOnline(w) - excluded.size()))
+                    .replace("[online]", String.valueOf(util.getOnline(w)))
                     .replace("[player]", p.getName())
-                    .replace("[needed]", String.valueOf(util.getNeeded(w) - excluded.size())));
+                    .replace("[needed]", String.valueOf(util.getNeeded(w))));
                 }
 
                 // Skip night if possible

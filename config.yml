@@ -54,6 +54,10 @@ messages:
     blocked: "&cSleeping is disabled."
     # Sent to player when they sleep with "harbor.bypass" permission
     bypass: "&eYou've been excluded from the sleep count."
+    # Shown when a player goes AFK
+    afk: "&7[player] has gone AFK."
+    # Shown when a player comes back after being AFK
+    unafk: "&7[player] is no longer AFK."
   actionbar:
     # Enable/Disable actionbar message
     actionbar: true
@@ -76,12 +80,14 @@ messages:
   miscellaneous:
     # Prefix for Harbor command/miscellaneous messages
     prefix: "&8&l(&6&lHarbor&8&l)&r "
+    # Prefix for player list names when a player is AFK
+    afkprefix: "&8&l(&7AFK&8&l)&7 "
     # Display server version in console
     running: "&7Running on version [version]."
     # Sent in console when the plugin isn't compatible with the server
     incompatible: "&7Spigot version [version] isn't compatible with Harbor."
     # Harbor reload message
-    reloaded: "&7Reloaded Harbor"
+    reloaded: "&7Reloaded Harbor."
     reloaderror: "&7Error reloading Harbor."
     # Sent when player doesn't have permissions to run command
     permission: "&7Insufficient permissions."
@@ -90,7 +96,7 @@ messages:
     
 gui:
   # Title for menu that shows when a player executes /sleeping
-  sleeping: "Sleeping players"
+  sleeping: "Sleeping Players"
 
 # Version identifier (do not change)
 version: 1.5

@@ -2,17 +2,23 @@ package mykyta.Harbor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import mykyta.Harbor.NMS.NMS;
+import mykyta.Harbor.NMS.NMS_1_10_R1;
+import mykyta.Harbor.NMS.NMS_1_11_R1;
+import mykyta.Harbor.NMS.NMS_1_12_R1;
+import mykyta.Harbor.NMS.NMS_1_13_R1;
 import mykyta.Harbor.NMS.NMS_1_13_R2;
-import net.md_5.bungee.api.ChatColor;
+import mykyta.Harbor.NMS.NMS_1_14_R1;
+import mykyta.Harbor.NMS.NMS_1_8_R1;
+import mykyta.Harbor.NMS.NMS_1_9_R1;
+import mykyta.Harbor.NMS.NMS_1_9_R2;
 
 public class Util {
     public static HashMap<World, ArrayList<Player>> sleeping = new HashMap<World, ArrayList<Player>>();
@@ -20,6 +26,7 @@ public class Util {
     public static ArrayList<Player> afk = new ArrayList<Player>();
 
     public String version = "1.5";
+    public static boolean enabled = true;
     public static boolean debug = false;
     private static NMS nms;
     Config config = new Config();
@@ -33,15 +40,29 @@ public class Util {
         catch (ArrayIndexOutOfBoundsException e) { 
             Bukkit.getServer().getConsoleSender().sendMessage(config.getString("messages.miscellaneous.prefix") + "Could not get server version. The plugin may not function correctly as a result.");
             if (debug) System.err.println(e);
+            Bukkit.getPluginManager().disablePlugin(Config.harbor);
+            enabled = false;
         }
         if (debug) Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.miscellaneous.prefix") + config.getString("messages.miscellaneous.running").replace("[version]", version)));
-            
-        if (version.equals("v1_13_R2")) {
-            nms = new NMS_1_13_R2();
-        }
+          
+        // FIXME maybe later
+        /*if (version.equals("v1_7_R1")) {
+            nms = new NMS_1_7_R1();
+        }*/
+        if (version.equals("v1_8_R1")) {nms = new NMS_1_8_R1();}
+        //TODO more 1.8 versions
+        else if (version.equals("v1_9_R1")) {nms = new NMS_1_9_R1();}
+        else if (version.equals("v1_9_R2")) {nms = new NMS_1_9_R2();}
+        else if (version.equals("v1_10_R1")) {nms = new NMS_1_10_R1();}
+        else if (version.equals("v1_11_R1")) {nms = new NMS_1_11_R1();}
+        else if (version.equals("v1_12_R1")) {nms = new NMS_1_12_R1();}
+        else if (version.equals("v1_13_R1")) {nms = new NMS_1_13_R1();}
+        else if (version.equals("v1_13_R2")) {nms = new NMS_1_13_R2();}
+        else if (version.equals("v1_14_R1")) {nms = new NMS_1_14_R1();}
         else {
             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.miscellaneous.prefix") + "This version of Harbor is incompatible with your server version. As such, Harbor will be disabled."));
             Bukkit.getPluginManager().disablePlugin(Config.harbor);
+            enabled = false;
         }
     }
 
@@ -69,7 +90,7 @@ public class Util {
      * @param world World to fetch count for
      */
     public int getSleeping(World w) {
-        return Util.sleeping.get(w).size();
+        return Math.max(0, Util.sleeping.get(w).size());
     }
 
     /**
@@ -77,7 +98,7 @@ public class Util {
      * @param world World to fetch count for
      */
     public int getNeeded(World w) {
-        //FIXME i think its broke
+        //FIXME make sure to remove excluded players
         return Math.max(0, (int) Math.ceil(w.getPlayers().size() * (config.getDouble("values.percent") / 100) - this.getSleeping(w)));
     }
 
@@ -86,7 +107,7 @@ public class Util {
      * @param world World to check player count for
      */
     public int getOnline(World w) {
-        return Math.max(0, w.getPlayers().size());
+        return Math.max(0, w.getPlayers().size() - getExcluded(w).size());
     }
 
     /**
@@ -109,7 +130,7 @@ public class Util {
         boolean state = true;
         if (config.getBoolean("features.ignore")) if (p.getGameMode() == GameMode.SURVIVAL) state = false; else state = true;
         if (config.getBoolean("features.bypass")) if (p.hasPermission("harbor.bypass")) state = true; else state = false;
-        if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - activity.get(p)) > config.getInteger("values.timeout")) state = true;
+        if (afk.contains(p)) state = true;
         return state;
     }
 
@@ -130,12 +151,10 @@ public class Util {
      * @param world World to fetch information for
      */
     public void sendActionbar(Player p, String message, World w) {
-        ArrayList<Player> excluded = this.getExcluded(w);
-
         nms.sendActionbar(p, message
         .replace("[sleeping]", String.valueOf(this.getSleeping(w)))
-        .replace("[online]", String.valueOf(w.getPlayers().size() - excluded.size()))
-        .replace("[needed]", String.valueOf(this.getNeeded(w) - excluded.size())));
+        .replace("[online]", String.valueOf(this.getOnline(w)))
+        .replace("[needed]", String.valueOf(this.getNeeded(w))));
     }
 
     /**
@@ -154,6 +173,15 @@ public class Util {
      */
     public void sendTitle(Player player, String top, String bottom) {
         nms.sendTitle(player, top, bottom);
+    }
+
+    /**
+     * Puts selected player in a sleeping state
+     * @param player Player to send message to
+     * @param JSON Message in JSON format
+     */
+    public void enterBed(Player player) {
+        nms.enterBed(player);
     }
 
     /**

@@ -1,22 +1,21 @@
 package mykyta.Harbor.NMS;
 
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import net.minecraft.server.v1_13_R2.PacketPlayOutBed;
-import net.minecraft.server.v1_13_R2.IChatBaseComponent;
-import net.minecraft.server.v1_13_R2.PacketPlayOutChat;
-import net.minecraft.server.v1_13_R2.PacketPlayOutTitle;
-import net.minecraft.server.v1_13_R2.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_13_R2.PacketPlayOutTitle.EnumTitleAction;
+import net.minecraft.server.v1_9_R2.IChatBaseComponent;
+import net.minecraft.server.v1_9_R2.PacketPlayOutChat;
+import net.minecraft.server.v1_9_R2.PacketPlayOutTitle;
+import net.minecraft.server.v1_9_R2.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_9_R2.PacketPlayOutTitle.EnumTitleAction;
 
-public class NMS_1_13_R2 implements NMS {
+public class NMS_1_9_R2 implements NMS {
 	@Override
 	public void sendActionbar(Player player, String message) {
-	    IChatBaseComponent titleComponent = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', message) + "\"}");
-	    PacketPlayOutTitle titlePacket = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.ACTIONBAR, titleComponent);
-	    ((CraftPlayer) player).getHandle().playerConnection.sendPacket(titlePacket);  
+		IChatBaseComponent titleComponent = ChatSerializer.a("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', message) + "\"}");
+	    PacketPlayOutChat titlePacket = new PacketPlayOutChat(titleComponent, (byte)2);
+		((CraftPlayer) player).getHandle().playerConnection.sendPacket(titlePacket);
 	}
 
 	@Override
@@ -38,8 +37,6 @@ public class NMS_1_13_R2 implements NMS {
 
 	@Override
 	public void enterBed(Player player) {
-		PacketPlayOutBed sleep = new PacketPlayOutBed();
-		((CraftPlayer)player).getHandle().a(true, true, false);
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(sleep);
+		 
 	}
 }

@@ -4,7 +4,7 @@ main: mykyta.Harbor.Harbor
 description: Ahoy, matey! Harbor is a Spigot plugin that redefines how sleep works in your server, making it easier for all the online players to get in bed quick and skip through the night!
 author: Mykyta (TechToolbox)
 website: https://mykyta.tk 
-api-version: 1.13
+api-version: 1.14
 
 commands:
   harbor:

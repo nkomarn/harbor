@@ -15,9 +15,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import mykyta.Harbor.Config;
-import mykyta.Harbor.GUIType;
-import mykyta.Harbor.Holder;
 import mykyta.Harbor.Util;
+import mykyta.Harbor.GUI.GUIHolder;
+import mykyta.Harbor.GUI.GUIType;
 
 public class Sleeping implements CommandExecutor {
 
@@ -32,7 +32,7 @@ public class Sleeping implements CommandExecutor {
             Config config = new Config();
             ArrayList<Player> sleeping = Util.sleeping.get(w);
             int slots = Math.min(54, ((sleeping.size() - 1) / 9 + 1) * 9);
-            gui = Bukkit.createInventory(new Holder(GUIType.SLEEPING), slots, config.getString("gui.sleeping"));
+            gui = Bukkit.createInventory(new GUIHolder(GUIType.SLEEPING), slots, config.getString("gui.sleeping"));
             
             if (sleeping.size() > 0) sleeping.forEach(pl -> {
                 ItemStack item = new ItemStack(Material.PLAYER_HEAD, 1);

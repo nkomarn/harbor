@@ -1,13 +1,13 @@
-package mykyta.Harbor;
+package mykyta.Harbor.GUI;
 
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
-public class Holder implements InventoryHolder {
-    Inventory inv;
-    GUIType type;
+public class GUIHolder implements InventoryHolder {
+    private Inventory inv;
+    private GUIType type;
 
-    public Holder(GUIType type) {
+    public GUIHolder(GUIType type) {
         this.type = type;
     }
 

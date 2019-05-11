@@ -1,5 +1,8 @@
 package mykyta.Harbor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -79,6 +82,20 @@ public class Config {
         catch (Exception e) {
             error(e);
             return 0.0;
+        }
+    }
+
+    /**
+     * Fetches a double from the configuration
+     * @param location Configuration location of the double
+     */
+    public List<String> getList(String location) {
+        try {
+            return harbor.getConfig().getStringList(location);
+        }
+        catch (Exception e) {
+            error(e);
+            return new ArrayList<String>();
         }
     }
 }

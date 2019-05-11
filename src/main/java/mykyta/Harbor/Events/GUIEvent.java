@@ -11,8 +11,7 @@ import mykyta.Harbor.GUI.GUIHolder;
 public class GUIEvent implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent event) {
-        if (event.getInventory().getHolder() != null && event.getInventory().getHolder() instanceof Holder) {
-            Player p = ((Player) event.getWhoClicked());
+        if (event.getInventory().getHolder() != null && event.getInventory().getHolder() instanceof GUIHolder) {
             GUIType t = ((GUIHolder) event.getInventory().getHolder()).getType();
             if (t.equals(GUIType.SLEEPING)) event.setCancelled(true);
         }
@@ -20,8 +19,7 @@ public class GUIEvent implements Listener {
 
     @EventHandler
     public void onDrag(InventoryDragEvent event) {
-        if (event.getInventory().getHolder() != null && event.getInventory().getHolder() instanceof Holder) {
-            Player p = ((Player) event.getWhoClicked());
+        if (event.getInventory().getHolder() != null && event.getInventory().getHolder() instanceof GUIHolder) {
             GUIType t = ((GUIHolder) event.getInventory().getHolder()).getType();
             if (t.equals(GUIType.SLEEPING)) event.setCancelled(true);
         }

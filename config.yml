@@ -35,7 +35,7 @@ features:
   ignore: true
   # Prevent all players from entering a bed
   block: false
-  # Display a title in the morning and when going to bed
+  # Display a title message in the morning and when going to bed
   title: true
   # Displays a notification when a new update is released
   notifier: true
@@ -44,8 +44,11 @@ messages:
   chat:
     # Toggle chat messages
     chat: true
-    # "Night skipped" chat message
-    skipped: "&eThe night has been skipped."
+    # "Night skipped" chat messages
+    skipped: 
+      - "&eThe night has been skipped."
+      - "&eAhhh, finally morning."
+      - "&eArghh, it's so bright outside."
     # Display which player went to bed
     sleeping: "&e[player] is now sleeping ([sleeping]/[online]. [needed] more needed to skip)."
     # Display when a player left their bed

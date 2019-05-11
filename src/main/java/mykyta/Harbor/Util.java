@@ -2,6 +2,8 @@ package mykyta.Harbor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -88,7 +90,8 @@ public class Util {
      * @param world World to fetch count for
      */
     public int getSleeping(World w) {
-        return Math.max(0, Util.sleeping.get(w).size());
+        try {return Math.max(0, Util.sleeping.get(w).size());}
+        catch (NullPointerException e) {return 0;}
     }
 
     /**
@@ -197,7 +200,12 @@ public class Util {
             }
                 
             // Display messages
-            if (config.getBoolean("messages.chat.chat") && (config.getString("messages.chat.skipped").length() != 0)) Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.skipped")));
+            if (config.getBoolean("messages.chat.chat") && (config.getString("messages.chat.skipped").length() != 0)) {
+                List<String> msgs = config.getList("messages.chat.skipped");
+                Random r = new Random();
+                int n = r.nextInt(msgs.size());
+                Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', msgs.get(n)));
+            }
             if (config.getBoolean("features.title")) {
                 w.getPlayers().forEach(p -> {
                     this.sendTitle(p, config.getString("messages.title.morning.top"), config.getString("messages.title.morning.bottom"));

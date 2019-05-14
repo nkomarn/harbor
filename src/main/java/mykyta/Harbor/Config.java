@@ -33,14 +33,18 @@ public class Config {
      * Fetches a boolean from the configuration
      * @param location Configuration location of the boolean
      */
+    public String getVersion() {
+        try {return this.getString("version");}
+        catch (Exception e) {error(e); return "";}
+    }
+
+    /**
+     * Fetches a boolean from the configuration
+     * @param location Configuration location of the boolean
+     */
     public boolean getBoolean(String location) {
-        try {
-            return harbor.getConfig().getBoolean(location);
-        }
-        catch (Exception e) {
-            error(e);
-            return false;
-        }
+        try {return harbor.getConfig().getBoolean(location);}
+        catch (Exception e) {error(e); return false;}
     }
 
     /**
@@ -48,13 +52,8 @@ public class Config {
      * @param location Configuration location of the string
      */
     public String getString(String location) {
-        try {
-            return harbor.getConfig().getString(location);
-        }
-        catch (Exception e) {
-            error(e);
-            return "";
-        }
+        try {return harbor.getConfig().getString(location);}
+        catch (Exception e) {error(e); return "";}
     }
 
     /**
@@ -62,13 +61,8 @@ public class Config {
      * @param location Configuration location of the integer
      */
     public int getInteger(String location) {
-        try {
-            return harbor.getConfig().getInt(location);
-        }
-        catch (Exception e) {
-            error(e);
-            return 0;
-        }
+        try {return harbor.getConfig().getInt(location);}
+        catch (Exception e) {error(e); return 0;}
     }
 
     /**
@@ -76,13 +70,8 @@ public class Config {
      * @param location Configuration location of the double
      */
     public double getDouble(String location) {
-        try {
-            return Double.parseDouble(harbor.getConfig().getString(location));
-        }
-        catch (Exception e) {
-            error(e);
-            return 0.0;
-        }
+        try {return Double.parseDouble(harbor.getConfig().getString(location));}
+        catch (Exception e) {error(e); return 0.0;}
     }
 
     /**
@@ -90,12 +79,7 @@ public class Config {
      * @param location Configuration location of the double
      */
     public List<String> getList(String location) {
-        try {
-            return harbor.getConfig().getStringList(location);
-        }
-        catch (Exception e) {
-            error(e);
-            return new ArrayList<String>();
-        }
+        try {return harbor.getConfig().getStringList(location);}
+        catch (Exception e) {error(e); return new ArrayList<String>();}
     }
 }

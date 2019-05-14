@@ -13,7 +13,7 @@ public class Task implements Runnable {
     @Override
     public void run() {
         Bukkit.getServer().getWorlds().forEach(w -> {
-            if (w.getTime() >= 12516 && w.getTime() <= 12547) w.getPlayers().forEach(p -> {
+            if (w.getTime() >= 12516 && w.getTime() <= 12537 && config.getBoolean("features.title")) w.getPlayers().forEach(p -> {
                 util.sendTitle(p, config.getString("messages.title.evening.top"), config.getString("messages.title.evening.bottom"));
             });
             if (util.getSleeping(w) > 0 && util.getNeeded(w) == 0) {

@@ -28,7 +28,7 @@ public class Util {
     public static HashMap<Player, Long> activity = new HashMap<Player, Long>();
     public static ArrayList<Player> afk = new ArrayList<Player>();
 
-    public String version = "1.5";
+    public final String version = "1.5";
     public static boolean enabled = true;
     public static boolean debug = false;
     private static NMS nms;

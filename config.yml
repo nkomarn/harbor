@@ -101,6 +101,6 @@ gui:
   # Title for menu that shows when a player executes /sleeping
   sleeping: "Sleeping Players"
 
-# Version identifier (do not change)
+# Spooky controls (don't change)
 version: 1.5
 debug: true

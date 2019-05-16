@@ -100,7 +100,8 @@ public class Util {
      */
     public int getNeeded(World w) {
         //FIXME make sure to remove excluded players
-        return Math.max(0, (int) Math.ceil(w.getPlayers().size() * (config.getDouble("values.percent") / 100) - this.getSleeping(w)));
+        try {return Math.max(0, (int) Math.ceil(w.getPlayers().size() * (config.getDouble("values.percent") / 100) - this.getSleeping(w)));}
+        catch (NullPointerException e) {return 0;}
     }
 
     /**
@@ -108,7 +109,8 @@ public class Util {
      * @param world World to check player count for
      */
     public int getOnline(World w) {
-        return Math.max(0, w.getPlayers().size() - getExcluded(w).size());
+        try {return Math.max(0, w.getPlayers().size() - getExcluded(w).size());}
+        catch (NullPointerException e) {return 0;}
     }
 
     /**
@@ -212,5 +214,18 @@ public class Util {
                 });
             }
         }
+    }
+
+    /**
+     * Updates the current player activity (AFK system)
+     * @param p Player to update activity for
+     */
+    public void updateActivity(Player p) {
+        if (afk.contains(p)) {
+            afk.remove(p);
+            p.setPlayerListName(ChatColor.translateAlternateColorCodes('&', p.getName()));
+            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.unafk").replace("[player]", p.getName())));
+        }
+        activity.put(p, System.currentTimeMillis());
     }
 }

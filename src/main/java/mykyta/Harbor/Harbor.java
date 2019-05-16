@@ -10,6 +10,8 @@ import mykyta.Harbor.Commands.Command;
 import mykyta.Harbor.Commands.Sleeping;
 import mykyta.Harbor.Events.BedEnter;
 import mykyta.Harbor.Events.BedLeave;
+import mykyta.Harbor.Events.ChatEvent;
+import mykyta.Harbor.Events.CommandEvent;
 import mykyta.Harbor.Events.GUIEvent;
 import mykyta.Harbor.Events.Move;
 import mykyta.Harbor.Events.PlayerJoin;
@@ -31,6 +33,8 @@ public class Harbor extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new GUIEvent(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerJoin(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerLeave(), this);
+        Bukkit.getPluginManager().registerEvents(new CommandEvent(), this);
+        Bukkit.getPluginManager().registerEvents(new ChatEvent(), this);
         util.setupNMS();
 
         Bukkit.getServer().getWorlds().forEach(w -> {

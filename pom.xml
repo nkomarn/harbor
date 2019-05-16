@@ -19,6 +19,13 @@
 		</dependency>
 
 		<!-- Spigot versions -->
+		<dependency>
+			<groupId>spigotmc.org</groupId>
+			<artifactId>spigot-1.14.1</artifactId>
+			<scope>system</scope>
+			<systemPath>${spigot}/1.14.1.jar</systemPath>
+			<version>1.14.1</version>
+        </dependency>
         <dependency>
 			<groupId>spigotmc.org</groupId>
 			<artifactId>spigot-1.14</artifactId>
@@ -100,7 +107,7 @@
         </dependency>
     </dependencies>
     <build>
-		<directory>/home/nkomarn/Documents/Spigot Servers/1.14/plugins/</directory>
+		<directory>/home/nkomarn/Documents/Spigot Servers/1.14.1/plugins/</directory>
 		<sourceDirectory>${basedir}/src/</sourceDirectory>
 		<resources>
 			<resource>

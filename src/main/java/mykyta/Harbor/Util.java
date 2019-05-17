@@ -18,8 +18,9 @@ import mykyta.Harbor.NMS.NMS_1_12_R1;
 import mykyta.Harbor.NMS.NMS_1_13_R1;
 import mykyta.Harbor.NMS.NMS_1_13_R2;
 import mykyta.Harbor.NMS.NMS_1_14_R1;
-import mykyta.Harbor.NMS.NMS_1_7_R1;
 import mykyta.Harbor.NMS.NMS_1_8_R1;
+import mykyta.Harbor.NMS.NMS_1_8_R2;
+import mykyta.Harbor.NMS.NMS_1_8_R3;
 import mykyta.Harbor.NMS.NMS_1_9_R1;
 import mykyta.Harbor.NMS.NMS_1_9_R2;
 
@@ -47,10 +48,9 @@ public class Util {
             enabled = false;
         }
         if (debug) Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.miscellaneous.prefix") + config.getString("messages.miscellaneous.running").replace("[version]", version)));
-
-        if (version.equals("v1_7_R1")) {nms = new NMS_1_7_R1();}
-        else if (version.equals("v1_8_R1")) {nms = new NMS_1_8_R1();}
-        //TODO more 1.8 versions
+        if (version.equals("v1_8_R1")) {nms = new NMS_1_8_R1();}
+        else if (version.equals("v1_8_R2")) {nms = new NMS_1_8_R2();}
+        else if (version.equals("v1_8_R3")) {nms = new NMS_1_8_R3();}
         else if (version.equals("v1_9_R1")) {nms = new NMS_1_9_R1();}
         else if (version.equals("v1_9_R2")) {nms = new NMS_1_9_R2();}
         else if (version.equals("v1_10_R1")) {nms = new NMS_1_10_R1();}
@@ -99,8 +99,7 @@ public class Util {
      * @param world World to fetch count for
      */
     public int getNeeded(World w) {
-        //FIXME make sure to remove excluded players
-        try {return Math.max(0, (int) Math.ceil(w.getPlayers().size() * (config.getDouble("values.percent") / 100) - this.getSleeping(w)));}
+        try {return Math.max(0, (int) Math.ceil((w.getPlayers().size() - getExcluded(w).size()) * (config.getDouble("values.percent") / 100) - this.getSleeping(w)));}
         catch (NullPointerException e) {return 0;}
     }
 
@@ -192,7 +191,7 @@ public class Util {
      * @param World to return value for
      */
     public void skip(World w) {
-        if (config.getBoolean("features.skip") && this.getNeeded(w) - this.getExcluded(w).size() == 0) {
+        if (config.getBoolean("features.skip") && Math.max(0, this.getNeeded(w) - this.getExcluded(w).size()) == 0) {
             w.setTime(1000L);
             
             // Set weather to clear

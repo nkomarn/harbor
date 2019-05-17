@@ -1,21 +1,21 @@
 package mykyta.Harbor.NMS;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_7_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.inventivetalent.bossbar.BossBarAPI;
 
-import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraft.server.v1_7_R1.ChatSerializer;
-import net.minecraft.server.v1_7_R1.IChatBaseComponent;
-import net.minecraft.server.v1_7_R1.PacketPlayOutChat;
+import net.minecraft.server.v1_8_R3.IChatBaseComponent;
+import net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
+import net.minecraft.server.v1_8_R3.PacketPlayOutTitle;
+import net.minecraft.server.v1_8_R3.PacketPlayOutTitle.EnumTitleAction;
 
-public class NMS_1_7_R1 implements NMS {
+public class NMS_1_8_R3 implements NMS {
 	@Override
 	public void sendActionbar(Player player, String message) {
-		if (Bukkit.getServer().getPluginManager().getPlugin("BossBarAPI") == null) System.out.println("API missing");
-		else BossBarAPI.addBar(player, new TextComponent(ChatColor.translateAlternateColorCodes('&', message)), BossBarAPI.Color.RED, BossBarAPI.Style.PROGRESS, 1.0f, 20, 5); 
+		IChatBaseComponent titleComponent = ChatSerializer.a("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', message) + "\"}");
+	    PacketPlayOutChat titlePacket = new PacketPlayOutChat(titleComponent, (byte)2);
+		((CraftPlayer) player).getHandle().playerConnection.sendPacket(titlePacket);
 	}
 
 	@Override
@@ -27,12 +27,12 @@ public class NMS_1_7_R1 implements NMS {
 
 	@Override
 	public void sendTitle(Player player, String top, String bottom) {
-		/*IChatBaseComponent titleTop = ChatSerializer.a("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', top) + "\"}");
+		IChatBaseComponent titleTop = ChatSerializer.a("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', top) + "\"}");
 		IChatBaseComponent titleBottom = ChatSerializer.a("{\"text\": \"" + ChatColor.translateAlternateColorCodes('&', bottom) + "\"}");
 		PacketPlayOutTitle title = new PacketPlayOutTitle(EnumTitleAction.TITLE, titleTop);
 		PacketPlayOutTitle subtitle = new PacketPlayOutTitle(EnumTitleAction.SUBTITLE, titleBottom);
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(title);
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(subtitle);*/
+		((CraftPlayer) player).getHandle().playerConnection.sendPacket(subtitle);
 	}
 
 	@Override

@@ -32,6 +32,8 @@ public class Util {
     public final String version = "1.5";
     public static boolean enabled = true;
     public static boolean debug = false;
+    public static boolean unreleased = true;
+    public static boolean skipping = false;
     private static NMS nms;
     Config config = new Config();
 
@@ -100,6 +102,7 @@ public class Util {
      */
     public int getNeeded(World w) {
         try {return Math.max(0, (int) Math.ceil((w.getPlayers().size() - getExcluded(w).size()) * (config.getDouble("values.percent") / 100) - this.getSleeping(w)));}
+        //try {return Math.max(0, (int) Math.ceil((w.getPlayers().size()) * (config.getDouble("values.percent") / 100) - this.getSleeping(w)));}
         catch (NullPointerException e) {return 0;}
     }
 
@@ -129,7 +132,7 @@ public class Util {
      * @param player Target player
      */
     public boolean isExcluded(Player p) {
-        boolean state = true;
+        boolean state = false;
         if (config.getBoolean("features.ignore")) if (p.getGameMode() == GameMode.SURVIVAL) state = false; else state = true;
         if (config.getBoolean("features.bypass")) if (p.hasPermission("harbor.bypass")) state = true; else state = false;
         if (afk.contains(p)) state = true;
@@ -142,7 +145,7 @@ public class Util {
      * @param message Actionbar message with color codes
      */
     public void sendActionbar(Player player, String message) {
-        nms.sendActionbar(player, message);
+        if (config.getBoolean("messages.actionbar.actionbar")) nms.sendActionbar(player, message);
     }
 
     /**
@@ -153,7 +156,7 @@ public class Util {
      * @param world World to fetch information for
      */
     public void sendActionbar(Player p, String message, World w) {
-        nms.sendActionbar(p, message
+        if (config.getBoolean("messages.actionbar.actionbar")) nms.sendActionbar(p, message
         .replace("[sleeping]", String.valueOf(this.getSleeping(w)))
         .replace("[online]", String.valueOf(this.getOnline(w)))
         .replace("[needed]", String.valueOf(this.getNeeded(w))));
@@ -192,26 +195,37 @@ public class Util {
      */
     public void skip(World w) {
         if (config.getBoolean("features.skip") && Math.max(0, this.getNeeded(w) - this.getExcluded(w).size()) == 0) {
-            w.setTime(1000L);
+            skipping = true;
+
+            new java.util.Timer().schedule ( 
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        w.setTime(1000L);
             
-            // Set weather to clear
-            if (config.getBoolean("features.weather")) {
-                w.setStorm(false);
-                w.setThundering(false);
-            }
-                
-            // Display messages
-            if (config.getBoolean("messages.chat.chat") && (config.getString("messages.chat.skipped").length() != 0)) {
-                List<String> msgs = config.getList("messages.chat.skipped");
-                Random r = new Random();
-                int n = r.nextInt(msgs.size());
-                Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', msgs.get(n)));
-            }
-            if (config.getBoolean("features.title")) {
-                w.getPlayers().forEach(p -> {
-                    this.sendTitle(p, config.getString("messages.title.morning.top"), config.getString("messages.title.morning.bottom"));
-                });
-            }
+                        // Set weather to clear
+                        if (config.getBoolean("features.weather")) {
+                            w.setStorm(false);
+                            w.setThundering(false);
+                        }
+                            
+                        // Display messages
+                        if (config.getBoolean("messages.chat.chat") && (config.getString("messages.chat.skipped").length() != 0)) {
+                            List<String> msgs = config.getList("messages.chat.skipped");
+                            Random r = new Random();
+                            int n = r.nextInt(msgs.size());
+                            Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', msgs.get(n)));
+                        }
+                        if (config.getBoolean("messages.title.title")) {
+                            w.getPlayers().forEach(p -> {
+                                sendTitle(p, config.getString("messages.title.morning.top"), config.getString("messages.title.morning.bottom"));
+                            });
+                        }
+                        skipping = false;
+                    }
+                }, 
+                1000 * config.getInteger("values.delay") 
+            );
         }
     }
 
@@ -223,7 +237,7 @@ public class Util {
         if (afk.contains(p)) {
             afk.remove(p);
             p.setPlayerListName(ChatColor.translateAlternateColorCodes('&', p.getName()));
-            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.unafk").replace("[player]", p.getName())));
+            if (config.getString("messages.chat.unafk").length() > 0) Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.unafk").replace("[player]", p.getName())));
         }
         activity.put(p, System.currentTimeMillis());
     }

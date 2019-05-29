@@ -14,19 +14,19 @@ public class GUIEvent implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent event) {
+        util.updateActivity((Player) event.getWhoClicked());
         if (event.getInventory().getHolder() != null && event.getInventory().getHolder() instanceof GUIHolder) {
             GUIType t = ((GUIHolder) event.getInventory().getHolder()).getType();
             if (t.equals(GUIType.SLEEPING)) event.setCancelled(true);
         }
-        util.updateActivity((Player) event.getWhoClicked());
     }
 
     @EventHandler
     public void onDrag(InventoryDragEvent event) {
+        util.updateActivity((Player) event.getWhoClicked());
         if (event.getInventory().getHolder() != null && event.getInventory().getHolder() instanceof GUIHolder) {
             GUIType t = ((GUIHolder) event.getInventory().getHolder()).getType();
             if (t.equals(GUIType.SLEEPING)) event.setCancelled(true);
         }
-        util.updateActivity((Player) event.getWhoClicked());
     }
 }

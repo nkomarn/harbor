@@ -53,7 +53,7 @@ public class Updater {
                 return false;
             }
             else if (!releases.contains(util.version)) {
-                if (config.getBoolean("features.notifier")) c.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.miscellaneous.prefix")) + "You have a version of Harbor that is newer than the latest available version. Great work!");
+                if (config.getBoolean("features.notifier")) c.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.miscellaneous.prefix")) + "Running an unreleased version of Harbor.");
                 return false;
             }
             else {

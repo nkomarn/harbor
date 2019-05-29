@@ -19,7 +19,7 @@ public class PlayerLeave implements Listener {
             new java.util.TimerTask() {
                 @Override
                 public void run() {
-                    if (w.getPlayers().size() > 0 && Math.max(0, util.getNeeded(w) - util.getExcluded(w).size()) == 0) util.skip(w);
+                    if (w.getPlayers().size() > 0 && Math.max(0, util.getNeeded(w) - util.getExcluded(w).size()) == 0 && !Util.skipping) util.skip(w);
                     Util.activity.remove(p);
                 }
             }, 

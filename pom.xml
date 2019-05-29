@@ -121,7 +121,7 @@
         </dependency>
     </dependencies>
     <build>
-		<directory>/home/nkomarn/Documents/Spigot Servers/1.14.1/plugins/</directory>
+		<directory>/home/nkomarn/Documents/Spigot Servers/1.14.2/plugins/</directory>
 		<sourceDirectory>${basedir}/src/</sourceDirectory>
 		<resources>
 			<resource>

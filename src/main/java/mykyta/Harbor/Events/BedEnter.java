@@ -54,12 +54,12 @@ public class BedEnter implements Listener {
                     .replace("[player]", p.getName())
                     .replace("[needed]", String.valueOf(util.getNeeded(w))));
                 }
-                if (config.getBoolean("features.title")) {
+                if (config.getBoolean("messages.title.title")) {
                     util.sendTitle(p, config.getString("messages.title.sleeping.top"), config.getString("messages.title.sleeping.bottom"));
                 }
 
                 // Skip night if possible
-                util.skip(w);
+                if (!Util.skipping) util.skip(w);
             }
             else if (config.getString("messages.chat.bypass").length() != 0) p.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.bypass")));
         }

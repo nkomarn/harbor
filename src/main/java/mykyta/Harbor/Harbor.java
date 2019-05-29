@@ -53,6 +53,8 @@ public class Harbor extends JavaPlugin {
             Updater updater = new Updater();
             updater.check();
         }
+        if (Util.unreleased) Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', this.getConfig().getString("messages.miscellaneous.prefix") + "&cThis Harbor version is a prerelease. Not everything is guaranteed to work correctly, but the plugin should at least be stable. "
+            + "If you encounter an issue, please create an issue on GitHub: &c&ohttps://github.com/nkomarn/Harbor/issues&c."));
     }
 
     public void onDisable() {

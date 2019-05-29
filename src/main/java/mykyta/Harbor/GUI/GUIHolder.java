@@ -13,7 +13,7 @@ public class GUIHolder implements InventoryHolder {
 
     @Override
     public Inventory getInventory() {
-        return inv; // Required by InvetoryHolder
+        return inv; // Required by InventoryHolder
     }
 
     public GUIType getType() {

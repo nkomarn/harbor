@@ -18,9 +18,11 @@ values:
   # Lower this value for relatively slow servers
   clock: 1
   # Percent of players that need to sleep to skip night (must be between 0 to 100)
-  percent: 50
+  percent: 35
   # Time that it takes to be considered AFK (in minutes)
-  timeout: 10
+  timeout: 15
+  # Time to wait before skipping the night (in seconds)
+  delay: 3
 
 features: 
   # Toggle night skipping feature. Configure amount of players needed to skip above (percent)
@@ -30,13 +32,13 @@ features:
   # Toggle the spawning of phantoms
   phantoms: false
   # Toggle exclusion of operators/players with permission "harbor.bypass" from sleep count
-  bypass: false
+  bypass: true
   # Toggle exclusion of players in creative and spectator mode
   ignore: true
   # Prevent all players from entering a bed
   block: false
-  # Display a title message in the morning and when going to bed
-  title: true
+  # Detect AFK players and remove them from the sleep count
+  afk: true
   # Displays a notification when a new update is released
   notifier: true
 
@@ -50,13 +52,13 @@ messages:
       - "&eAhhh, finally morning."
       - "&eArghh, it's so bright outside."
     # Display which player went to bed
-    sleeping: "&e[player] is now sleeping ([sleeping]/[online]. [needed] more needed to skip)."
+    sleeping: "&e[player] is now sleeping ([sleeping]/[online], [needed] more needed to skip)."
     # Display when a player left their bed
-    left: "&e[player] got out of bed ([sleeping]/[online]. [needed] more needed to skip)."
+    left: "&e[player] got out of bed ([sleeping]/[online], [needed] more needed to skip)."
     # Shown when a player tries to sleep and sleeping is blocked
     blocked: "&cSleeping is disabled."
     # Sent to player when they sleep with "harbor.bypass" permission
-    bypass: "&eYou've been excluded from the sleep count."
+    bypass: "&eYou're excluded from the needed count. However, you have been added to the sleep count."
     # Shown when a player goes AFK
     afk: "&7[player] has gone AFK."
     # Shown when a player comes back after being AFK
@@ -71,6 +73,8 @@ messages:
     # Shown when a player tries to sleep and sleeping is blocked
     blocked: "&cSleeping is disabled."
   title:
+    # Enable/Disable title messages
+    title: true
     morning:
       top: "&6Good morning!"
       bottom: "&7Ah, such wonderful weather."
@@ -103,4 +107,4 @@ gui:
 
 # Spooky controls (don't change)
 version: 1.5
-debug: true
+debug: false

@@ -25,17 +25,17 @@ public class NMSUtils {
             Harbor.enabled = false;
         }
         if (Harbor.debug) Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', c.getString("messages.miscellaneous.prefix") + c.getString("messages.miscellaneous.running").replace("[version]", v)));
-        if (v.equals("v1_8_R1")) {nms = new NMS_1_8_R1();}
-        else if (v.equals("v1_8_R2")) {nms = new NMS_1_8_R2();}
-        else if (v.equals("v1_8_R3")) {nms = new NMS_1_8_R3();}
-        else if (v.equals("v1_9_R1")) {nms = new NMS_1_9_R1();}
-        else if (v.equals("v1_9_R2")) {nms = new NMS_1_9_R2();}
-        else if (v.equals("v1_10_R1")) {nms = new NMS_1_10_R1();}
-        else if (v.equals("v1_11_R1")) {nms = new NMS_1_11_R1();}
-        else if (v.equals("v1_12_R1")) {nms = new NMS_1_12_R1();}
-        else if (v.equals("v1_13_R1")) {nms = new NMS_1_13_R1();}
-        else if (v.equals("v1_13_R2")) {nms = new NMS_1_13_R2();}
-        else if (v.equals("v1_14_R1")) {nms = new NMS_1_14_R1();}
+        if (v.equals("v1_8_R1")) {nms = new NMS_1_8_R1(); Harbor.enabled = true;}
+        else if (v.equals("v1_8_R2")) {nms = new NMS_1_8_R2(); Harbor.enabled = true;}
+        else if (v.equals("v1_8_R3")) {nms = new NMS_1_8_R3(); Harbor.enabled = true;}
+        else if (v.equals("v1_9_R1")) {nms = new NMS_1_9_R1(); Harbor.enabled = true;}
+        else if (v.equals("v1_9_R2")) {nms = new NMS_1_9_R2(); Harbor.enabled = true;}
+        else if (v.equals("v1_10_R1")) {nms = new NMS_1_10_R1(); Harbor.enabled = true;}
+        else if (v.equals("v1_11_R1")) {nms = new NMS_1_11_R1(); Harbor.enabled = true;}
+        else if (v.equals("v1_12_R1")) {nms = new NMS_1_12_R1(); Harbor.enabled = true;}
+        else if (v.equals("v1_13_R1")) {nms = new NMS_1_13_R1(); Harbor.enabled = true;}
+        else if (v.equals("v1_13_R2")) {nms = new NMS_1_13_R2(); Harbor.enabled = true;}
+        else if (v.equals("v1_14_R1")) {nms = new NMS_1_14_R1(); Harbor.enabled = true;}
         else {
             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', c.getString("messages.miscellaneous.prefix") + "This version of Harbor is incompatible with your server version. As such, Harbor will be disabled."));
             Bukkit.getPluginManager().disablePlugin(Harbor.instance);

@@ -18,14 +18,16 @@ public class Timer implements Runnable {
     public void run() {
         try {
             Bukkit.getServer().getWorlds().forEach(w -> {
+                if (n.getSleeping(w) > 0 && n.getNeeded(w) != 0) {
+                    w.getPlayers().forEach(p -> nms.sendActionbar(p, c.getString("messages.actionbar.sleeping"), w));
+                }
+                else if (n.getSleeping(w) > 0 && n.getNeeded(w) == 0) {
+                    w.getPlayers().forEach(p -> nms.sendActionbar(p, c.getString("messages.actionbar.everyone"), w));
+                }
+
                 if (w.getTime() >= 12516 && w.getTime() <= 12535 && c.getBoolean("messages.title.title"))
                     w.getPlayers().forEach(p -> nms.sendTitle(p, c.getString("messages.title.evening.top"), c.getString("messages.title.evening.bottom")));
                 if (n.getSleeping(w) > 0 && n.getNeeded(w) == 0) n.skip(w);
-
-                if (n.getSleeping(w) > 0 && n.getSleeping(w) < n.getNeeded(w))
-                    w.getPlayers().forEach(p -> nms.sendActionbar(p, c.getString("messages.actionbar.sleeping"), w));
-                else if (n.getSleeping(w) == n.getNeeded(w) && n.getSleeping(w) > 0)
-                    w.getPlayers().forEach(p -> nms.sendActionbar(p, c.getString("messages.actionbar.everyone"), w));
 
                 if (c.getBoolean("features.afk")) w.getPlayers().forEach(p -> {
                     if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - Counters.activity.get(p)) >= c.getInteger("values.timeout")) {

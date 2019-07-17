@@ -104,5 +104,5 @@ gui:
   sleeping: "Sleeping Players | Page [page]"
 
 # Spooky controls (don't change)
-version: 1.5.1
+version: 1.5.2
 debug: false

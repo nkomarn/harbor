@@ -61,7 +61,7 @@ public class Counters {
         return a;
     }
 
-    public boolean isExcluded(Player p) {
+    private boolean isExcluded(Player p) {
         boolean s = false;
         if (c.getBoolean("features.ignore")) if (p.getGameMode() == GameMode.SURVIVAL) s = false; else s = true;
         if (c.getBoolean("features.bypass")) if (p.hasPermission("harbor.bypass")) s = true; else s = false;
@@ -73,10 +73,12 @@ public class Counters {
         if (c.getBoolean("features.skip") && Math.max(0, this.getNeeded(w) - this.getExcluded(w).size()) == 0) {
             w.setTime(1000L);
 
-            // Set weather to clear TODO ASYNC NO BAD DON'T ASYNC CAUSE 1.14 API CHANGE BAD
+            // Synchronously set weather to clear
             if (c.getBoolean("features.weather")) {
-                w.setStorm(false);
-                w.setThundering(false);
+                Bukkit.getScheduler().runTask(Harbor.instance, () -> {
+                    w.setStorm(false);
+                    w.setThundering(false);
+                });
             }
 
             // Display messages

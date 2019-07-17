@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 
 public class Harbor extends JavaPlugin {
     public static Harbor instance;
-    public static String version = "1.5.1";
+    public static String version = "1.5.2";
     public static boolean debug = false;
     public static boolean enabled = false;
     public static boolean prerelease = false;
@@ -50,7 +50,9 @@ public class Harbor extends JavaPlugin {
             });
         });
 
-        if (enabled) Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Timer(), 0L, config.getInteger("values.clock") * 20);
+        int interval = config.getInteger("values.clock");
+        if (enabled) Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this,
+                new Timer(), 0L, interval * 20);
         if (getConfig().getBoolean("debug")) debug = true;
         if (enabled && this.getConfig().getBoolean("features.notifier")) {
             if (debug) Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&',
@@ -65,6 +67,6 @@ public class Harbor extends JavaPlugin {
     }
 
     public void onDisable() {
-        
+        // Nothing lol
     }
 }

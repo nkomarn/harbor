@@ -1,4 +1,7 @@
-/bin/
-spigot
-.vscode
-target
+.vscode/
+.settings/
+.idea/
+target/
+jars/
+.classpath
+.idea/

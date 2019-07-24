@@ -25,9 +25,14 @@ public class Timer implements Runnable {
                     w.getPlayers().forEach(p -> nms.sendActionbar(p, c.getString("messages.actionbar.everyone"), w));
                 }
 
+                // Title for when you are able to sleep
                 if (w.getTime() >= 12516 && w.getTime() <= 12535 && c.getBoolean("messages.title.title"))
                     w.getPlayers().forEach(p -> nms.sendTitle(p, c.getString("messages.title.evening.top"), c.getString("messages.title.evening.bottom")));
-                if (n.getSleeping(w) > 0 && n.getNeeded(w) == 0) n.skip(w);
+
+                // Skip night
+                if (n.getSleeping(w) > 1 && n.getNeeded(w) == 0) {
+                    n.skip(w);
+                }
 
                 if (c.getBoolean("features.afk")) w.getPlayers().forEach(p -> {
                     if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - Counters.activity.get(p)) >= c.getInteger("values.timeout")) {

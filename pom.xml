@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>xyz.nkomarn</groupId>
   <artifactId>Harbor</artifactId>
-  <version>1.5.2</version>
+  <version>1.5.3</version>
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -17,6 +17,11 @@
   </repositories>
   
   <dependencies>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.6</version>
+    </dependency>
     <dependency>
       <groupId>spigotmc.org</groupId>
       <artifactId>spigot-1.14.1</artifactId>
@@ -109,7 +114,7 @@
       <version>1.7.2</version>
     </dependency>
   </dependencies>
-  
+
   <build>
     <directory>target</directory>
     <resources>
@@ -119,9 +124,41 @@
         <includes>
           <include>plugin.yml</include>
           <include>config.yml</include>
+          <include>application.properties</include>
         </includes>
       </resource>
     </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <shadedArtifactAttached>true</shadedArtifactAttached>
+          <shadedClassifierName></shadedClassifierName>
+          <relocations>
+            <relocation>
+              <pattern>org.bstats</pattern>
+              <shadedPattern>xyz.nkomarn.SeedDonor.SeedDonor</shadedPattern>
+            </relocation>
+          </relocations>
+          <artifactSet>
+            <excludes>
+              <exclude>spigotmc.org:*</exclude>
+              <exclude>net.milkbowl.vault*</exclude>
+            </excludes>
+          </artifactSet>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
     <pluginManagement>
       <plugins>
         <plugin>

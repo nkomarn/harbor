@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 
 public class Harbor extends JavaPlugin {
     public static Harbor instance;
-    public static String version = "1.5.2";
+    public static String version = "1.5.3";
     public static boolean debug = false;
     public static boolean enabled = false;
     public static boolean prerelease = false;

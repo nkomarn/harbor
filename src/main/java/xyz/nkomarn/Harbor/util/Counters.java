@@ -22,7 +22,12 @@ public class Counters {
     private NMSUtils nms = new NMSUtils();
 
     public void add(World w, Player p) {
-        ArrayList<Player> a = sleeping.get(w);
+        ArrayList<Player> a;
+        try {
+            a = sleeping.get(w);
+        } catch (NullPointerException e) {
+            a = new ArrayList<>();
+        }
         a.add(p);
         sleeping.put(w, a);
     }
@@ -70,7 +75,7 @@ public class Counters {
     }
 
     public void skip(World w) {
-        if (c.getBoolean("features.skip") && Math.max(0, this.getNeeded(w) - this.getExcluded(w).size()) == 0) {
+        if (c.getBoolean("features.skip") && Math.max(0, this.getNeeded(w)) == 0) {
             w.setTime(1000L);
 
             // Synchronously set weather to clear

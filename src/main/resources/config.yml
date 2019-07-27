@@ -21,6 +21,8 @@ values:
   percent: 35
   # Time that it takes to be considered AFK (in minutes)
   timeout: 15
+  # Time to wait before skipping the night (in seconds)
+  delay:
 
 features:
   # Toggle night skipping feature. Configure amount of players needed to skip above (percent)

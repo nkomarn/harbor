@@ -74,6 +74,13 @@ public class Counters {
         return s;
     }
 
+    public void delayedSkip(World w) {
+        Bukkit.getScheduler().runTaskLater(Harbor.instance,
+                () -> skip(w),
+                c.getInteger("values.delay") * 20
+        );
+    }
+
     public void skip(World w) {
         if (c.getBoolean("features.skip") && Math.max(0, this.getNeeded(w)) == 0) {
             w.setTime(1000L);

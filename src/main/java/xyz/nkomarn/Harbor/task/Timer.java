@@ -31,7 +31,7 @@ public class Timer implements Runnable {
 
                 // Skip night
                 if (n.getSleeping(w) > 1 && n.getNeeded(w) == 0) {
-                    n.skip(w);
+                    n.delayedSkip(w);
                 }
 
                 if (c.getBoolean("features.afk")) w.getPlayers().forEach(p -> {

@@ -66,7 +66,7 @@ public class PlayerEvent implements Listener {
                     nms.sendTitle(p, config.getString("messages.title.sleeping.top"),
                             config.getString("messages.title.sleeping.bottom"));
                 }
-                counters.skip(w);
+                counters.delayedSkip(w);
             }
             else if (config.getString("messages.chat.bypass").length() != 0)
                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.chat.bypass")));

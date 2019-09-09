@@ -16,7 +16,7 @@
 values:
   # How often to run the clock task (used to detect sleep, AFK players, time actionbar, etc.)
   # Lower this value for relatively slow servers
-  clock: 1
+  check: 2
   # Percent of players that need to sleep to skip night (must be between 0 to 100)
   percent: 35
   # Time that it takes to be considered AFK (in minutes)
@@ -70,18 +70,6 @@ messages:
     everyone: "&eEveryone is sleeping. Sweet dreams!"
     # Shown when a player tries to sleep and sleeping is blocked
     blocked: "&cSleeping is disabled."
-  title:
-    # Enable/Disable title messages
-    title: true
-    morning:
-      top: "&6Good morning!"
-      bottom: "&7Ah, such wonderful weather."
-    evening:
-      top: "&cIt's getting a bit late."
-      bottom: "&7Might want to hit the hay..."
-    sleeping:
-      top: "&8ZZZZZZ..."
-      bottom: "&7Sweet dreams."
   miscellaneous:
     # Prefix for Harbor command/miscellaneous messages
     prefix: "&8&l(&6&lHarbor&8&l)&r "
@@ -98,6 +86,10 @@ messages:
     permission: "&7Insufficient permissions."
     # Sent when command argument isn't recognized
     unrecognized: "&7Urecognized command."
+
+blacklist:
+  - "world_nether"
+  - "world_the_end"
 
 gui:
   # Title for menu that shows when a player executes /sleeping

@@ -1,7 +1,8 @@
-.vscode/
-.settings/
-.idea/
-target/
-jars/
-.classpath
-.idea/
+/bin
+/.classpath
+/.project
+/.settings
+/.idea
+*.iml
+/target
+dependency-reduced-pom.xml

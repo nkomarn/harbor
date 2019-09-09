@@ -3,115 +3,27 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>xyz.nkomarn</groupId>
   <artifactId>Harbor</artifactId>
-  <version>1.5.3</version>
-  
+  <version>1.5.4</version>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <jars>${project.basedir}/jars</jars>
   </properties>
-  
-  <repositories>
 
+  <repositories>
+    <repository>
+      <id>spigotmc-repo</id>
+      <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+    </repository>
   </repositories>
-  
+
   <dependencies>
     <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>2.6</version>
-    </dependency>
-    <dependency>
-      <groupId>spigotmc.org</groupId>
-      <artifactId>spigot-1.14.1</artifactId>
-      <scope>system</scope>
-      <systemPath>${jars}/1.14.1.jar</systemPath>
-      <version>1.14.1</version>
-    </dependency>
-    <dependency>
-      <groupId>spigotmc.org</groupId>
-      <artifactId>spigot-1.14</artifactId>
-      <scope>system</scope>
-      <systemPath>${jars}/1.14.jar</systemPath>
-      <version>1.14</version>
-    </dependency>
-    <dependency>
-      <groupId>spigotmc.org</groupId>
-      <artifactId>spigot-1.13.2</artifactId>
-      <scope>system</scope>
-      <systemPath>${jars}/1.13.2.jar</systemPath>
-      <version>1.13.2</version>
-    </dependency>
-    <dependency>
-      <groupId>spigotmc.org</groupId>
-      <artifactId>spigot-1.13</artifactId>
-      <scope>system</scope>
-      <systemPath>${jars}/1.13.jar</systemPath>
-      <version>1.13</version>
-    </dependency>
-    <dependency>
-      <groupId>spigotmc.org</groupId>
-      <artifactId>spigot-1.12.2</artifactId>
-      <scope>system</scope>
-      <systemPath>${jars}/1.12.2.jar</systemPath>
-      <version>1.12.2</version>
-    </dependency>
-    <dependency>
-      <groupId>spigotmc.org</groupId>
-      <artifactId>spigot-1.11.2</artifactId>
-      <scope>system</scope>
-      <systemPath>${jars}/1.11.2.jar</systemPath>
-      <version>1.11.2</version>
-    </dependency>
-    <dependency>
-      <groupId>spigotmc.org</groupId>
-      <artifactId>spigot-1.10.2</artifactId>
-      <scope>system</scope>
-      <systemPath>${jars}/1.10.2.jar</systemPath>
-      <version>1.10.2</version>
-    </dependency>
-    <dependency>
-      <groupId>spigotmc.org</groupId>
-      <artifactId>spigot-1.9.4</artifactId>
-      <scope>system</scope>
-      <systemPath>${jars}/1.9.4.jar</systemPath>
-      <version>1.9.4</version>
-    </dependency>
-    <dependency>
-      <groupId>spigotmc.org</groupId>
-      <artifactId>spigot-1.9.2</artifactId>
-      <scope>system</scope>
-      <systemPath>${jars}/1.9.2.jar</systemPath>
-      <version>1.9.2</version>
-    </dependency>
-    <dependency>
-      <groupId>spigotmc.org</groupId>
-      <artifactId>spigot-1.8.8</artifactId>
-      <scope>system</scope>
-      <systemPath>${jars}/1.8.8.jar</systemPath>
-      <version>1.8.8</version>
-    </dependency>
-    <dependency>
-      <groupId>spigotmc.org</groupId>
-      <artifactId>spigot-1.8.3</artifactId>
-      <scope>system</scope>
-      <systemPath>${jars}/1.8.3.jar</systemPath>
-      <version>1.8.3</version>
-    </dependency>
-    <dependency>
-      <groupId>spigotmc.org</groupId>
-      <artifactId>spigot-1.8</artifactId>
-      <scope>system</scope>
-      <systemPath>${jars}/1.8.jar</systemPath>
-      <version>1.8</version>
-    </dependency>
-    <dependency>
-      <groupId>spigotmc.org</groupId>
-      <artifactId>spigot-1.7.2</artifactId>
-      <scope>system</scope>
-      <systemPath>${jars}/1.7.2.jar</systemPath>
-      <version>1.7.2</version>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>spigot-api</artifactId>
+      <version>1.14.4-R0.1-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
@@ -124,41 +36,9 @@
         <includes>
           <include>plugin.yml</include>
           <include>config.yml</include>
-          <include>application.properties</include>
         </includes>
       </resource>
     </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>3.1.0</version>
-        <configuration>
-          <shadedArtifactAttached>true</shadedArtifactAttached>
-          <shadedClassifierName></shadedClassifierName>
-          <relocations>
-            <relocation>
-              <pattern>org.bstats</pattern>
-              <shadedPattern>xyz.nkomarn.SeedDonor.SeedDonor</shadedPattern>
-            </relocation>
-          </relocations>
-          <artifactSet>
-            <excludes>
-              <exclude>spigotmc.org:*</exclude>
-              <exclude>net.milkbowl.vault*</exclude>
-            </excludes>
-          </artifactSet>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
     <pluginManagement>
       <plugins>
         <plugin>

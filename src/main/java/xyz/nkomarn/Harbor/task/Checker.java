@@ -10,6 +10,8 @@ import xyz.nkomarn.Harbor.util.Config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Checker implements Runnable {
 
@@ -31,15 +33,12 @@ public class Checker implements Runnable {
             // Send actionbar notification
             if (getSleeping(world).size() > 0 && getNeeded(world) > 0) {
                 for (Player player : world.getPlayers()) {
-                    sendActionBar(player, Config.getString("messages.actionbar.sleeping")
-                        .replace("[sleeping]", String.valueOf(sleeping))
-                        .replace("[online]", String.valueOf(world.getPlayers().size()))
-                        .replace("[needed]", String.valueOf(needed)));
+                    sendActionBar(player, Config.getString("messages.actionbar.sleeping"));
                 }
             }
 
             // Check if world is applicable for skipping
-            if (getNeeded(world) == 0 && getSleeping(world).size() > 0) {
+            if (Config.getBoolean("features.skip") && getNeeded(world) == 0 && getSleeping(world).size() > 0) {
 
                 // Rapidly accelerate time until it's day
                 skippingWorlds.add(world);
@@ -50,8 +49,14 @@ public class Checker implements Runnable {
     }
 
     private void sendActionBar(Player player, String message) {
+        World world = player.getWorld();
+
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(
-                ChatColor.translateAlternateColorCodes('&', message)));
+                ChatColor.translateAlternateColorCodes('&', message
+                    .replace("[sleeping]", String.valueOf(getSleeping(world)))
+                    .replace("[players]", String.valueOf(world.getPlayers().size()))
+                    .replace("[needed]", String.valueOf(getSkipAmount(world)))
+                    .replace("[more]", String.valueOf(getNeeded(world))))));
     }
 
     private List<Player> getSleeping(World world) {
@@ -62,15 +67,19 @@ public class Checker implements Runnable {
         return sleeping;
     }
 
+    private int getSkipAmount(World world) {
+        return (int) (getPlayers(world) * (Config.getDouble("values.percent") / 100));
+    }
+
+    private int getPlayers(World world) {
+        return Math.max(0, world.getPlayers().size() - getExcluded(world).size());
+    }
+
+
     private int getNeeded(World world) {
-        try {
-            return Math.max(0, (int) Math.ceil((world.getPlayers().size()
-                    - getExcluded(world).size()) * (Config.getDouble("values.percent") / 100)
-                    - getSleeping(world).size()));}
-        catch (NullPointerException e) {
-            if (Harbor.debug) e.printStackTrace();
-            return 0;
-        }
+        return Math.max(0, (int) Math.ceil((getPlayers(world))
+            * (Config.getDouble("values.percent") / 100)
+            - getSleeping(world).size()));
     }
 
     private ArrayList<Player> getExcluded(World w) {
@@ -94,6 +103,19 @@ public class Checker implements Runnable {
         return s;
     }
 
+    private String randomMessage(String list) {
+        List<String> messages = Config.getList(list);
+        Random random = new Random();
+        int index = random.nextInt(messages.size());
+        return ChatColor.translateAlternateColorCodes('&', messages.get(index));
+    }
+
+    private void sendChatMessage(String message) {
+        if (!Config.getBoolean("messages.chat.chat")) return;
+        if (message.length() < 1) return;
+        Bukkit.broadcastMessage(message);
+    }
+
     private void accelerateNight(World world) {
         Bukkit.broadcastMessage("Harbor - Accelerating time.");
 
@@ -106,14 +128,22 @@ public class Checker implements Runnable {
                     world.setTime(time + 60);
                 }
                 else {
-                    Bukkit.broadcastMessage("Harbor - Stopped time change (" + time + ").");
+
+                    // Announce night skip and clear queue
+                    sendChatMessage("messages.chat.skipped");
                     skippingWorlds.remove(world);
 
-                    // Reset sleep statistic if phantoms are disabled TODO move out of here
+                    // Reset sleep statistic if phantoms are disabled
                     if (!Config.getBoolean("features.phantoms")) {
                         for (Player player : world.getPlayers()) {
                             player.setStatistic(Statistic.TIME_SINCE_REST, 0);
                         }
+                    }
+
+                    // Clear weather
+                    if (Config.getBoolean("features.weather")) {
+                        world.setStorm(false);
+                        world.setThundering(false);
                     }
 
                     this.cancel();

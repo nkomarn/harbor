@@ -12,7 +12,6 @@ public class Harbor extends JavaPlugin {
 
     public static Harbor instance;
     public static String version = "1.6";
-    public static boolean debug = false;
     public static Essentials essentials;
 
     public void onEnable() {

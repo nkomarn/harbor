@@ -12,7 +12,7 @@ public class Config {
      * @param e Exception generated from reading configuration
      */
     private static void error(Exception e) {
-        if (Harbor.debug) e.printStackTrace();
+        e.printStackTrace();
     }
 
     /**
@@ -24,7 +24,8 @@ public class Config {
             return Harbor.instance.getConfig().getBoolean(location);
         }
         catch (Exception e) {
-            error(e); return false;
+            error(e);
+            return false;
         }
     }
 

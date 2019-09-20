@@ -1,9 +1,4 @@
-#                   _
-#   /\  /\__ _ _ __| |__   ___  _ __
-#  / /_/ / _` | '__| '_ \ / _ \| '__|
-# / __  / (_| | |  | |_) | (_) | |
-# \/ /_/ \__,_|_|  |_.__/ \___/|_|
-#
+# Harbor - A Sleep Enhancement Plugin!
 # An open-source project by Mykyta (TechToolbox)
 # https://harbor.nkomarn.xyz
 #
@@ -14,71 +9,43 @@
 # GitHub URL: https://github.com/nkomarn/Harbor/issues
 
 values:
-  # How often to run the clock task (used to detect sleep, AFK players, time actionbar, etc.)
-  # Lower this value for relatively slow servers
-  timer: 2
-  # Percent of players that need to sleep to skip night (must be between 0 to 100)
-  percent: 100
+  timer: 2 # How often to run the clock task (used to detect sleep, AFK players, time actionbar, etc.)
+  percent: 100 # Percent of players that need to sleep to skip night (must be between 0 to 100)
 
 features:
-  # Toggle night skipping feature. Configure amount of players needed to skip above (percent)
-  skip: true
-  # Clear weather when skipping night
-  weather: true
-  # Reset the sleep statistic (practically disables phantom spawns - false = no phantoms)
-  phantoms: false
-  # Toggle exclusion of operators/players with permission "harbor.bypass" from sleep count
-  bypass: true
-  # Toggle exclusion of players in creative and spectator mode
-  ignore: true
-  # Detect AFK players and remove them from the sleep count (Essentials/API used for detection)
-  afk: true
-  # Displays a notification when a new update is released
-  notifier: true
+  skip: true # Toggle night skipping feature. Configure amount of players needed to skip above (percent)
+  weather: true # Clear weather when skipping night
+  phantoms: false # Reset the sleep statistic (practically disables phantom spawns - false = no phantoms)
+  bypass: true  # Toggle exclusion of operators/players with permission "harbor.bypass" from sleep count
+  ignore: true  # Toggle exclusion of players in creative and spectator mode
+  afk: true # Detect AFK players and remove them from the sleep count (Essentials/API used for detection)
+  notifier: true # Displays a notification when a new update is released
 
 messages:
   chat:
-    # Toggle chat messages
-    chat: true
-    # "Night skipped" chat messages
-    skipped:
+    chat: true # Toggle chat messages
+    skipped: # Night skipped chat messages
       - "&eThe night has been skipped."
       - "&eAhhh, finally morning."
       - "&eArghh, it's so bright outside."
-    # Display which player went to bed
-    sleeping: "&e[player] is now sleeping ([sleeping]/[online], [needed] more needed to skip)."
-    # Display when a player left their bed
-    left: "&e[player] got out of bed ([sleeping]/[online], [needed] more needed to skip)."
-    # Sent to player when they sleep with "harbor.bypass" permission
-    bypass: "&eYou've been excluded from the sleep count."
+    sleeping: "&e[player] is now sleeping ([sleeping]/[online], [needed] more needed to skip)." # Display which player went to bed
+    left: "&e[player] got out of bed ([sleeping]/[online], [needed] more needed to skip)." # Display when a player left their bed
   actionbar:
-    # Enable/Disable actionbar message
-    actionbar: true
-    # Shown when some players are in bed
-    sleeping: "&e[sleeping] out of [online] players are sleeping ([needed] more needed to skip)."
-    # Shown when all players are in bed
-    everyone: "&eEveryone is sleeping. Sweet dreams!"
+    actionbar: true # Enable/disable actionbar messages
+    sleeping: "&e[sleeping] out of [needed] players are sleeping ([more] more needed to skip)." # Shown when some players are in bed
+    everyone: "&eEveryone is sleeping. Sweet dreams!" # Shown when all players are in bed
   miscellaneous:
-    # Prefix for Harbor command/miscellaneous messages
-    prefix: "&8&l(&6&lHarbor&8&l)&r "
-    # Display server version in console
-    running: "&7Running on version [version]."
-    # Harbor reload message
-    reloaded: "&7Reloaded Harbor."
-    reloaderror: "&7Error reloading Harbor."
-    # Sent when player doesn't have permissions to run command
-    permission: "&7Insufficient permissions."
-    # Sent when command argument isn't recognized
-    unrecognized: "&7Unrecognized command."
+    prefix: "&8&l(&6&lHarbor&8&l)&r " # Prefix for Harbor command/miscellaneous messages
+    permission: "&7Insufficient permissions." # Sent when player doesn't have permissions to run command
+    unrecognized: "&7Unrecognized command." # Sent when command argument isn't recognized
 
-blacklist:
+blacklist: # Blacklist for worlds (Harbor will be disabled in these worlds)
   - "world_nether"
   - "world_the_end"
 
 gui:
-  # Title for menu that shows when a player executes /sleeping
-  sleeping: "Sleeping Players | Page [page]"
+  sleeping: "Sleeping Players | Page [page]" # Title for menu that shows when a player executes /sleeping
 
 # Spooky controls (don't change)
-version: 1.5.4
+version: 1.6
 debug: false

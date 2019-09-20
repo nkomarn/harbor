@@ -1,6 +1,5 @@
 package xyz.nkomarn.Harbor.util;
 
-import com.rylinaux.plugman.util.PluginUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.InvalidDescriptionException;
@@ -60,10 +59,7 @@ public class Updater {
             // If Plugman is loaded, hot reload the plugin
             if (Bukkit.getServer().getPluginManager().isPluginEnabled("PlugMan")) {
                 Bukkit.getServer().broadcastMessage("Using plugman");
-
-                PluginUtil.disable(Harbor.instance);
                 Files.copy(inputStream, Paths.get(jarFile.toURI()), StandardCopyOption.REPLACE_EXISTING);
-                PluginUtil.load("Harbor");
 
                 Bukkit.getServer().broadcastMessage("Boom done and updated");
             }

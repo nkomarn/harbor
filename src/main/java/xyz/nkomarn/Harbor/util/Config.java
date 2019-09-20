@@ -4,6 +4,7 @@ import xyz.nkomarn.Harbor.Harbor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Config {
     /**
@@ -19,8 +20,12 @@ public class Config {
      * @param location Configuration location of the boolean
      */
     public static boolean getBoolean(String location) {
-        try {return Harbor.instance.getConfig().getBoolean(location);}
-        catch (Exception e) {error(e); return false;}
+        try {
+            return Harbor.instance.getConfig().getBoolean(location);
+        }
+        catch (Exception e) {
+            error(e); return false;
+        }
     }
 
     /**
@@ -28,8 +33,13 @@ public class Config {
      * @param location Configuration location of the string
      */
     public static String getString(String location) {
-        try {return Harbor.instance.getConfig().getString(location);}
-        catch (Exception e) {error(e); return "";}
+        try {
+            return Harbor.instance.getConfig().getString(location);
+        }
+        catch (Exception e) {
+            error(e);
+            return "";
+        }
     }
 
     /**
@@ -37,8 +47,13 @@ public class Config {
      * @param location Configuration location of the integer
      */
     public static int getInteger(String location) {
-        try {return Harbor.instance.getConfig().getInt(location);}
-        catch (Exception e) {error(e); return 0;}
+        try {
+            return Harbor.instance.getConfig().getInt(location);
+        }
+        catch (Exception e) {
+            error(e);
+            return 0;
+        }
     }
 
     /**
@@ -46,8 +61,13 @@ public class Config {
      * @param location Configuration location of the double
      */
     public static double getDouble(String location) {
-        try {return Double.parseDouble(Harbor.instance.getConfig().getString(location));}
-        catch (Exception e) {error(e); return 0.0;}
+        try {
+            return Double.parseDouble(Objects.requireNonNull(Harbor.instance.getConfig().getString(location)));
+        }
+        catch (Exception e) {
+            error(e);
+            return 0.0;
+        }
     }
 
     /**
@@ -55,7 +75,12 @@ public class Config {
      * @param location Configuration location of the double
      */
     public static List<String> getList(String location) {
-        try {return Harbor.instance.getConfig().getStringList(location);}
-        catch (Exception e) {error(e); return new ArrayList<>();}
+        try {
+            return Harbor.instance.getConfig().getStringList(location);
+        }
+        catch (Exception e) {
+            error(e);
+            return new ArrayList<>();
+        }
     }
 }

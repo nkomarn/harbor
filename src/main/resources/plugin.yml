@@ -4,6 +4,7 @@ main: xyz.nkomarn.${name}.${name}
 version: ${version}
 author: TechToolbox (@nkomarn)
 website: https://nkomarn.xyz
+softdepend: [Essentials]
 api-version: 1.13
 
 commands:

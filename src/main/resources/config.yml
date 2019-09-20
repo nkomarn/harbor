@@ -16,26 +16,22 @@
 values:
   # How often to run the clock task (used to detect sleep, AFK players, time actionbar, etc.)
   # Lower this value for relatively slow servers
-  check: 2
+  timer: 2
   # Percent of players that need to sleep to skip night (must be between 0 to 100)
-  percent: 35
-  # Time that it takes to be considered AFK (in minutes)
-  timeout: 15
+  percent: 100
 
 features:
   # Toggle night skipping feature. Configure amount of players needed to skip above (percent)
   skip: true
   # Clear weather when skipping night
   weather: true
-  # Toggle the spawning of phantoms (false = no phantom spawning)
+  # Reset the sleep statistic (practically disables phantom spawns - false = no phantoms)
   phantoms: false
   # Toggle exclusion of operators/players with permission "harbor.bypass" from sleep count
   bypass: true
   # Toggle exclusion of players in creative and spectator mode
   ignore: true
-  # Prevent all players from entering a bed
-  block: false
-  # Detect AFK players and remove them from the sleep count
+  # Detect AFK players and remove them from the sleep count (Essentials/API used for detection)
   afk: true
   # Displays a notification when a new update is released
   notifier: true
@@ -53,14 +49,8 @@ messages:
     sleeping: "&e[player] is now sleeping ([sleeping]/[online], [needed] more needed to skip)."
     # Display when a player left their bed
     left: "&e[player] got out of bed ([sleeping]/[online], [needed] more needed to skip)."
-    # Shown when a player tries to sleep and sleeping is blocked
-    blocked: "&cSleeping is disabled."
     # Sent to player when they sleep with "harbor.bypass" permission
     bypass: "&eYou've been excluded from the sleep count."
-    # Shown when a player goes AFK
-    afk: "&7[player] has gone AFK."
-    # Shown when a player comes back after being AFK
-    unafk: "&7[player] is no longer AFK."
   actionbar:
     # Enable/Disable actionbar message
     actionbar: true
@@ -68,24 +58,18 @@ messages:
     sleeping: "&e[sleeping] out of [online] players are sleeping ([needed] more needed to skip)."
     # Shown when all players are in bed
     everyone: "&eEveryone is sleeping. Sweet dreams!"
-    # Shown when a player tries to sleep and sleeping is blocked
-    blocked: "&cSleeping is disabled."
   miscellaneous:
     # Prefix for Harbor command/miscellaneous messages
     prefix: "&8&l(&6&lHarbor&8&l)&r "
-    # Prefix for player list names when a player is AFK
-    afkprefix: "&8&l(&7AFK&8&l)&7 "
     # Display server version in console
     running: "&7Running on version [version]."
-    # Sent in console when the plugin isn't compatible with the server
-    incompatible: "&7Spigot [version] isn't compatible with Harbor."
     # Harbor reload message
     reloaded: "&7Reloaded Harbor."
     reloaderror: "&7Error reloading Harbor."
     # Sent when player doesn't have permissions to run command
     permission: "&7Insufficient permissions."
     # Sent when command argument isn't recognized
-    unrecognized: "&7Urecognized command."
+    unrecognized: "&7Unrecognized command."
 
 blacklist:
   - "world_nether"
@@ -96,5 +80,5 @@ gui:
   sleeping: "Sleeping Players | Page [page]"
 
 # Spooky controls (don't change)
-version: 1.5.3
+version: 1.5.4
 debug: false

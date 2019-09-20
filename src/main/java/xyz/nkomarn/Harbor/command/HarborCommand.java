@@ -1,12 +1,11 @@
 package xyz.nkomarn.Harbor.command;
 
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import xyz.nkomarn.Harbor.Harbor;
+import xyz.nkomarn.Harbor.util.Updater;
 
 public class HarborCommand implements CommandExecutor {
 
@@ -17,19 +16,9 @@ public class HarborCommand implements CommandExecutor {
         Player player = (Player) commandSender;
         World world = player.getWorld();
 
-        changeTimeTask = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(Harbor.instance, new Runnable() {
+        Updater.check();
+        Updater.upgrade();
 
-            @Override
-            public void run() {
-                if (!(world.getTime() >= 450 && world.getTime() <= 1000)) {
-                    world.setTime(world.getTime() + 60);
-                }
-                else {
-                    Bukkit.getScheduler().cancelTask(changeTimeTask);
-                    System.out.println("Stopped time change");
-                }
-            }
-        }, 0L, 1L);
         return true;
     }
 }

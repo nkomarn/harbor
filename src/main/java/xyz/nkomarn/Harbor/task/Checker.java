@@ -1,8 +1,8 @@
 package xyz.nkomarn.Harbor.task;
 
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.World;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import xyz.nkomarn.Harbor.Harbor;
@@ -23,8 +23,20 @@ public class Checker implements Runnable {
             if (Config.getList("blacklist").contains(world.getName())) return;
 
             // Check if the night is already being skipped
-            System.out.println("Contains world? " + skippingWorlds.contains(world));
             if (skippingWorlds.contains(world)) return;
+
+            int sleeping = getSleeping(world).size();
+            int needed = getNeeded(world);
+
+            // Send actionbar notification
+            if (getSleeping(world).size() > 0 && getNeeded(world) > 0) {
+                for (Player player : world.getPlayers()) {
+                    sendActionBar(player, Config.getString("messages.actionbar.sleeping")
+                        .replace("[sleeping]", String.valueOf(sleeping))
+                        .replace("[online]", String.valueOf(world.getPlayers().size()))
+                        .replace("[needed]", String.valueOf(needed)));
+                }
+            }
 
             // Check if world is applicable for skipping
             if (getNeeded(world) == 0 && getSleeping(world).size() > 0) {
@@ -35,6 +47,11 @@ public class Checker implements Runnable {
 
             }
         }
+    }
+
+    private void sendActionBar(Player player, String message) {
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(
+                ChatColor.translateAlternateColorCodes('&', message)));
     }
 
     private List<Player> getSleeping(World world) {
@@ -68,12 +85,17 @@ public class Checker implements Runnable {
         boolean s = false;
         if (Config.getBoolean("features.ignore")) if (p.getGameMode() == GameMode.SURVIVAL) s = false; else s = true;
         if (Config.getBoolean("features.bypass")) if (p.hasPermission("harbor.bypass")) s = true; else s = false;
-        // TODO AFK DETECTION if (afk.contains(p)) s = true;
+
+        // Essentials AFK detection
+        if (Harbor.essentials != null) {
+            if (Harbor.essentials.getUser(p).isAfk()) s = true;
+        }
+
         return s;
     }
 
     private void accelerateNight(World world) {
-        Bukkit.broadcastMessage("Accelerating time.");
+        Bukkit.broadcastMessage("Harbor - Accelerating time.");
 
         new BukkitRunnable() {
 
@@ -84,8 +106,16 @@ public class Checker implements Runnable {
                     world.setTime(time + 60);
                 }
                 else {
-                    System.out.println("Stopped time change " + time);
+                    Bukkit.broadcastMessage("Harbor - Stopped time change (" + time + ").");
                     skippingWorlds.remove(world);
+
+                    // Reset sleep statistic if phantoms are disabled TODO move out of here
+                    if (!Config.getBoolean("features.phantoms")) {
+                        for (Player player : world.getPlayers()) {
+                            player.setStatistic(Statistic.TIME_SINCE_REST, 0);
+                        }
+                    }
+
                     this.cancel();
                 }
             }

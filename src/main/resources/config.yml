@@ -30,6 +30,7 @@ messages:
       - "&eArghh, it's so bright outside."
     sleeping: "&e[player] is now sleeping ([sleeping]/[online], [needed] more needed to skip)." # Display which player went to bed
     left: "&e[player] got out of bed ([sleeping]/[online], [needed] more needed to skip)." # Display when a player left their bed
+    accelerateNight: "Die Nacht wird beschleunigt" # Display when the night get accelerated.
   actionbar:
     actionbar: true # Enable/disable actionbar messages
     sleeping: "&e[sleeping] out of [needed] players are sleeping ([more] more needed to skip)." # Shown when some players are in bed

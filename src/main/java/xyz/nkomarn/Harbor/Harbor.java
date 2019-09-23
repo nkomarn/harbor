@@ -17,13 +17,15 @@ public class Harbor extends JavaPlugin {
     public void onEnable() {
         instance = this;
         saveDefaultConfig();
-        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this,
-                new Checker(), 0L, Config.getInteger("values.timer") * 20);
+        if (Config.getBoolean("features.skip")) {
+            Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this,
+                    new Checker(), 0L, Config.getInteger("values.timer") * 20);
+        }
 
         getCommand("harbor").setExecutor(new HarborCommand());
 
         // bStats
-        Metrics metrics = new Metrics(this);
+        final Metrics metrics = new Metrics(this);
 
         // Essentials hook
         essentials = (Essentials) Bukkit.getServer().getPluginManager().getPlugin("Essentials");

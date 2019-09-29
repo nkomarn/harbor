@@ -92,18 +92,10 @@ public class Checker implements Runnable {
     }
 
     private boolean isExcluded(final Player p) {
-        boolean s = false;
-        if (Config.getBoolean("features.ignore")) if (p.getGameMode() == GameMode.SURVIVAL) s = false;
-        else s = true;
-        if (Config.getBoolean("features.bypass")) if (p.hasPermission("harbor.bypass")) s = true;
-        else s = false;
-
-        // Essentials AFK detection
-        if (Harbor.essentials != null) {
-            if (Harbor.essentials.getUser(p).isAfk()) s = true;
-        }
-
-        return s;
+        final boolean excludedByGameMode = Config.getBoolean("features.ignore") && p.getGameMode() != GameMode.SURVIVAL;
+        final boolean excludedByPermission = Config.getBoolean("features.bypass") && p.hasPermission("harbor.bypass");
+        final boolean excludedByAfk = Harbor.essentials != null && Harbor.essentials.getUser(p).isAfk(); // Essentials AFK detection
+        return excludedByGameMode || excludedByPermission || excludedByAfk;
     }
 
     private String randomMessage(final String list) {
@@ -130,16 +122,13 @@ public class Checker implements Runnable {
                 if (!(time >= 450 && time <= 1000)) {
                     world.setTime(time + 60);
                 } else {
-
                     // Announce night skip and clear queue
                     sendChatMessage(randomMessage("messages.chat.skipped"));
                     skippingWorlds.remove(world);
 
                     // Reset sleep statistic if phantoms are disabled
                     if (!Config.getBoolean("features.phantoms")) {
-                        for (final Player player : world.getPlayers()) {
-                            player.setStatistic(Statistic.TIME_SINCE_REST, 0);
-                        }
+                        world.getPlayers().forEach(player -> player.setStatistic(Statistic.TIME_SINCE_REST, 0));
                     }
 
                     // Clear weather

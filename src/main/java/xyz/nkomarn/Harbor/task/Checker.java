@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static java.util.stream.Collectors.toList;
+
 public class Checker implements Runnable {
 
     private static final List<World> skippingWorlds = new ArrayList<>();
@@ -61,22 +63,18 @@ public class Checker implements Runnable {
         final String message = Config.getString("messages.actionbar.sleeping");
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(
                 ChatColor.translateAlternateColorCodes('&', message
-                        .replace("[sleeping]", String.valueOf(getSleeping(world)))
+                        .replace("[sleeping]", String.valueOf(getSleeping(world).size()))
                         .replace("[players]", String.valueOf(world.getPlayers().size()))
                         .replace("[needed]", String.valueOf(getSkipAmount(world)))
                         .replace("[more]", String.valueOf(getNeeded(world))))));
     }
 
     private List<Player> getSleeping(final World world) {
-        final List<Player> sleeping = new ArrayList<>();
-        for (final Player player : world.getPlayers()) {
-            if (player.isSleeping()) sleeping.add(player);
-        }
-        return sleeping;
+        return world.getPlayers().stream().filter(Player::isSleeping).collect(toList());
     }
 
     private int getSkipAmount(final World world) {
-        return (int) (getPlayers(world) * (Config.getDouble("values.percent") / 100));
+        return (int) Math.ceil(getPlayers(world) * (Config.getDouble("values.percent") / 100));
     }
 
     private int getPlayers(final World world) {
@@ -89,12 +87,8 @@ public class Checker implements Runnable {
                 - getSleeping(world).size()));
     }
 
-    private ArrayList<Player> getExcluded(final World w) {
-        final ArrayList<Player> a = new ArrayList<>();
-        w.getPlayers().forEach(p -> {
-            if (isExcluded(p)) a.add(p);
-        });
-        return a;
+    private List<Player> getExcluded(final World world) {
+        return world.getPlayers().stream().filter(this::isExcluded).collect(toList());
     }
 
     private boolean isExcluded(final Player p) {

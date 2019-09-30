@@ -11,133 +11,124 @@ import xyz.nkomarn.Harbor.util.Config;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
+
+import static java.util.stream.Collectors.toList;
 
 public class Checker implements Runnable {
 
-    private static List<World> skippingWorlds = new ArrayList<>();
+    private static final List<World> skippingWorlds = new ArrayList<>();
 
     @Override
     public void run() {
-        for (World world : Bukkit.getWorlds()) {
+        Bukkit.getOnlinePlayers()
+                .stream()
+                .map(Player::getWorld).distinct()
+                .filter(this::validForCheckWorld)
+                .forEach(this::checkWorld);
+    }
 
-            // Check for blacklisted worlds
-            if (Config.getList("blacklist").contains(world.getName())) return;
+    private void checkWorld(final World world) {
+        final int sleeping = getSleeping(world).size(); // <- 0
+        final int needed = getNeeded(world);
 
-            // Check if the night is already being skipped
-            if (skippingWorlds.contains(world)) return;
+        // Send actionbar notification
+        if (sleeping > 0 && needed > 0 && Config.getBoolean("messages.actionbar.actionbar")) {
+            world.getPlayers().forEach(this::sendActionBar);
+        }
 
-            int sleeping = getSleeping(world).size();
-            int needed = getNeeded(world);
-
-            // Send actionbar notification
-            if (getSleeping(world).size() > 0 && getNeeded(world) > 0) {
-                for (Player player : world.getPlayers()) {
-                    sendActionBar(player, Config.getString("messages.actionbar.sleeping"));
-                }
-            }
-
-            // Check if world is applicable for skipping
-            if (Config.getBoolean("features.skip") && getNeeded(world) == 0 && getSleeping(world).size() > 0) {
-
-                // Rapidly accelerate time until it's day
-                skippingWorlds.add(world);
-                accelerateNight(world);
-
-            }
+        // Check if world is applicable for skipping
+        if (needed == 0 && sleeping > 0) {
+            // Rapidly accelerate time until it's day
+            skippingWorlds.add(world);
+            accelerateNight(world);
         }
     }
 
-    private void sendActionBar(Player player, String message) {
-        World world = player.getWorld();
+    private boolean validForCheckWorld(final World world) {
+        return notBlacklisted(world)
+                && isNight(world)
+                && !skippingWorlds.contains(world);
+    }
 
+    private boolean notBlacklisted(final World world) {
+        return !Config.getList("blacklist").contains(world.getName());
+    }
+
+    private boolean isNight(final World world) {
+        return world.getTime() > 12950 || world.getTime() < 23950;
+    }
+
+    private void sendActionBar(final Player player) {
+        final World world = player.getWorld();
+        final String message = Config.getString("messages.actionbar.sleeping");
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(
                 ChatColor.translateAlternateColorCodes('&', message
-                    .replace("[sleeping]", String.valueOf(getSleeping(world)))
-                    .replace("[players]", String.valueOf(world.getPlayers().size()))
-                    .replace("[needed]", String.valueOf(getSkipAmount(world)))
-                    .replace("[more]", String.valueOf(getNeeded(world))))));
+                        .replace("[sleeping]", String.valueOf(getSleeping(world).size()))
+                        .replace("[players]", String.valueOf(world.getPlayers().size()))
+                        .replace("[needed]", String.valueOf(getSkipAmount(world)))
+                        .replace("[more]", String.valueOf(getNeeded(world))))));
     }
 
-    private List<Player> getSleeping(World world) {
-        List<Player> sleeping = new ArrayList<>();
-        for (Player player : world.getPlayers()) {
-            if (player.isSleeping()) sleeping.add(player);
-        }
-        return sleeping;
+    private List<Player> getSleeping(final World world) {
+        return world.getPlayers().stream().filter(Player::isSleeping).collect(toList());
     }
 
-    private int getSkipAmount(World world) {
-        return (int) (getPlayers(world) * (Config.getDouble("values.percent") / 100));
+    private int getSkipAmount(final World world) {
+        return (int) Math.ceil(getPlayers(world) * (Config.getDouble("values.percent") / 100));
     }
 
-    private int getPlayers(World world) {
+    private int getPlayers(final World world) {
         return Math.max(0, world.getPlayers().size() - getExcluded(world).size());
     }
 
-
-    private int getNeeded(World world) {
+    private int getNeeded(final World world) {
         return Math.max(0, (int) Math.ceil((getPlayers(world))
-            * (Config.getDouble("values.percent") / 100)
-            - getSleeping(world).size()));
+                * (Config.getDouble("values.percent") / 100)
+                - getSleeping(world).size()));
     }
 
-    private ArrayList<Player> getExcluded(World w) {
-        ArrayList<Player> a = new ArrayList<>();
-        w.getPlayers().forEach(p -> {
-            if (isExcluded(p)) a.add(p);
-        });
-        return a;
+    private List<Player> getExcluded(final World world) {
+        return world.getPlayers().stream().filter(this::isExcluded).collect(toList());
     }
 
-    private boolean isExcluded(Player p) {
-        boolean s = false;
-        if (Config.getBoolean("features.ignore")) if (p.getGameMode() == GameMode.SURVIVAL) s = false; else s = true;
-        if (Config.getBoolean("features.bypass")) if (p.hasPermission("harbor.bypass")) s = true; else s = false;
-
-        // Essentials AFK detection
-        if (Harbor.essentials != null) {
-            if (Harbor.essentials.getUser(p).isAfk()) s = true;
-        }
-
-        return s;
+    private boolean isExcluded(final Player p) {
+        final boolean excludedByGameMode = Config.getBoolean("features.ignore") && p.getGameMode() != GameMode.SURVIVAL;
+        final boolean excludedByPermission = Config.getBoolean("features.bypass") && p.hasPermission("harbor.bypass");
+        final boolean excludedByAfk = Harbor.essentials != null && Harbor.essentials.getUser(p).isAfk(); // Essentials AFK detection
+        return excludedByGameMode || excludedByPermission || excludedByAfk;
     }
 
-    private String randomMessage(String list) {
-        List<String> messages = Config.getList(list);
-        Random random = new Random();
-        int index = random.nextInt(messages.size());
+    private String randomMessage(final String list) {
+        final List<String> messages = Config.getList(list);
+        final Random random = new Random();
+        final int index = random.nextInt(messages.size());
         return ChatColor.translateAlternateColorCodes('&', messages.get(index));
     }
 
-    private void sendChatMessage(String message) {
+    private void sendChatMessage(final String message) {
         if (!Config.getBoolean("messages.chat.chat")) return;
         if (message.length() < 1) return;
         Bukkit.broadcastMessage(message);
     }
 
-    private void accelerateNight(World world) {
-        Bukkit.broadcastMessage("Harbor - Accelerating time.");
+    private void accelerateNight(final World world) {
+        Bukkit.broadcastMessage(Config.getString("messages.chat.accelerateNight"));
 
         new BukkitRunnable() {
 
             @Override
             public void run() {
-                long time = world.getTime();
+                final long time = world.getTime();
                 if (!(time >= 450 && time <= 1000)) {
                     world.setTime(time + 60);
-                }
-                else {
-
+                } else {
                     // Announce night skip and clear queue
-                    sendChatMessage("messages.chat.skipped");
+                    sendChatMessage(randomMessage("messages.chat.skipped"));
                     skippingWorlds.remove(world);
 
                     // Reset sleep statistic if phantoms are disabled
                     if (!Config.getBoolean("features.phantoms")) {
-                        for (Player player : world.getPlayers()) {
-                            player.setStatistic(Statistic.TIME_SINCE_REST, 0);
-                        }
+                        world.getPlayers().forEach(player -> player.setStatistic(Statistic.TIME_SINCE_REST, 0));
                     }
 
                     // Clear weather

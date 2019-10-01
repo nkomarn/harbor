@@ -4,6 +4,7 @@ import com.earth2me.essentials.Essentials;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.nkomarn.Harbor.command.HarborCommand;
+import xyz.nkomarn.Harbor.listener.PlayerListener;
 import xyz.nkomarn.Harbor.task.Checker;
 import xyz.nkomarn.Harbor.util.Config;
 import xyz.nkomarn.Harbor.util.Metrics;
@@ -23,6 +24,7 @@ public class Harbor extends JavaPlugin {
         }
 
         getCommand("harbor").setExecutor(new HarborCommand());
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 
         // bStats
         final Metrics metrics = new Metrics(this);

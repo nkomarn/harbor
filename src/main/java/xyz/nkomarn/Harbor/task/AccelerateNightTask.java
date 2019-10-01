@@ -17,7 +17,7 @@ public class AccelerateNightTask extends BukkitRunnable {
     public void run() {
         final long time = world.getTime();
         if (!(time >= 450 && time <= 1000)) {
-            world.setTime(time + 60);
+            world.setTime(time + Config.getInteger("values.timeSkipInterval"));
         } else {
             // Announce night skip and clear queue
             Message.SendRandomChatMessage("messages.chat.skipped");

@@ -6,6 +6,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import xyz.nkomarn.Harbor.Harbor;
 import xyz.nkomarn.Harbor.util.Config;
+import xyz.nkomarn.Harbor.util.Message;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +78,8 @@ public class Checker implements Runnable {
     }
 
     private void accelerateNight(final World world) {
-        Bukkit.broadcastMessage(Config.getString("messages.chat.accelerateNight"));
-        new AccelerateNightTask(world).runTaskTimer(Harbor.instance, 20, 1);
+        Message.SendChatMessage(world, "messages.chat.accelerateNight", "", 0);
+        Message.SendActionbarMessage(world, "messages.actionbar.everyone", "", 0);
+        new AccelerateNightTask(world).runTaskTimer(Harbor.instance, 0L, 1);
     }
 }

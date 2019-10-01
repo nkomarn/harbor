@@ -32,9 +32,4 @@ public class Harbor extends JavaPlugin {
         // Essentials hook
         essentials = (Essentials) Bukkit.getServer().getPluginManager().getPlugin("Essentials");
     }
-
-    public void onDisable() {
-
-    }
-
 }

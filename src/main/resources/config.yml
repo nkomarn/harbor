@@ -11,6 +11,7 @@
 values:
   timer: 2 # How often to run the clock task (used to detect sleep, AFK players, time actionbar, etc.)
   percent: 100 # Percent of players that need to sleep to skip night (must be between 0 to 100)
+  timeSkipInterval: 60 # Time skip interval that is added when the night get accelerated.
 
 features:
   skip: true # Toggle night skipping feature. Configure amount of players needed to skip above (percent)

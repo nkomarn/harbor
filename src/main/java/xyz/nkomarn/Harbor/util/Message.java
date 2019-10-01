@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.Random;
 
 public class Message {
-    public static void SendChatMessage(final World world, final String messageLocation) {
-        sendChatMessage(prepareMessageWithParams(Config.getString(messageLocation), world));
+    public static void SendChatMessage(final World world, final String messageLocation, final String playerName, final int change) {
+        sendChatMessage(prepareMessageWithParams(Config.getString(messageLocation), world, playerName, change));
     }
 
-    public static void SendActionbarMessage(final World world, final String messageLocation) {
+    public static void SendActionbarMessage(final World world, final String messageLocation, final String playerName, final int change) {
         if (Config.getBoolean("messages.actionbar.actionbar")) {
-            final String message = prepareMessageWithParams(Config.getString(messageLocation), world);
+            final String message = prepareMessageWithParams(Config.getString(messageLocation), world, playerName, change);
             world.getPlayers().forEach(p -> sendActionbarMessage(p, message));
         }
     }
@@ -43,11 +43,11 @@ public class Message {
         return (int) Math.ceil(Checker.getPlayers(world) * (Config.getDouble("values.percent") / 100));
     }
 
-    private static String prepareMessageWithParams(final String message, final World world) {
+    private static String prepareMessageWithParams(final String message, final World world, final String playerName, final int change) {
         return ChatColor.translateAlternateColorCodes('&', message
-                .replace("[sleeping]", String.valueOf(Checker.getSleeping(world)))
-                .replace("[players]", String.valueOf(world.getPlayers().size()))
+                .replace("[sleeping]", String.valueOf(Checker.getSleeping(world) + change))
                 .replace("[needed]", String.valueOf(getSkipAmount(world)))
-                .replace("[more]", String.valueOf(Checker.getNeeded(world))));
+                .replace("[more]", String.valueOf(Checker.getNeeded(world) - change))
+                .replace("[player]", playerName));
     }
 }

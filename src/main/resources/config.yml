@@ -28,8 +28,8 @@ messages:
       - "&eThe night has been skipped."
       - "&eAhhh, finally morning."
       - "&eArghh, it's so bright outside."
-    sleeping: "&e[player] is now sleeping ([sleeping]/[online], [needed] more needed to skip)." # Display which player went to bed
-    left: "&e[player] got out of bed ([sleeping]/[online], [needed] more needed to skip)." # Display when a player left their bed
+    sleeping: "&e[player] is now sleeping ([sleeping]/[needed], [more] more needed to skip)." # Display which player went to bed
+    left: "&e[player] got out of bed ([sleeping]/[needed], [more] more needed to skip)." # Display when a player left their bed
     accelerateNight: "Harbor - Accelerating time." # Display when the night get accelerated.
   actionbar:
     actionbar: true # Enable/disable actionbar messages

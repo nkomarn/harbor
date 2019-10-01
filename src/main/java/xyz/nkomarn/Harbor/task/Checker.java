@@ -26,7 +26,7 @@ public class Checker implements Runnable {
     }
 
     public static int getSleeping(final World world) {
-        return (int) world.getPlayers().stream().filter(Player::isSleeping).count();
+        return world.getPlayers().stream().filter(Player::isSleeping).collect(toList()).size();
     }
 
     public static int getNeeded(final World world) {

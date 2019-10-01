@@ -17,21 +17,23 @@ public class PlayerListener implements Listener {
             return;
         }
         final World world = event.getPlayer().getWorld();
-        if (morePlayerNeeded(world)) {
-            Message.SendChatMessage(world, "messages.chat.sleeping");
-            Message.SendActionbarMessage(world, "messages.actionbar.sleeping");
+        if (morePlayerNeeded(world, 1)) {
+            Message.SendChatMessage(world, "messages.chat.sleeping", event.getPlayer().getDisplayName(), 1);
+            Message.SendActionbarMessage(world, "messages.actionbar.sleeping", event.getPlayer().getDisplayName(), 1);
         }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onBedLeave(final PlayerBedLeaveEvent event) {
         final World world = event.getPlayer().getWorld();
-        if (Checker.isNight(world) && !Checker.skippingWorlds.contains(world) && morePlayerNeeded(world)) {
-            Message.SendChatMessage(world, "messages.chat.left");
+        if (Checker.isNight(world) && !Checker.skippingWorlds.contains(world) && morePlayerNeeded(world, 0)) {
+            Message.SendChatMessage(world, "messages.chat.left", event.getPlayer().getDisplayName(), 0);
         }
     }
 
-    private boolean morePlayerNeeded(final World world) {
-        return Checker.getSleeping(world) > 0 && Checker.getNeeded(world) > 0;
+    private boolean morePlayerNeeded(final World world, final int change) {
+        final int sleeping = Checker.getSleeping(world) + change;
+        final int needed = Checker.getNeeded(world) - change;
+        return sleeping > 0 && needed > 0;
     }
 }

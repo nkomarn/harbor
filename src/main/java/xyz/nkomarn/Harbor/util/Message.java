@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.Random;
 
 public class Message {
-    public static void SendChatMessage(final String messageLocation) {
-        sendChatMessage(Config.getString(messageLocation));
+    public static void SendChatMessage(final World world, final String messageLocation) {
+        sendChatMessage(prepareMessageWithParams(Config.getString(messageLocation), world));
     }
 
     public static void SendActionbarMessage(final World world, final String messageLocation) {
         if (Config.getBoolean("messages.actionbar.actionbar")) {
-            final String message = Message.prepareMessageWithParams(Config.getString(messageLocation), world);
+            final String message = prepareMessageWithParams(Config.getString(messageLocation), world);
             world.getPlayers().forEach(p -> sendActionbarMessage(p, message));
         }
     }

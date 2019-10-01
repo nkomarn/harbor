@@ -18,7 +18,7 @@ public class PlayerListener implements Listener {
         }
         final World world = event.getPlayer().getWorld();
         if (morePlayerNeeded(world)) {
-            Message.SendChatMessage("messages.chat.sleeping");
+            Message.SendChatMessage(world, "messages.chat.sleeping");
             Message.SendActionbarMessage(world, "messages.actionbar.sleeping");
         }
     }
@@ -27,7 +27,7 @@ public class PlayerListener implements Listener {
     public void onBedLeave(final PlayerBedLeaveEvent event) {
         final World world = event.getPlayer().getWorld();
         if (Checker.isNight(world) && !Checker.skippingWorlds.contains(world) && morePlayerNeeded(world)) {
-            Message.SendChatMessage("messages.chat.left");
+            Message.SendChatMessage(world, "messages.chat.left");
         }
     }
 

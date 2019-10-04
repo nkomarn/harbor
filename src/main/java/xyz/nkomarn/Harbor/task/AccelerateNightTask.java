@@ -20,7 +20,7 @@ public class AccelerateNightTask extends BukkitRunnable {
             world.setTime(time + Config.getInteger("values.timeSkipInterval"));
         } else {
             // Announce night skip and clear queue
-            Message.SendRandomChatMessage("messages.chat.skipped");
+            Message.SendRandomChatMessage(world, "messages.chat.skipped");
             Checker.skippingWorlds.remove(world);
 
             // Reset sleep statistic if phantoms are disabled

@@ -2,7 +2,6 @@ package xyz.nkomarn.Harbor.util;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -13,7 +12,10 @@ import java.util.Random;
 
 public class Message {
     public static void SendChatMessage(final World world, final String messageLocation, final String playerName, final int change) {
-        sendChatMessage(prepareMessageWithParams(Config.getString(messageLocation), world, playerName, change));
+        if (Config.getBoolean("messages.chat.chat")) {
+            final String message = prepareMessageWithParams(Config.getString(messageLocation), world, playerName, change);
+            world.getPlayers().forEach(p -> sendChatMessage(p, message));
+        }
     }
 
     public static void SendActionbarMessage(final World world, final String messageLocation, final String playerName, final int change) {
@@ -23,16 +25,14 @@ public class Message {
         }
     }
 
-    public static void SendRandomChatMessage(final String messageListLocation) {
+    public static void SendRandomChatMessage(final World world, final String messageListLocation) {
         final List<String> messages = Config.getList(messageListLocation);
         final int index = new Random().nextInt(messages.size());
-        sendChatMessage(messages.get(index));
+        world.getPlayers().forEach(p -> sendChatMessage(p, messages.get(index)));
     }
 
-    private static void sendChatMessage(final String message) {
-        if (Config.getBoolean("messages.chat.chat") && message.length() > 0) {
-            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', message));
-        }
+    private static void sendChatMessage(final Player player, final String message) {
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
     }
 
     private static void sendActionbarMessage(final Player player, final String message) {

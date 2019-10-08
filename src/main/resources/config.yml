@@ -11,6 +11,7 @@
 values:
   timer: 2 # How often to run the clock task (used to detect sleep, AFK players, time actionbar, etc.)
   percent: 100 # Percent of players that need to sleep to skip night (must be between 0 to 100)
+  timeSkipInterval: 60 # Time skip interval that is added when the night get accelerated.
 
 features:
   skip: true # Toggle night skipping feature. Configure amount of players needed to skip above (percent)
@@ -28,8 +29,8 @@ messages:
       - "&eThe night has been skipped."
       - "&eAhhh, finally morning."
       - "&eArghh, it's so bright outside."
-    sleeping: "&e[player] is now sleeping ([sleeping]/[online], [needed] more needed to skip)." # Display which player went to bed
-    left: "&e[player] got out of bed ([sleeping]/[online], [needed] more needed to skip)." # Display when a player left their bed
+    sleeping: "&e[player] is now sleeping ([sleeping]/[needed], [more] more needed to skip)." # Display which player went to bed
+    left: "&e[player] got out of bed ([sleeping]/[needed], [more] more needed to skip)." # Display when a player left their bed
     accelerateNight: "Harbor - Accelerating time." # Display when the night get accelerated.
   actionbar:
     actionbar: true # Enable/disable actionbar messages

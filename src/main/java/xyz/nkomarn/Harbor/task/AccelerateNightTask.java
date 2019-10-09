@@ -1,10 +1,12 @@
 package xyz.nkomarn.Harbor.task;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Statistic;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 import xyz.nkomarn.Harbor.util.Config;
-import xyz.nkomarn.Harbor.util.Message;
+import xyz.nkomarn.Harbor.util.Messages;
 
 public class AccelerateNightTask extends BukkitRunnable {
     private final World world;
@@ -17,10 +19,13 @@ public class AccelerateNightTask extends BukkitRunnable {
     public void run() {
         final long time = world.getTime();
         if (!(time >= 450 && time <= 1000)) {
-            world.setTime(time + Config.getInteger("values.timeSkipInterval"));
+            world.setTime(time + Config.getInteger("values.interval"));
+            world.getPlayers().forEach(player -> Messages.sendActionBarMessage(player, 
+                ChatColor.GREEN + "Current world time: " + time));
         } else {
             // Announce night skip and clear queue
-            Message.SendRandomChatMessage(world, "messages.chat.skipped");
+            Bukkit.getServer().broadcastMessage("Harbor - skipped");
+            // Message.sendRandomChatMessage(world, "messages.chat.skipped");
             Checker.skippingWorlds.remove(world);
 
             // Reset sleep statistic if phantoms are disabled

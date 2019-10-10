@@ -15,11 +15,15 @@ public class Messages {
     public static void sendRandomChatMessage(final World world, final String messageList) {
         final List<String> messages = Config.getList(messageList);
         final int index = new Random().nextInt(messages.size());
-        world.getPlayers().forEach(p -> sendChatMessage(p, messages.get(index)));
+        sendWorldChatMessage(world, messages.get(index));
     }
 
-    private static void sendChatMessage(final Player player, final String message) {
+    private static void sendPlayerChatMessage(final Player player, final String message) {
         player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+    }
+
+    private static void sendWorldChatMessage(final World world, final String message) {
+        world.getPlayers().forEach(player -> player.sendMessage(ChatColor.translateAlternateColorCodes('&', message)));
     }
 
     public static void sendActionBarMessage(final Player player, final String message) {

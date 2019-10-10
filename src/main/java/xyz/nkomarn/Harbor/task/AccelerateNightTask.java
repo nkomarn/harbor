@@ -1,6 +1,5 @@
 package xyz.nkomarn.Harbor.task;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Statistic;
 import org.bukkit.World;
@@ -24,8 +23,7 @@ public class AccelerateNightTask extends BukkitRunnable {
                 ChatColor.GREEN + "Current world time: " + time));
         } else {
             // Announce night skip and clear queue
-            Bukkit.getServer().broadcastMessage("Harbor - skipped");
-            // Message.sendRandomChatMessage(world, "messages.chat.skipped");
+            Messages.sendRandomChatMessage(world, "messages.chat.skipped");
             Checker.skippingWorlds.remove(world);
 
             // Reset sleep statistic if phantoms are disabled

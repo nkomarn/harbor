@@ -18,7 +18,7 @@ public class Config {
 
     /**
      * Fetches a string from the configuration
-     * if location is not found, <code>empty String</code> is returned
+     * if location is not found, <code>empty string</code> is returned
      *
      * @param location Configuration location of the string
      */

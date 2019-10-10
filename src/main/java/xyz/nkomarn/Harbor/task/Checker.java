@@ -38,12 +38,8 @@ public class Checker implements Runnable {
         } else if (needed == 0 && sleeping > 0) {
             world.getPlayers().forEach(player -> Messages.sendActionBarMessage(player, 
                 Config.getString("messages.actionbar.everyone")));
-        }
-
-        // Check if world is applicable for skipping
-        if (needed == 0 && sleeping > 0) {
-            skippingWorlds.add(world);
-            new AccelerateNightTask(world).runTaskTimer(Harbor.instance, 0L, 1);
+                skippingWorlds.add(world);
+                new AccelerateNightTask(world).runTaskTimer(Harbor.instance, 0L, 1);
         }
     }
 

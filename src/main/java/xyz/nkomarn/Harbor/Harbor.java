@@ -27,7 +27,7 @@ public class Harbor extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 
         // bStats
-        final Metrics metrics = new Metrics(this);
+        new Metrics(this);
 
         // Essentials hook
         essentials = (Essentials) Bukkit.getServer().getPluginManager().getPlugin("Essentials");

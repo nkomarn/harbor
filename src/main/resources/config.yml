@@ -9,7 +9,7 @@
 # GitHub URL: https://github.com/nkomarn/Harbor/issues
 
 values:
-  timer: 2 # How often to run the clock task (used to detect sleep, AFK players, time actionbar, etc.)
+  timer: 2 # How often (in seconds) to run the clock task (used to detect sleep, AFK players, time actionbar, etc.)
   percent: 100 # Percent of players that need to sleep to skip night (must be between 0 to 100)
   interval: 60 # Time skip interval that is added when the night get accelerated.
 
@@ -36,6 +36,10 @@ messages:
     actionbar: true # Enable/disable actionbar messages
     sleeping: "&e[sleeping] out of [needed] players are sleeping ([more] more needed to skip)." # Shown when some players are in bed
     everyone: "&eEveryone is sleeping. Sweet dreams!" # Shown when all players are in bed
+  bossbar:
+    bossbar: true
+    sleeping: "&f&l[sleeping] out of [needed] players are sleeping." # Shown when some players are in bed
+    left: "&f&lEveryone is sleeping. Sweet dreams!" # Shown when all players are in bed
   miscellaneous:
     prefix: "&8&l(&6&lHarbor&8&l)&r " # Prefix for Harbor command/miscellaneous messages
     permission: "&7Insufficient permissions." # Sent when player doesn't have permissions to run command

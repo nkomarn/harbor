@@ -11,7 +11,7 @@ import xyz.nkomarn.Harbor.util.Messages;
 
 public class PlayerListener implements Listener {
 
-    // Not sure if I will include this in final release
+    // TODO Not sure if I will include this in final release
 
     /*@EventHandler(priority = EventPriority.HIGH)
     public void onBedEnter(final PlayerBedEnterEvent event) {

@@ -14,3 +14,9 @@ commands:
   sleeping:
     description: "Display a list of the currently sleeping players."
     usage: "/sleeping"
+
+permissions:
+  harbor.bypass:
+    default: false
+  harbor.admin:
+    default: op

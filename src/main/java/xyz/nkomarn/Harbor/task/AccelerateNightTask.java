@@ -19,8 +19,6 @@ public class AccelerateNightTask extends BukkitRunnable {
         final long time = world.getTime();
         if (!(time >= 450 && time <= 1000)) {
             world.setTime(time + Config.getInteger("values.interval"));
-            world.getPlayers().forEach(player -> Messages.sendActionBarMessage(player, 
-                ChatColor.GREEN + "Current world time: " + time));
         } else {
             // Announce night skip and clear queue
             Messages.sendRandomChatMessage(world, "messages.chat.skipped");
@@ -28,7 +26,8 @@ public class AccelerateNightTask extends BukkitRunnable {
 
             // Reset sleep statistic if phantoms are disabled
             if (!Config.getBoolean("features.phantoms")) {
-                world.getPlayers().forEach(player -> player.setStatistic(Statistic.TIME_SINCE_REST, 0));
+                world.getPlayers().forEach(player ->
+                        player.setStatistic(Statistic.TIME_SINCE_REST, 0));
             }
 
             // Clear weather

@@ -29,11 +29,7 @@ public class Updater {
             latest = reader.lines().collect(Collectors.joining(System.lineSeparator()));
 
             System.out.println(latest);
-
-            if (Harbor.version.equals(latest)) return false;
-
-
-            return true;
+            return !Harbor.version.equals(latest);
         } catch (IOException e) {
             e.printStackTrace();
             return false;

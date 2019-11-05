@@ -31,15 +31,21 @@ public class Checker implements Runnable {
         final int sleeping = getSleeping(world).size();
         final int needed = getNeeded(world);
 
-        // Send actionbar sleeping notification
-        if (sleeping > 0 && needed > 0 && Config.getBoolean("messages.actionbar.actionbar")) {
-            world.getPlayers().forEach(player -> Messages.sendActionBarMessage(player, 
-                Config.getString("messages.actionbar.sleeping")));
+        // Send actionbar/bossbar sleeping notification
+        if (sleeping > 0 && needed > 0) {
+            if (Config.getBoolean("messages.actionbar.actionbar")) {
+                world.getPlayers().forEach(player -> Messages.sendActionBarMessage(player,
+                        Config.getString("messages.actionbar.sleeping")));
+            }
+            if (Config.getBoolean("messages.bossbar.bossbar")) {
+                world.getPlayers().forEach(player -> Messages.sendBossbar(player,
+                        Config.getString("messages.bossbar.sleeping")));
+            }
         } else if (needed == 0 && sleeping > 0) {
             world.getPlayers().forEach(player -> Messages.sendActionBarMessage(player, 
                 Config.getString("messages.actionbar.everyone")));
-                skippingWorlds.add(world);
-                new AccelerateNightTask(world).runTaskTimer(Harbor.instance, 0L, 1);
+            skippingWorlds.add(world);
+            new AccelerateNightTask(world).runTaskTimer(Harbor.instance, 0L, 1);
         }
     }
 
@@ -79,7 +85,7 @@ public class Checker implements Runnable {
         return world.getPlayers().stream().filter(Checker::isExcluded).collect(toList());
     }
 
-    public static boolean isExcluded(final Player p) {
+    private static boolean isExcluded(final Player p) {
         final boolean excludedByGameMode = Config.getBoolean("features.ignore") && p.getGameMode() != GameMode.SURVIVAL;
         final boolean excludedByPermission = Config.getBoolean("features.bypass") && p.hasPermission("harbor.bypass");
         final boolean excludedByAfk = Harbor.essentials != null && Harbor.essentials.getUser(p).isAfk(); // Essentials AFK detection

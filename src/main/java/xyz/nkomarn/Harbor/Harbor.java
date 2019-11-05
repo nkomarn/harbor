@@ -30,6 +30,7 @@ public class Harbor extends JavaPlugin {
         new Metrics(this);
 
         // Essentials hook
-        essentials = (Essentials) Bukkit.getServer().getPluginManager().getPlugin("Essentials");
+        essentials = (Essentials) Bukkit.getServer().getPluginManager()
+                .getPlugin("Essentials");
     }
 }

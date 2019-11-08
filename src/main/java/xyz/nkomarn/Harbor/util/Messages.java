@@ -18,20 +18,24 @@ public class Messages {
 
     public static void sendRandomChatMessage(final World world, final String messageList) {
         final List<String> messages = Config.getList(messageList);
+        if (messages.size() < 1) return;
         final int index = new Random().nextInt(Math.max(0, messages.size()));
         sendWorldChatMessage(world, messages.get(index));
     }
 
     private static void sendPlayerChatMessage(final Player player, final String message) {
+        if (message.length() < 1) return;
         player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
     }
 
     private static void sendWorldChatMessage(final World world, final String message) {
+        if (message.length() < 1) return;
         world.getPlayers().forEach(player -> player.sendMessage(ChatColor.translateAlternateColorCodes('&', message)));
     }
 
     public static void sendActionBarMessage(final Player player, final String message) {
         final World world = player.getWorld();
+        if (message.length() < 1) return;
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(
                 ChatColor.translateAlternateColorCodes('&', message
                         .replace("[sleeping]", String.valueOf(Checker.getSleeping(world).size()))

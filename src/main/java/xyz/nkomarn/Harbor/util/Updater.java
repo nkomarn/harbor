@@ -24,7 +24,7 @@ public class Updater {
             try {
                 URL latestVersion = new URL("https://api.spigotmc.org/legacy/update.php?resource=60088");
                 URLConnection request = latestVersion.openConnection();
-                request.addRequestProperty("User-Agent",  "Harbor");
+                request.addRequestProperty("User-Agent", "Harbor");
                 request.connect();
                 InputStream inputStream = request.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
@@ -51,7 +51,7 @@ public class Updater {
                     URL downloadURL = new URL("http://aqua.api.spiget.org/v2/resources/60088/download");
                     File updatedJarFile = new File("plugins" + File.separator + "update"
                             + File.separator + jarName);
-                    updatedJarFile.mkdirs(); // TODO don't ignore result
+                    updatedJarFile.mkdirs();
                     InputStream inputStream = downloadURL.openStream();
                     Files.copy(inputStream, Paths.get(updatedJarFile.toURI()), StandardCopyOption.REPLACE_EXISTING);
                     future.complete("Updated Harbor. Changes will take effect after a server reload/reboot.");

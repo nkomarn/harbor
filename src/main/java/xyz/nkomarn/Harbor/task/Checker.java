@@ -39,6 +39,8 @@ public class Checker implements Runnable {
             world.getPlayers().forEach(player -> Messages.sendActionBarMessage(player, 
                 Config.getString("messages.actionbar.everyone")));
             skippingWorlds.add(world);
+
+            if (!Config.getBoolean("features.skip")) return;
             new AccelerateNightTask(world).runTaskTimer(Harbor.instance, 0L, 1);
             Messages.sendRandomChatMessage(world, "messages.chat.accelerateNight");
         }

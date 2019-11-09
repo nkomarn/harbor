@@ -1,10 +1,7 @@
 package xyz.nkomarn.Harbor.util;
 
-import org.bukkit.Bukkit;
 import xyz.nkomarn.Harbor.Harbor;
-
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -32,7 +29,6 @@ public class Updater {
                 InputStream inputStream = request.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
                 latest = bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
-                System.out.println(latest); // TODO REMOVE
                 future.complete(!Harbor.version.equals(latest));
             } catch (IOException e) {
                 future.complete(false);
@@ -53,10 +49,9 @@ public class Updater {
 
                 try {
                     URL downloadURL = new URL("http://aqua.api.spiget.org/v2/resources/60088/download");
-                    // TODO File jarFile = new File("plugins" + File.separator + jarName);
                     File updatedJarFile = new File("plugins" + File.separator + "update"
                             + File.separator + jarName);
-                    updatedJarFile.mkdirs();
+                    updatedJarFile.mkdirs(); // TODO don't ignore result
                     InputStream inputStream = downloadURL.openStream();
                     Files.copy(inputStream, Paths.get(updatedJarFile.toURI()), StandardCopyOption.REPLACE_EXISTING);
                     future.complete("Updated Harbor. Changes will take effect after a server reload/reboot.");
@@ -67,43 +62,4 @@ public class Updater {
         });
         return future;
     }
-
-    // Actually update the Harbor JAR
-    /*public static boolean upgrade() {
-        Harbor.instance.getLogger().log(Level.INFO, "Downloading Harbor version " + latest + ".");
-
-        try {
-            String jar = new File(Updater.class.getProtectionDomain().getCodeSource()
-                .getLocation().getPath()).getName();
-
-            URL url = new URL("http://aqua.api.spiget.org/v2/resources/60088/download");
-            File jarFile = new File("plugins" + File.separator + jar);
-            InputStream inputStream = url.openStream();
-
-            // If Plugman is loaded, hot reload the plugin
-            if (Bukkit.getServer().getPluginManager().isPluginEnabled("PlugMan")) {
-                Bukkit.getServer().broadcastMessage("Using plugman");
-                Files.copy(inputStream, Paths.get(jarFile.toURI()), StandardCopyOption.REPLACE_EXISTING);
-
-                Bukkit.getServer().broadcastMessage("Boom done and updated");
-            }
-
-            // Unload plugin and copy new JAR
-            //Bukkit.getServer().getPluginManager().disablePlugin(Harbor.instance);
-            //URLClassLoader classLoader = (URLClassLoader) Harbor.instance.getClass().getClassLoader();
-            //classLoader.close();
-            //System.gc();
-
-            //Files.copy(inputStream, Paths.get(jarFile.toURI()), StandardCopyOption.REPLACE_EXISTING);
-
-            // Load the new version
-            //Bukkit.getServer().getPluginManager().loadPlugin(jarFile);
-
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }*/
-
 }

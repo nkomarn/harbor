@@ -1,40 +1,41 @@
 package xyz.nkomarn.Harbor.listener;
 
-import org.bukkit.World;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerBedEnterEvent;
-import org.bukkit.event.player.PlayerBedLeaveEvent;
-import xyz.nkomarn.Harbor.task.Checker;
-import xyz.nkomarn.Harbor.util.Messages;
+import org.bukkit.event.player.PlayerJoinEvent;
+import xyz.nkomarn.Harbor.util.Config;
+import xyz.nkomarn.Harbor.util.Updater;
+import java.util.concurrent.ExecutionException;
 
 public class PlayerListener implements Listener {
 
-    // TODO Not sure if I will include this in final release
+    @EventHandler
+    public void onJoin(PlayerJoinEvent e) {
+        if (!e.getPlayer().hasPermission("harbor.admin") || !Config.getBoolean("features.notifier")) return;
 
-    /*@EventHandler(priority = EventPriority.HIGH)
-    public void onBedEnter(final PlayerBedEnterEvent event) {
-        if (event.getBedEnterResult() != PlayerBedEnterEvent.BedEnterResult.OK) {
-            return;
+        // Check for updates
+        boolean updateAvailable = false;
+        try {
+            updateAvailable = Updater.check().get();
+        } catch (InterruptedException | ExecutionException ex) {
+            ex.printStackTrace();
         }
 
-        boolean success = false; // 1.13 API change makes this necessary
-        try {if (event.getBedEnterResult() == PlayerBedEnterEvent.BedEnterResult.OK) success = true;}
-        catch (NoSuchMethodError nme) {success = true;}
-
-        if (success) {
-            final World world = event.getPlayer().getWorld();
-
+        if (updateAvailable) {
+            TextComponent updateMessage = new TextComponent(ChatColor.translateAlternateColorCodes('&',
+                    Config.getString("messages.miscellaneous.prefix")
+                    + "&7Hey there, Harbor " + Updater.latest + " is now out!"
+                    + " Click this message to upgrade automatically."));
+            updateMessage.setColor(ChatColor.GRAY);
+            updateMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    new ComponentBuilder("§a§l↑ §7Click to update Harbor now!").create()));
+            updateMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/harbor update"));
+            e.getPlayer().spigot().sendMessage(updateMessage);
         }
     }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onBedLeave(final PlayerBedLeaveEvent event) {
-        final World world = event.getPlayer().getWorld();
-        if (Checker.isNight(world) && !Checker.skippingWorlds.contains(world) && morePlayerNeeded(world, 0)) {
-            Message.sendChatMessage(world, "messages.chat.left", event.getPlayer().getDisplayName(), 0);
-        }
-    }*/
-
 }

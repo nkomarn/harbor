@@ -31,21 +31,16 @@ public class Checker implements Runnable {
         final int sleeping = getSleeping(world).size();
         final int needed = getNeeded(world);
 
-        // Send actionbar/bossbar sleeping notification
+        // Send actionbar sleeping notification
         if (sleeping > 0 && needed > 0) {
-            if (Config.getBoolean("messages.actionbar.actionbar")) {
-                world.getPlayers().forEach(player -> Messages.sendActionBarMessage(player,
-                        Config.getString("messages.actionbar.sleeping")));
-            }
-            if (Config.getBoolean("messages.bossbar.bossbar")) {
-                world.getPlayers().forEach(player -> Messages.sendBossbar(player,
-                        Config.getString("messages.bossbar.sleeping")));
-            }
+            world.getPlayers().forEach(player -> Messages.sendActionBarMessage(player,
+                    Config.getString("messages.actionbar.sleeping")));
         } else if (needed == 0 && sleeping > 0) {
             world.getPlayers().forEach(player -> Messages.sendActionBarMessage(player, 
                 Config.getString("messages.actionbar.everyone")));
             skippingWorlds.add(world);
             new AccelerateNightTask(world).runTaskTimer(Harbor.instance, 0L, 1);
+            Messages.sendRandomChatMessage(world, "messages.chat.accelerateNight");
         }
     }
 

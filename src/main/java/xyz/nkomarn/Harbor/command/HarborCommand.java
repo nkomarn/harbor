@@ -51,7 +51,6 @@ public class HarborCommand implements CommandExecutor {
             boolean updateAvailable;
             try {
                 updateAvailable = Updater.check().get();
-                System.out.println(updateAvailable);
             } catch (ExecutionException | InterruptedException e) {
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + "&7Failed to check for a "
                     + "new update. Check console for full log."));

@@ -11,9 +11,6 @@ commands:
   harbor:
     description: "Base command for Harbor!"
     usage: "/harbor {subcommand}"
-  sleeping:
-    description: "Display a list of the currently sleeping players."
-    usage: "/sleeping"
 
 permissions:
   harbor.bypass:

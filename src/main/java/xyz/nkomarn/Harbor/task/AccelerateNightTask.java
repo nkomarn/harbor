@@ -1,6 +1,5 @@
 package xyz.nkomarn.Harbor.task;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Statistic;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -10,7 +9,7 @@ import xyz.nkomarn.Harbor.util.Messages;
 public class AccelerateNightTask extends BukkitRunnable {
     private final World world;
 
-    public AccelerateNightTask(final World world) {
+    AccelerateNightTask(final World world) {
         this.world = world;
     }
 

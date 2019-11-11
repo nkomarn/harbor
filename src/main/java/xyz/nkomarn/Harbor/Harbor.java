@@ -12,7 +12,7 @@ import xyz.nkomarn.Harbor.util.Metrics;
 public class Harbor extends JavaPlugin {
 
     public static Harbor instance;
-    public static String version = "1.6";
+    public static String version = "1.6.1";
     public static Essentials essentials;
 
     public void onEnable() {

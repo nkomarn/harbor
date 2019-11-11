@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
@@ -20,7 +20,7 @@ public class Updater {
     public static Future<Boolean> check() {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
-        Executors.newCachedThreadPool().submit(() -> {
+        ForkJoinPool.commonPool().submit(() -> {
             try {
                 URL latestVersion = new URL("https://api.spigotmc.org/legacy/update.php?resource=60088");
                 URLConnection request = latestVersion.openConnection();
@@ -43,7 +43,7 @@ public class Updater {
     public static Future<String> upgrade() {
         CompletableFuture<String> future = new CompletableFuture<>();
 
-        Executors.newCachedThreadPool().submit(() -> {
+        ForkJoinPool.commonPool().submit(() -> {
             String jarName = new File(Updater.class.getProtectionDomain().getCodeSource().getLocation()
                 .getPath()).getName();
 

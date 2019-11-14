@@ -5,7 +5,7 @@ version: ${version}
 author: TechToolbox (@nkomarn)
 website: https://nkomarn.xyz
 softdepend: [Essentials]
-api-version: 1.13
+api-version: 1.14
 
 commands:
   harbor:

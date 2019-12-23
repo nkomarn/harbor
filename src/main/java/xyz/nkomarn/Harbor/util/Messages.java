@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Random;
 
 public class Messages {
-
     public static void sendRandomChatMessage(final World world, final String messageList) {
         final List<String> messages = Config.getList(messageList);
         if (messages.size() < 1) return;
@@ -19,7 +18,7 @@ public class Messages {
         sendWorldChatMessage(world, messages.get(index));
     }
 
-    private static void sendWorldChatMessage(final World world, final String message) {
+    public static void sendWorldChatMessage(final World world, final String message) {
         if (!Config.getBoolean("messages.chat.chat") || message.length() < 1) return;
         world.getPlayers().forEach(player -> player.sendMessage(ChatColor.translateAlternateColorCodes('&',
                 prepareMessage(world, message))));

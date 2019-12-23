@@ -4,7 +4,8 @@ import com.earth2me.essentials.Essentials;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.nkomarn.Harbor.command.HarborCommand;
-import xyz.nkomarn.Harbor.listener.PlayerListener;
+import xyz.nkomarn.Harbor.listener.BedListener;
+import xyz.nkomarn.Harbor.listener.JoinListener;
 import xyz.nkomarn.Harbor.task.Checker;
 import xyz.nkomarn.Harbor.util.Config;
 import xyz.nkomarn.Harbor.util.Metrics;
@@ -12,7 +13,7 @@ import xyz.nkomarn.Harbor.util.Metrics;
 public class Harbor extends JavaPlugin {
 
     public static Harbor instance;
-    public static String version = "1.6.1";
+    public static String version = "1.6.2";
     public static Essentials essentials;
 
     public void onEnable() {
@@ -24,7 +25,8 @@ public class Harbor extends JavaPlugin {
         }
 
         getCommand("harbor").setExecutor(new HarborCommand());
-        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new JoinListener(), this);
+        getServer().getPluginManager().registerEvents(new BedListener(), this);
 
         // bStats
         new Metrics(this);

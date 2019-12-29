@@ -1,10 +1,10 @@
-name: ${name}
+name: Harbor
 description: Harbor is a Spigot plugin that redefines how sleep works in your server, making it easier for all the online players to get in bed quickly and skip through the night!
-main: xyz.nkomarn.${name}.${name}
-version: ${version}
+main: xyz.nkomarn.Harbor.Harbor
+version: 1.6.2
 author: TechToolbox (@nkomarn)
 website: https://nkomarn.xyz
-softdepend: [Essentials]
+softdepend: [Essentials, PlaceholderAPI]
 api-version: 1.14
 
 commands:

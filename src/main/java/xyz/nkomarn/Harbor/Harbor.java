@@ -11,7 +11,6 @@ import xyz.nkomarn.Harbor.util.Config;
 import xyz.nkomarn.Harbor.util.Metrics;
 
 public class Harbor extends JavaPlugin {
-
     public static Harbor instance;
     public static String version = "1.6.2";
     public static Essentials essentials;
@@ -32,7 +31,6 @@ public class Harbor extends JavaPlugin {
         new Metrics(this);
 
         // Essentials hook
-        essentials = (Essentials) Bukkit.getServer().getPluginManager()
-                .getPlugin("Essentials");
+        essentials = (Essentials) getServer().getPluginManager().getPlugin("Essentials");
     }
 }

@@ -9,7 +9,7 @@ import xyz.nkomarn.Harbor.util.Messages;
 public class AccelerateNightTask extends BukkitRunnable {
     private final World world;
 
-    AccelerateNightTask(final World world) {
+    public AccelerateNightTask(final World world) {
         this.world = world;
     }
 

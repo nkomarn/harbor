@@ -13,7 +13,6 @@ import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 public class Updater {
-
     public static String latest;
 
     // Checks if an update is available

@@ -4,18 +4,23 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import xyz.nkomarn.Harbor.Harbor;
+import xyz.nkomarn.Harbor.task.AccelerateNightTask;
+import xyz.nkomarn.Harbor.task.Checker;
 import xyz.nkomarn.Harbor.util.Config;
 import xyz.nkomarn.Harbor.util.Updater;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class HarborCommand implements CommandExecutor {
-
+public class HarborCommand implements TabExecutor {
     @Override
     public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
 
@@ -36,6 +41,22 @@ public class HarborCommand implements CommandExecutor {
             Harbor.instance.reloadConfig();
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
                     + "&7Reloaded configuration."));
+            return true;
+        }
+        else if (args[0].equalsIgnoreCase("forceskip")) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
+                        + "&7This command requires you to be a player."));
+                return true;
+            }
+
+            Player player = (Player) sender;
+            World world = player.getWorld();
+
+            Checker.skippingWorlds.add(world);
+            new AccelerateNightTask(world).runTaskTimer(Harbor.instance, 0L, 1);
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
+                    + "&7Forcing night skip in your world."));
             return true;
         }
         else if (args[0].equalsIgnoreCase("update")) {
@@ -73,17 +94,23 @@ public class HarborCommand implements CommandExecutor {
                 } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }
-                return true;
             } else {
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + "&7You're already running "
                     + "the latest version of Harbor. Great work!"));
-                return true;
             }
+            return true;
         }
 
         // Otherwise, send unrecognized argument messages
         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
                 + Config.getString("messages.miscellaneous.unrecognized")));
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (!sender.hasPermission("harbor.admin")) return null;
+        if (args.length != 1) return null;
+        return Arrays.asList("forceskip", "reload", "update");
     }
 }

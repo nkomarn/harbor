@@ -15,7 +15,6 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 public class Checker implements Runnable {
-
     public static final List<World> skippingWorlds = new ArrayList<>();
 
     @Override

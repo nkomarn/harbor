@@ -30,7 +30,6 @@ import java.util.zip.GZIPOutputStream;
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class Metrics {
-
     static {
         // You can use the property to disable the check in your test environment
         if (System.getProperty("bstats.relocatecheck") == null || !System.getProperty("bstats.relocatecheck").equals("false")) {

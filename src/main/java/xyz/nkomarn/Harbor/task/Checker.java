@@ -3,9 +3,13 @@ package xyz.nkomarn.Harbor.task;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
 import xyz.nkomarn.Harbor.Harbor;
+import xyz.nkomarn.Harbor.util.Afk;
 import xyz.nkomarn.Harbor.util.Config;
 import xyz.nkomarn.Harbor.util.Messages;
 
@@ -32,14 +36,17 @@ public class Checker implements Runnable {
 
         // Send actionbar sleeping notification
         if (sleeping > 0 && needed > 0) {
-            world.getPlayers().forEach(player -> Messages.sendActionBarMessage(player,
-                    Config.getString("messages.actionbar.sleeping")));
+            double percentage = Math.min(1, (double) sleeping / getSkipAmount(world));
+            Messages.sendBossBarMessage(world, Config.getString("messages.bossbar.sleeping.message"),
+                    BarColor.valueOf(Config.getString("messages.bossbar.sleeping.color")), percentage);
+            Messages.sendActionBarMessage(world, Config.getString("messages.actionbar.sleeping"));
         } else if (needed == 0 && sleeping > 0) {
-            world.getPlayers().forEach(player -> Messages.sendActionBarMessage(player, 
-                Config.getString("messages.actionbar.everyone")));
-            skippingWorlds.add(world);
+            Messages.sendBossBarMessage(world, Config.getString("messages.bossbar.everyone.message"),
+                    BarColor.valueOf(Config.getString("messages.bossbar.everyone.color")), 1);
+            Messages.sendActionBarMessage(world, Config.getString("messages.actionbar.everyone"));
 
             if (!Config.getBoolean("features.skip")) return;
+            skippingWorlds.add(world);
             new AccelerateNightTask(world).runTaskTimer(Harbor.instance, 0L, 1);
             Messages.sendRandomChatMessage(world, "messages.chat.accelerateNight");
         }
@@ -81,10 +88,10 @@ public class Checker implements Runnable {
         return world.getPlayers().stream().filter(Checker::isExcluded).collect(toList());
     }
 
-    private static boolean isExcluded(final Player p) {
-        final boolean excludedByGameMode = Config.getBoolean("features.ignore") && p.getGameMode() != GameMode.SURVIVAL;
-        final boolean excludedByPermission = Config.getBoolean("features.bypass") && p.hasPermission("harbor.bypass");
-        final boolean excludedByAfk = Harbor.essentials != null && Harbor.essentials.getUser(p).isAfk(); // Essentials AFK detection
+    private static boolean isExcluded(final Player player) {
+        final boolean excludedByGameMode = Config.getBoolean("features.ignore") && player.getGameMode() != GameMode.SURVIVAL;
+        final boolean excludedByPermission = Config.getBoolean("features.bypass") && player.hasPermission("harbor.bypass");
+        final boolean excludedByAfk = Afk.isAfk(player);
         return excludedByGameMode || excludedByPermission || excludedByAfk;
     }
 

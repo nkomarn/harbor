@@ -4,6 +4,7 @@ import com.earth2me.essentials.Essentials;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.nkomarn.Harbor.command.HarborCommand;
+import xyz.nkomarn.Harbor.listener.AfkListener;
 import xyz.nkomarn.Harbor.listener.BedListener;
 import xyz.nkomarn.Harbor.listener.JoinListener;
 import xyz.nkomarn.Harbor.task.Checker;
@@ -18,10 +19,8 @@ public class Harbor extends JavaPlugin {
     public void onEnable() {
         instance = this;
         saveDefaultConfig();
-        if (Config.getBoolean("features.skip")) {
-            Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this,
-                    new Checker(), 0L, Config.getInteger("values.timer") * 20);
-        }
+        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this,
+                new Checker(), 0L, Config.getInteger("values.timer") * 20);
 
         getCommand("harbor").setExecutor(new HarborCommand());
         getServer().getPluginManager().registerEvents(new JoinListener(), this);
@@ -32,5 +31,11 @@ public class Harbor extends JavaPlugin {
 
         // Essentials hook
         essentials = (Essentials) getServer().getPluginManager().getPlugin("Essentials");
+
+        // If Essentials isn't present, enable fallback AFK system
+        if (essentials == null) {
+            System.out.println("Registered Listener");
+            getServer().getPluginManager().registerEvents(new AfkListener(), this);
+        }
     }
 }

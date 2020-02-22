@@ -2,9 +2,13 @@ package xyz.nkomarn.Harbor.command;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,6 +33,11 @@ public class HarborCommand implements TabExecutor {
         if (args.length < 1) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + "&7Harbor version "
                     + Harbor.version + " by TechToolbox (@nkomarn)."));
+
+            BossBar bar = Bukkit.createBossBar("AAAAAAAAAAAA", BarColor.BLUE, BarStyle.SOLID);
+            bar.setProgress(1);
+            bar.addPlayer((Player) sender); // TODO remove
+
             return true;
         }
 

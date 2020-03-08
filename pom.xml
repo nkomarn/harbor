@@ -80,4 +80,12 @@
       </plugins>
     </pluginManagement>
   </build>
+
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub nkomarn Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/nkomarn/Harbor</url>
+    </repository>
+  </distributionManagement>
 </project>

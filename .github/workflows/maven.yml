@@ -12,8 +12,11 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - name: Build with Maven
-      run: mvn package --file pom.xml
+    - name: Build with Maven and Deploy
+      env:
+        GITHUB_USERNAME: x-access-token
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: mvn --settings settings.xml deploy
     - name: Upload Artifact
       uses: actions/upload-artifact@v2-preview
       with:

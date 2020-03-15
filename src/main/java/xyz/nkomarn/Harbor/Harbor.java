@@ -2,6 +2,7 @@ package xyz.nkomarn.Harbor;
 
 import com.earth2me.essentials.Essentials;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.nkomarn.Harbor.command.HarborCommand;
 import xyz.nkomarn.Harbor.listener.AfkListener;
@@ -22,9 +23,10 @@ public class Harbor extends JavaPlugin {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this,
                 new Checker(), 0L, Config.getInteger("values.timer") * 20);
 
+        final PluginManager pluginManager = getServer().getPluginManager();
         getCommand("harbor").setExecutor(new HarborCommand());
-        getServer().getPluginManager().registerEvents(new JoinListener(), this);
-        getServer().getPluginManager().registerEvents(new BedListener(), this);
+        pluginManager.registerEvents(new JoinListener(), this);
+        pluginManager.registerEvents(new BedListener(), this);
 
         // bStats
         new Metrics(this);

@@ -12,6 +12,7 @@ values:
   timer: 2 # How often (in seconds) to run the clock task (used to detect sleep, AFK players, time actionbar, etc.)
   percent: 50 # Percent of players that need to sleep to skip night (must be between 0 to 100)
   interval: 60 # Time skip interval that is added when the night is accelerated.
+  day-time: 1000 # Time (in ticks) that Harbor considers as day
   timeout: 15 # Time (in minutes) until a player is considered AFK (for internal AFK detection system only- when Essentials isn't present)
 
 features:

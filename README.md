@@ -6,7 +6,7 @@
 
 Harbor is a plugin that redefines sleep within your Spigot server! Harbor is lightweight and performant, with just the right amount of features for any survival server! 
 
-Check it out and download the latest builds [over on the Spigot website!](https://www.spigotmc.org/resources/harbor-a-sleep-enhancement-plugin.60088/)
+Check it out and download the latest builds [over on the releases page!](https://github.com/nkomarn/Harbor/releases)
 
 # 🔨 Building from source
 Harbor uses Maven to handle dependecies and building! Make sure you have Java 8, Git, and Maven installed, and then run:

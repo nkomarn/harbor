@@ -6,6 +6,7 @@ import org.bukkit.World;
 import org.bukkit.boss.BarColor;
 import org.bukkit.entity.Player;
 
+import org.bukkit.metadata.MetadataValue;
 import xyz.nkomarn.Harbor.Harbor;
 import xyz.nkomarn.Harbor.util.Afk;
 import xyz.nkomarn.Harbor.util.Config;
@@ -90,7 +91,9 @@ public class Checker implements Runnable {
         final boolean excludedByGameMode = Config.getBoolean("features.ignore") && player.getGameMode() != GameMode.SURVIVAL;
         final boolean excludedByPermission = Config.getBoolean("features.bypass") && player.hasPermission("harbor.bypass");
         final boolean excludedByAfk = Afk.isAfk(player);
+        if (Config.getBoolean("features.vanish")) {
+            for (MetadataValue meta : player.getMetadata("vanished")) if (meta.asBoolean()) return true;
+        }
         return excludedByGameMode || excludedByPermission || excludedByAfk;
     }
-
 }

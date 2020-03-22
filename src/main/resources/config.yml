@@ -21,6 +21,7 @@ features:
   phantoms: false # Reset the sleep statistic (practically disables phantom spawns - false = no phantoms | Set the doInsomnia gamerule to false to disable phantoms if you're on 1.15+)
   bypass: true  # Toggle exclusion of operators/players with permission "harbor.bypass" from sleep count
   ignore: true  # Toggle exclusion of players in creative and spectator mode
+  vanish: true # Toggle exclusion of vanished players
   afk: true # Detect AFK players and remove them from the sleep count (Essentials API used for detection when possible)
   notifier: true # Displays a notification when a new update is released
 

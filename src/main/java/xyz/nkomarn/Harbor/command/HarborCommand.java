@@ -22,7 +22,6 @@ import java.util.concurrent.ExecutionException;
 public class HarborCommand implements TabExecutor {
     @Override
     public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
-
         final String prefix = Config.getString("messages.miscellaneous.prefix");
 
         if (args.length < 1) {
@@ -52,6 +51,12 @@ public class HarborCommand implements TabExecutor {
 
             Player player = (Player) sender;
             World world = player.getWorld();
+
+            if (Checker.skippingWorlds.contains(world)) {
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
+                    + "&7This world's time is already being accelerated."));
+                return true;
+            }
 
             Checker.skippingWorlds.add(world);
             new AccelerateNightTask(world).runTaskTimer(Harbor.instance, 0L, 1);

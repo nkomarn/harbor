@@ -1,8 +1,10 @@
 package xyz.nkomarn.Harbor.task;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Statistic;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
+import xyz.nkomarn.Harbor.Harbor;
 import xyz.nkomarn.Harbor.util.Config;
 import xyz.nkomarn.Harbor.util.Messages;
 
@@ -17,27 +19,27 @@ public class AccelerateNightTask extends BukkitRunnable {
     public void run() {
         final long time = world.getTime();
         final int interval = Config.getInteger("values.interval");
-        final int dayTime = Config.getInteger("values.day-time");
 
-        if (!(time >= (dayTime - interval * 2) && time <= dayTime)) {
+        // Variable interval based on player count
+
+        if (!(time >= 450 && time <= 1000)) {
             world.setTime(time + interval);
         } else {
-            // Announce night skip and clear queue
-            Messages.sendRandomChatMessage(world, "messages.chat.skipped");
-            Checker.skippingWorlds.remove(world);
-
-            // Reset sleep statistic if phantoms are disabled
             if (!Config.getBoolean("features.phantoms")) {
                 world.getPlayers().forEach(player ->
                         player.setStatistic(Statistic.TIME_SINCE_REST, 0));
             }
 
-            // Clear weather
-            if (Config.getBoolean("features.weather")) {
+            if (Config.getBoolean("features.clear-rain")) {
                 world.setStorm(false);
+            }
+
+            if (Config.getBoolean("features.clear-thunder")) {
                 world.setThundering(false);
             }
 
+            Checker.skippingWorlds.remove(world);
+            Messages.sendRandomChatMessage(world, "messages.chat.skipped");
             this.cancel();
         }
     }

@@ -45,8 +45,12 @@ public class Checker implements Runnable {
             Messages.sendActionBarMessage(world, Config.getString("messages.actionbar.everyone"));
 
             if (!Config.getBoolean("features.skip")) return;
-            skippingWorlds.add(world);
-            new AccelerateNightTask(world).runTaskTimer(Harbor.instance, 0L, 1);
+            if (Config.getBoolean("features.instant-skip")) {
+                world.setTime(1000);
+            } else {
+                skippingWorlds.add(world);
+                new AccelerateNightTask(world).runTaskTimer(Harbor.instance, 0L, 1);
+            }
             Messages.sendRandomChatMessage(world, "messages.chat.accelerateNight");
         }
     }

@@ -1,23 +1,28 @@
 # Harbor - A Sleep Enhancement Plugin!
 # An open-source project by Mykyta (TechToolbox)
 # https://harbor.nkomarn.xyz
-#
+
 # Ahoy, matey! You've arrived at the configuration file, where things get a bit scary.
 # Every single thing within this plugin is customizable (at least I tried to make it that way),
 # so every message and plugin module can be modified here. If you would like to report a bug
 # or suggest a feature, make sure to add an issue on the GitHub page for this plugin!
 # GitHub URL: https://github.com/nkomarn/Harbor/issues
 
+# Important note regarding Essentials
+# Please make sure you negate the permission "essentials.sleepingignored"
+# to prevent issues with Harbor and server operators
+
 values:
   timer: 2 # How often (in seconds) to run the clock task (used to detect sleep, AFK players, time actionbar, etc.)
   percent: 50 # Percent of players that need to sleep to skip night (must be between 0 to 100)
   interval: 60 # Time skip interval that is added when the night is accelerated.
-  day-time: 1000 # Time (in ticks) that Harbor considers as day
   timeout: 15 # Time (in minutes) until a player is considered AFK (for internal AFK detection system only- when Essentials isn't present)
 
 features:
   skip: true # Toggle night skipping feature. Configure amount of players needed to skip above (percent)
-  weather: true # Clear weather when skipping night
+  instant-skip: false # Toggle the instant skipping of night (instead of showing the full animation). Requires "skip" to be true.
+  clear-rain: true # Clear rain when skipping the night
+  clear-thunder: true # Clear thunder when skipping the night
   phantoms: false # Reset the sleep statistic (practically disables phantom spawns - false = no phantoms | Set the doInsomnia gamerule to false to disable phantoms if you're on 1.15+)
   bypass: true  # Toggle exclusion of operators/players with permission "harbor.bypass" from sleep count
   ignore: true  # Toggle exclusion of players in creative and spectator mode
@@ -54,10 +59,13 @@ messages:
     permission: "&7Insufficient permissions." # Sent when player doesn't have permissions to run command
     unrecognized: "&7Unrecognized command." # Sent when command argument isn't recognized
 
-blacklist: # Blacklist for worlds (Harbor will be disabled in these worlds)
+# Blacklist for worlds
+# Harbor will be disabled in these worlds
+blacklist:
   - "world_nether"
   - "world_the_end"
 
-# Spooky controls (don't change)
-version: 1.6
+# Spooky controls
+# (don't change)
+version: 1.6.2
 debug: false

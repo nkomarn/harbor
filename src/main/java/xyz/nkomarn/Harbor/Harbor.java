@@ -7,7 +7,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import xyz.nkomarn.Harbor.command.HarborCommand;
 import xyz.nkomarn.Harbor.listener.AfkListener;
 import xyz.nkomarn.Harbor.listener.BedListener;
-import xyz.nkomarn.Harbor.listener.JoinListener;
 import xyz.nkomarn.Harbor.task.Checker;
 import xyz.nkomarn.Harbor.util.Config;
 import xyz.nkomarn.Harbor.util.Metrics;
@@ -20,13 +19,17 @@ public class Harbor extends JavaPlugin {
     public void onEnable() {
         instance = this;
         saveDefaultConfig();
-        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this,
+        Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(this,
                 new Checker(), 0L, Config.getInteger("values.timer") * 20);
 
         final PluginManager pluginManager = getServer().getPluginManager();
         getCommand("harbor").setExecutor(new HarborCommand());
-        pluginManager.registerEvents(new JoinListener(), this);
         pluginManager.registerEvents(new BedListener(), this);
+
+        if (!Config.getString("version").equals(version)) {
+            getLogger().warning(String.format("The configuration version is '%s' but you're running Harbor " +
+                    "version '%s'. Please update your configuration.", Config.getString("version"), version));
+        }
 
         // bStats
         new Metrics(this);
@@ -36,7 +39,7 @@ public class Harbor extends JavaPlugin {
 
         // If Essentials isn't present, enable fallback AFK system
         if (essentials == null) {
-            System.out.println("Registered Listener");
+            getLogger().info("Essentials not present- registering fallback AFK detection system.");
             getServer().getPluginManager().registerEvents(new AfkListener(), this);
         }
     }

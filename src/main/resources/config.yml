@@ -16,19 +16,20 @@ values:
   timer: 2 # How often (in seconds) to run the clock task (used to detect sleep, AFK players, time actionbar, etc.)
   percent: 50 # Percent of players that need to sleep to skip night (must be between 0 to 100)
   interval: 60 # Time skip interval that is added when the night is accelerated.
+  multiplier: 0.4 # Used as the variable multiplier for the variable-interval feature.
   timeout: 15 # Time (in minutes) until a player is considered AFK (for internal AFK detection system only- when Essentials isn't present)
 
 features:
   skip: true # Toggle night skipping feature. Configure amount of players needed to skip above (percent)
   instant-skip: false # Toggle the instant skipping of night (instead of showing the full animation). Requires "skip" to be true.
+  variable-interval: false # Change the night skip tick interval based on the amount of online players
   clear-rain: true # Clear rain when skipping the night
   clear-thunder: true # Clear thunder when skipping the night
   phantoms: false # Reset the sleep statistic (practically disables phantom spawns - false = no phantoms | Set the doInsomnia gamerule to false to disable phantoms if you're on 1.15+)
   bypass: true  # Toggle exclusion of operators/players with permission "harbor.bypass" from sleep count
   ignore: true  # Toggle exclusion of players in creative and spectator mode
-  vanish: true # Toggle exclusion of vanished players
+  exclude-vanished: true # Toggle exclusion of vanished players
   afk: true # Detect AFK players and remove them from the sleep count (Essentials API used for detection when possible)
-  notifier: true # Displays a notification when a new update is released
 
 messages:
   chat:

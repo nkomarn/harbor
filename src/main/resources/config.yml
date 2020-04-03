@@ -8,7 +8,7 @@
 night-skip:
   enabled: true # Skip the night if a percentage of the players in a world are sleeping
   percentage: 50 # Percentage of players required to be sleeping to skip the night (0 - 100)
-  time-rate: 60 # The amount of ticks added to the current time every tick when skipping the night
+  time-rate: 70 # The amount of ticks added to the current time every tick when skipping the night
   daytime-ticks: 1200 # The time in ticks that Harbor considers day
   instant-skip: false # Instantly skip the night instead of showing the full animation
   variable-rate: false # Increase the night skipping speed based on the amount of sleeping players
@@ -18,7 +18,7 @@ night-skip:
   reset-phantom-statistic: true # Treats everyone online as if they have slept in the last 3 days after the night is skipped (check out /gamerule doInsomnia on 1.15+)
 
 exclusions:
-  bypass-permission: true # Exclude players with the permission "harbor.bypass" from the sleeping count
+  ignored-permission: true # Exclude players with the permission "harbor.ignored" from the sleeping count
   exclude-creative: true # Exclude players in creative mode from the sleeping count
   exclude-spectator: true # Exclude players in spectator mode from the sleeping count
   exclude-vanished: true # Exclude vanished players from the sleeping count
@@ -37,6 +37,7 @@ blacklisted-worlds:
 messages:
   chat:
     enabled: true
+    message-cooldown: 5 # The amount of time in seconds before a player can send another bed enter or leave message
     player-sleeping: "&e[player] is now sleeping ([sleeping]/[needed], [more] more needed to skip)."
     player-left-bed: "&e[player] got out of bed ([sleeping]/[needed], [more] more needed to skip)."
     night-skipping:
@@ -60,7 +61,6 @@ messages:
       color: GREEN
   miscellaneous:
     chat-prefix: "&8&l(&6&lHarbor&8&l)&7 "
-    insufficient-permissions: "Insufficient permissions."
     unrecognized-command: "Unrecognized command."
 
 # Spooky internal controls

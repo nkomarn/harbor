@@ -95,7 +95,7 @@ public class Checker implements Runnable {
     private static boolean isExcluded(final Player player) {
         final boolean excludedByCreative = Config.getBoolean("exclusions.exclude-creative") && player.getGameMode() == GameMode.CREATIVE;
         final boolean excludedBySpectator = Config.getBoolean("exclusions.exclude-spectator") && player.getGameMode() == GameMode.SPECTATOR;
-        final boolean excludedByPermission = Config.getBoolean("exclusions.bypass-permission") && player.hasPermission("harbor.bypass");
+        final boolean excludedByPermission = Config.getBoolean("exclusions.bypass-permission") && player.hasPermission("harbor.ignored");
         final boolean excludedByAfk = Afk.isAfk(player);
 
         if (Config.getBoolean("exclusions.exclude-vanished")) {

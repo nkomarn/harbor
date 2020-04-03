@@ -19,23 +19,13 @@ public class HarborCommand implements TabExecutor {
     public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
         final String prefix = Config.getString("messages.miscellaneous.chat-prefix");
 
-        if (args.length < 1) {
+        if (args.length < 1 || !sender.hasPermission("harbor.admin")) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + "&7Harbor version "
                     + Harbor.version + " by TechToolbox (@nkomarn)."));
-            return true;
-        }
-
-        if (!sender.hasPermission("harbor.admin")) {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
-                    + Config.getString("messages.miscellaneous.permission")));
-            return true;
-        }
-
-        if (args[0].equalsIgnoreCase("reload")) {
+        } else if (args[0].equalsIgnoreCase("reload")) {
             Harbor.getHarbor().reloadConfig();
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
                     + "&7Reloaded configuration."));
-            return true;
         }
         else if (args[0].equalsIgnoreCase("forceskip")) {
             if (!(sender instanceof Player)) {
@@ -57,12 +47,10 @@ public class HarborCommand implements TabExecutor {
             new AccelerateNightTask(world).runTaskTimer(Harbor.getHarbor(), 0L, 1);
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
                     + "&7Forcing night skip in your world."));
-            return true;
         }
 
-        // Otherwise, send unrecognized argument messages
         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
-                + Config.getString("messages.miscellaneous.unrecognized")));
+                + Config.getString("messages.miscellaneous.unrecognized-command")));
         return true;
     }
 
@@ -70,6 +58,6 @@ public class HarborCommand implements TabExecutor {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (!sender.hasPermission("harbor.admin")) return null;
         if (args.length != 1) return null;
-        return Arrays.asList("forceskip", "reload", "update");
+        return Arrays.asList("forceskip", "reload");
     }
 }

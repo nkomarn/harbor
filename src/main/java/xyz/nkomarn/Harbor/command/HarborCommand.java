@@ -17,7 +17,7 @@ import java.util.List;
 public class HarborCommand implements TabExecutor {
     @Override
     public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
-        final String prefix = Config.getString("messages.miscellaneous.prefix");
+        final String prefix = Config.getString("messages.miscellaneous.chat-prefix");
 
         if (args.length < 1) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + "&7Harbor version "

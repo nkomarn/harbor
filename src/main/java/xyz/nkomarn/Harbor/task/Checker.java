@@ -32,21 +32,23 @@ public class Checker implements Runnable {
         if (sleeping > 0 && needed > 0) {
             // TODO redo bossbars
             final double sleepingPercentage = Math.min(1, (double) sleeping / getSkipAmount(world));
-            Messages.sendBossBarMessage(world, Config.getString("messages.bossbar.sleeping.message"),
-                    BarColor.valueOf(Config.getString("messages.bossbar.sleeping.color")), sleepingPercentage);
+            Messages.sendBossBarMessage(world, Config.getString("messages.bossbar.players-sleeping.message"),
+                    BarColor.valueOf(Config.getString("messages.bossbar.players-sleeping.color")), sleepingPercentage);
 
 
             Messages.sendActionBarMessage(world, Config.getString("messages.actionbar.players-sleeping"));
         } else if (needed == 0 && sleeping > 0) {
-            Messages.sendBossBarMessage(world, Config.getString("messages.bossbar.everyone.message"),
-                    BarColor.valueOf(Config.getString("messages.bossbar.everyone.color")), 1);
+            Messages.sendBossBarMessage(world, Config.getString("messages.bossbar.night-skipping.message"),
+                    BarColor.valueOf(Config.getString("messages.bossbar.night-skipping.color")), 1);
 
             Messages.sendActionBarMessage(world, Config.getString("messages.actionbar.night-skipping"));
 
             if (!Config.getBoolean("night-skip.enabled")) return;
 
             if (Config.getBoolean("night-skip.instant-skip")) {
-                world.setTime(Config.getInteger("night-skip.daytime-ticks"));
+                Bukkit.getScheduler().runTask(Harbor.getHarbor(), () ->
+                        world.setTime(Config.getInteger("night-skip.daytime-ticks")));
+                Messages.sendRandomChatMessage(world, "messages.chat.night-skipped");
             } else {
                 skippingWorlds.add(world);
                 new AccelerateNightTask(world).runTaskTimer(Harbor.getHarbor(), 1, 1);
@@ -99,6 +101,6 @@ public class Checker implements Runnable {
         if (Config.getBoolean("exclusions.exclude-vanished")) {
             for (MetadataValue meta : player.getMetadata("vanished")) if (meta.asBoolean()) return true;
         }
-        return excludedByCreative || excludedBySpectator || excludedByPermission || excludedByAfk;
+        return excludedByCreative || excludedBySpectator || excludedByPermission || excludedByAfk || player.isSleepingIgnored();
     }
 }

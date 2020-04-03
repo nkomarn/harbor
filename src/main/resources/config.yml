@@ -9,10 +9,10 @@ night-skip:
   enabled: true # Skip the night if a percentage of the players in a world are sleeping
   percentage: 50 # Percentage of players required to be sleeping to skip the night (0 - 100)
   time-rate: 60 # The amount of ticks added to the current time every tick when skipping the night
-  daytime-ticks: 1000 # The time in ticks that Harbor considers day TODO
+  daytime-ticks: 1200 # The time in ticks that Harbor considers day
   instant-skip: false # Instantly skip the night instead of showing the full animation
-  variable-speed: false # Increase the night skipping speed based on the amount of sleeping players
-  speed-multiplier: 0.5 # Multiplier used for variable night skipping (TODO explain formula)
+  variable-rate: false # Increase the night skipping speed based on the amount of sleeping players
+  rate-multiplier: 0.5 # Multiplier used for variable night skipping (TODO explain formula)
   clear-rain: true # Clear rain (if it's raining) when the night is skipped
   clear-thunder: true # Clear thunder (if it's thundering) when the night is skipped
   reset-phantom-statistic: true # Treats everyone online as if they have slept in the last 3 days after the night is skipped (check out /gamerule doInsomnia on 1.15+)
@@ -48,8 +48,8 @@ messages:
       - "&eArghh, it's so bright outside."
   actionbar:
     enabled: true
-    players-sleeping: "&e[sleeping] out of [needed] players are sleeping ([more] more needed to skip)."
-    night-skipping: "&eEveryone is sleeping. Sweet dreams!"
+    players-sleeping: "&e[sleeping] out of [needed] players are sleeping ([more] more needed to skip)"
+    night-skipping: "&eEveryone is sleeping- sweet dreams!"
   bossbar:
     enabled: true
     players-sleeping:

@@ -10,15 +10,15 @@ public class Afk {
     private static HashMap<Player, Long> activity = new HashMap<>();
 
     public static boolean isAfk(Player player) {
-        if (!Config.getBoolean("features.afk")) return false;
+        if (!Config.getBoolean("afk-detection.enabled")) return false;
 
-        if (Harbor.essentials != null) {
-            return Harbor.essentials.getUser(player).isAfk();
+        if (Harbor.getEssentials() != null) {
+            return Harbor.getEssentials().getUser(player).isAfk();
         }
 
         if (!activity.containsKey(player)) return false;
         long minutes = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - activity.get(player));
-        return minutes >= Config.getInteger("values.timeout");
+        return minutes >= Config.getInteger("afk-detection.timeout");
     }
 
     public static void updateActivity(Player player) {

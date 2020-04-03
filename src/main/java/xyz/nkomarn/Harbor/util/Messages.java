@@ -23,23 +23,23 @@ public class Messages {
     }
 
     public static void sendWorldChatMessage(final World world, final String message) {
-        if (!Config.getBoolean("messages.chat.chat") || message.length() < 1) return;
+        if (!Config.getBoolean("messages.chat.enabled") || message.length() < 1) return;
         world.getPlayers().forEach(player -> player.sendMessage(ChatColor.translateAlternateColorCodes('&',
                 prepareMessage(world, message))));
     }
 
     public static void sendActionBarMessage(final World world, final String message) {
-        if (!Config.getBoolean("messages.actionbar.actionbar") || message.length() < 1) return;
+        if (!Config.getBoolean("messages.actionbar.enabled") || message.length() < 1) return;
         world.getPlayers().forEach(player -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
                 TextComponent.fromLegacyText(prepareMessage(world, message))));
     }
 
     public static void sendBossBarMessage(final World world, final String message, final BarColor color, final double percentage) {
-        if (!Config.getBoolean("messages.bossbar.bossbar") || message.length() < 1) return;
+        if (!Config.getBoolean("messages.bossbar.enabled") || message.length() < 1) return;
         BossBar bar = Bukkit.createBossBar(Messages.prepareMessage(world, message), color, BarStyle.SOLID);
         bar.setProgress(percentage);
         world.getPlayers().forEach(bar::addPlayer);
-        Bukkit.getScheduler().runTaskLater(Harbor.instance, bar::removeAll, Config.getInteger("values.timer") * 20);
+        Bukkit.getScheduler().runTaskLater(Harbor.getHarbor(), bar::removeAll, Config.getInteger("interval") * 20);
     }
 
     private static String prepareMessage(final World world, final String message) {

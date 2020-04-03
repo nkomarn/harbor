@@ -1,72 +1,69 @@
-# Harbor - A Sleep Enhancement Plugin!
-# An open-source project by Mykyta (TechToolbox)
-# https://harbor.nkomarn.xyz
+# Harbor - Sleep mechanics enhancement plugin
+# An open-source project by TechToolbox (@nkomarn)
+# https://github.com/nkomarn/Harbor
 
-# Ahoy, matey! You've arrived at the configuration file, where things get a bit scary.
-# Every single thing within this plugin is customizable (at least I tried to make it that way),
-# so every message and plugin module can be modified here. If you would like to report a bug
-# or suggest a feature, make sure to add an issue on the GitHub page for this plugin!
-# GitHub URL: https://github.com/nkomarn/Harbor/issues
+# Important note regarding Essentials:
+# Please make sure you negate the permission "essentials.sleepingignored" to prevent issues with Harbor and server operators
 
-# Important note regarding Essentials
-# Please make sure you negate the permission "essentials.sleepingignored"
-# to prevent issues with Harbor and server operators
+night-skip:
+  enabled: true # Skip the night if a percentage of the players in a world are sleeping
+  percentage: 50 # Percentage of players required to be sleeping to skip the night (0 - 100)
+  time-rate: 60 # The amount of ticks added to the current time every tick when skipping the night
+  daytime-ticks: 1000 # The time in ticks that Harbor considers day TODO
+  instant-skip: false # Instantly skip the night instead of showing the full animation
+  variable-speed: false # Increase the night skipping speed based on the amount of sleeping players
+  speed-multiplier: 0.5 # Multiplier used for variable night skipping (TODO explain formula)
+  clear-rain: true # Clear rain (if it's raining) when the night is skipped
+  clear-thunder: true # Clear thunder (if it's thundering) when the night is skipped
+  reset-phantom-statistic: true # Treats everyone online as if they have slept in the last 3 days after the night is skipped (check out /gamerule doInsomnia on 1.15+)
 
-values:
-  timer: 2 # How often (in seconds) to run the clock task (used to detect sleep, AFK players, time actionbar, etc.)
-  percent: 50 # Percent of players that need to sleep to skip night (must be between 0 to 100)
-  interval: 60 # Time skip interval that is added when the night is accelerated.
-  multiplier: 0.4 # Used as the variable multiplier for the variable-interval feature.
-  timeout: 15 # Time (in minutes) until a player is considered AFK (for internal AFK detection system only- when Essentials isn't present)
+exclusions:
+  bypass-permission: true # Exclude players with the permission "harbor.bypass" from the sleeping count
+  exclude-creative: true # Exclude players in creative mode from the sleeping count
+  exclude-spectator: true # Exclude players in spectator mode from the sleeping count
+  exclude-vanished: true # Exclude vanished players from the sleeping count
 
-features:
-  skip: true # Toggle night skipping feature. Configure amount of players needed to skip above (percent)
-  instant-skip: false # Toggle the instant skipping of night (instead of showing the full animation). Requires "skip" to be true.
-  variable-interval: false # Change the night skip tick interval based on the amount of online players
-  clear-rain: true # Clear rain when skipping the night
-  clear-thunder: true # Clear thunder when skipping the night
-  phantoms: false # Reset the sleep statistic (practically disables phantom spawns - false = no phantoms | Set the doInsomnia gamerule to false to disable phantoms if you're on 1.15+)
-  bypass: true  # Toggle exclusion of operators/players with permission "harbor.bypass" from sleep count
-  ignore: true  # Toggle exclusion of players in creative and spectator mode
-  exclude-vanished: true # Toggle exclusion of vanished players
-  afk: true # Detect AFK players and remove them from the sleep count (Essentials API used for detection when possible)
+# Detect AFK players and automatically remove them from the required sleeping count
+# Essentials API is used for AFK detection when available- otherwise a fallback system is used
+afk-detection:
+  enabled: true
+  timeout: 15 # Time in minutes until a player is considered AFK
 
-messages:
-  chat:
-    chat: true # Toggle chat messages
-    skipped: # Night skipped chat messages
-      - "&eThe night has been skipped."
-      - "&eAhhh, finally morning."
-      - "&eArghh, it's so bright outside."
-    sleeping: "&e[player] is now sleeping ([sleeping]/[needed], [more] more needed to skip)." # Display which player went to bed
-    left: "&e[player] got out of bed ([sleeping]/[needed], [more] more needed to skip)." # Display when a player left their bed
-    accelerateNight: # Display when the night is being accelerated.
-      - "&eAccelerating the night."
-      - "&eRapidly approaching daytime."
-  actionbar:
-    actionbar: true # Enable/disable actionbar messages
-    sleeping: "&e[sleeping] out of [needed] players are sleeping ([more] more needed to skip)." # Shown when some players are in bed
-    everyone: "&eEveryone is sleeping. Sweet dreams!" # Shown when all players are in bed
-  bossbar: # Use colors from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/boss/BarColor.html
-    bossbar: true # Enable/disable bossbar messages
-    sleeping:
-      message: "&f&l[sleeping] out of [needed] are sleeping &7&l([more] more needed)" # Shown when some players are in bed
-      color: BLUE
-    everyone:
-      message: "&f&lEveryone is sleeping. Sweet dreams!" # Shown when all players are in bed
-      color: GREEN
-  miscellaneous:
-    prefix: "&8&l(&6&lHarbor&8&l)&r " # Prefix for Harbor command/miscellaneous messages
-    permission: "&7Insufficient permissions." # Sent when player doesn't have permissions to run command
-    unrecognized: "&7Unrecognized command." # Sent when command argument isn't recognized
-
-# Blacklist for worlds
-# Harbor will be disabled in these worlds
-blacklist:
+# Blacklist for worlds- Harbor will ignore these worlds
+blacklisted-worlds:
   - "world_nether"
   - "world_the_end"
 
-# Spooky controls
-# (don't change)
+messages:
+  chat:
+    enabled: true
+    player-sleeping: "&e[player] is now sleeping ([sleeping]/[needed], [more] more needed to skip)."
+    player-left-bed: "&e[player] got out of bed ([sleeping]/[needed], [more] more needed to skip)."
+    night-skipping:
+      - "&eAccelerating the night."
+      - "&eRapidly approaching daytime."
+    night-skipped:
+      - "&eThe night has been skipped."
+      - "&eAhhh, finally morning."
+      - "&eArghh, it's so bright outside."
+  actionbar:
+    enabled: true
+    players-sleeping: "&e[sleeping] out of [needed] players are sleeping ([more] more needed to skip)."
+    night-skipping: "&eEveryone is sleeping. Sweet dreams!"
+  bossbar:
+    enabled: true
+    players-sleeping:
+      message: "&f&l[sleeping] out of [needed] are sleeping &7&l([more] more needed)"
+      color: BLUE
+    night-skipping:
+      message: "&f&lEveryone is sleeping. Sweet dreams!"
+      color: GREEN
+  miscellaneous:
+    chat-prefix: "&8&l(&6&lHarbor&8&l)&7 "
+    insufficient-permissions: "Insufficient permissions."
+    unrecognized-command: "Unrecognized command."
+
+# Spooky internal controls
 version: 1.6.2
+interval: 2
 debug: false

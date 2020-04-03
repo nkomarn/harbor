@@ -32,7 +32,7 @@ public class HarborCommand implements TabExecutor {
         }
 
         if (args[0].equalsIgnoreCase("reload")) {
-            Harbor.instance.reloadConfig();
+            Harbor.getHarbor().reloadConfig();
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
                     + "&7Reloaded configuration."));
             return true;
@@ -54,7 +54,7 @@ public class HarborCommand implements TabExecutor {
             }
 
             Checker.skippingWorlds.add(world);
-            new AccelerateNightTask(world).runTaskTimer(Harbor.instance, 0L, 1);
+            new AccelerateNightTask(world).runTaskTimer(Harbor.getHarbor(), 0L, 1);
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
                     + "&7Forcing night skip in your world."));
             return true;

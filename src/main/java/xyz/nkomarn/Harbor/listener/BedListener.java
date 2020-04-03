@@ -15,7 +15,7 @@ public class BedListener implements Listener {
     public void onBedEnter(final PlayerBedEnterEvent event) {
         if (event.getBedEnterResult() != PlayerBedEnterEvent.BedEnterResult.OK) return;
         if (Checker.skippingWorlds.contains(event.getPlayer().getWorld())) return;
-        Bukkit.getScheduler().runTaskLater(Harbor.instance, () -> Messages.sendWorldChatMessage(event.getBed().getWorld(),
+        Bukkit.getScheduler().runTaskLater(Harbor.getHarbor(), () -> Messages.sendWorldChatMessage(event.getBed().getWorld(),
                 Config.getString("messages.chat.sleeping")
                         .replace("[player]", event.getPlayer().getName())
                         .replace("[displayname]", event.getPlayer().getDisplayName())), 1);

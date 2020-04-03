@@ -13,7 +13,7 @@ public class Config {
      * @param location Configuration location of the boolean
      */
     public static boolean getBoolean(final String location) {
-        return Harbor.instance.getConfig().getBoolean(location, false);
+        return Harbor.getHarbor().getConfig().getBoolean(location, false);
     }
 
     /**
@@ -23,7 +23,7 @@ public class Config {
      * @param location Configuration location of the string
      */
     public static String getString(final String location) {
-        return Harbor.instance.getConfig().getString(location, "");
+        return Harbor.getHarbor().getConfig().getString(location, "");
     }
 
     /**
@@ -33,7 +33,7 @@ public class Config {
      * @param location Configuration location of the integer
      */
     public static int getInteger(final String location) {
-        return Harbor.instance.getConfig().getInt(location, 0);
+        return Harbor.getHarbor().getConfig().getInt(location, 0);
     }
 
     /**
@@ -43,7 +43,7 @@ public class Config {
      * @param location Configuration location of the double
      */
     public static double getDouble(final String location) {
-        return Harbor.instance.getConfig().getDouble(location, 0.0);
+        return Harbor.getHarbor().getConfig().getDouble(location, 0.0);
     }
 
     /**
@@ -53,6 +53,6 @@ public class Config {
      * @param location Configuration location of the list
      */
     public static List<String> getList(final String location) {
-        return (List<String>) Harbor.instance.getConfig().getList(location, new ArrayList<>());
+        return (List<String>) Harbor.getHarbor().getConfig().getList(location, new ArrayList<>());
     }
 }

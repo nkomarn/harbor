@@ -4,16 +4,16 @@ main: xyz.nkomarn.Harbor.Harbor
 version: 1.6.2-SNAPSHOT
 author: TechToolbox (@nkomarn)
 website: https://nkomarn.xyz
-softdepend: [Essentials, PlaceholderAPI]
+softdepend: [Essentials]
 api-version: 1.14
 
 commands:
   harbor:
     description: "Base command for Harbor!"
-    usage: "/harbor {subcommand}"
+    usage: "/harbor [subcommand]"
 
 permissions:
-  harbor.bypass:
+  harbor.ignored:
     default: false
   harbor.admin:
     default: op

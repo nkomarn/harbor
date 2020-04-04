@@ -19,7 +19,7 @@ public class AccelerateNightTask extends BukkitRunnable {
     @Override
     public void run() {
         final long time = world.getTime();
-        final int dayTime = Config.getInteger("night-skip.daytime-ticks");
+        final int dayTime = Math.max(150, Config.getInteger("night-skip.daytime-ticks"));
         final int sleeping = Checker.getSleeping(world).size();
         double timeRate = Config.getInteger("night-skip.time-rate");
 

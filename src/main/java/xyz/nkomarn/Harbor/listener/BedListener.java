@@ -13,18 +13,20 @@ import xyz.nkomarn.Harbor.util.Messages;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class BedListener implements Listener {
-    private Map<UUID, Long> cooldowns = new HashMap<>(); // TODO, totally fucked right now (lol)
+    private Map<UUID, Long> cooldowns = new HashMap<>();
 
     @EventHandler(ignoreCancelled = true)
     public void onBedEnter(final PlayerBedEnterEvent event) {
         if (event.getBedEnterResult() != PlayerBedEnterEvent.BedEnterResult.OK) return;
         if (Checker.skippingWorlds.contains(event.getPlayer().getWorld())) return;
+
         Bukkit.getScheduler().runTaskLater(Harbor.getHarbor(), () -> {
-            UUID playerUuid = event.getPlayer().getUniqueId();
-            if (cooldowns.containsKey(playerUuid) && !(cooldowns.get(playerUuid) +
-                    (Config.getInteger("messages.chat.message-cooldown") * 1000) >= System.currentTimeMillis())) return;
+            final UUID playerUuid = event.getPlayer().getUniqueId();
+            if (!(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - getCooldown(playerUuid)) >
+                    Config.getInteger("messages.chat.message-cooldown"))) return;
 
             Messages.sendWorldChatMessage(event.getBed().getWorld(),
                     Config.getString("messages.chat.player-sleeping")
@@ -37,10 +39,11 @@ public class BedListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onBedLeave(final PlayerBedLeaveEvent event) {
         if (Checker.skippingWorlds.contains(event.getPlayer().getWorld())) return;
+
         Bukkit.getScheduler().runTaskLater(Harbor.getHarbor(), () -> {
-            UUID playerUuid = event.getPlayer().getUniqueId();
-            if (cooldowns.containsKey(playerUuid) && !(cooldowns.get(playerUuid) +
-                    (Config.getInteger("messages.chat.message-cooldown") * 1000) >= System.currentTimeMillis())) return;
+            final UUID playerUuid = event.getPlayer().getUniqueId();
+            if (!(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - getCooldown(playerUuid)) >
+                    Config.getInteger("messages.chat.message-cooldown"))) return;
 
             Messages.sendWorldChatMessage(event.getBed().getWorld(),
                     Config.getString("messages.chat.player-left-bed")
@@ -48,5 +51,10 @@ public class BedListener implements Listener {
                             .replace("[displayname]", event.getPlayer().getDisplayName()));
             cooldowns.put(playerUuid, System.currentTimeMillis());
         }, 1);
+    }
+
+    private long getCooldown(final UUID playerUuid) {
+        if (!cooldowns.containsKey(playerUuid)) return 0;
+        return cooldowns.get(playerUuid);
     }
 }

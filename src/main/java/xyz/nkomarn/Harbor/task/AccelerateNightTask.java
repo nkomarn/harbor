@@ -20,7 +20,13 @@ public class AccelerateNightTask extends BukkitRunnable {
     public void run() {
         final long time = world.getTime();
         final int dayTime = Config.getInteger("night-skip.daytime-ticks");
-        final int timeRate = Config.getInteger("night-skip.time-rate");
+        final int sleeping = Checker.getSleeping(world).size();
+        double timeRate = Config.getInteger("night-skip.time-rate");
+
+        if (Config.getBoolean("night-skip.proportional-acceleration")) {
+            if (sleeping != 0) timeRate = Math.min(timeRate, Math.round(timeRate /
+                    world.getPlayers().size() * sleeping));
+        }
 
         if (time >= (dayTime - timeRate * 1.5) && time <= dayTime) {
             if (Config.getBoolean("night-skip.clear-rain")) {
@@ -39,7 +45,7 @@ public class AccelerateNightTask extends BukkitRunnable {
             Messages.sendRandomChatMessage(world, "messages.chat.night-skipped");
             this.cancel();
         } else {
-            world.setTime(time + timeRate);
+            world.setTime(time + (int) timeRate);
         }
     }
 }

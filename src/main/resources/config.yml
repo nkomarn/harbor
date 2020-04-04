@@ -11,8 +11,7 @@ night-skip:
   time-rate: 70 # The amount of ticks added to the current time every tick when skipping the night
   daytime-ticks: 1200 # The time in ticks that Harbor considers day
   instant-skip: false # Instantly skip the night instead of showing the full animation
-  variable-rate: false # Increase the night skipping speed based on the amount of sleeping players
-  rate-multiplier: 0.5 # Multiplier used for variable night skipping (TODO explain formula)
+  proportional-acceleration: false # Increase the night skipping speed based on the amount of sleeping players
   clear-rain: true # Clear rain (if it's raining) when the night is skipped
   clear-thunder: true # Clear thunder (if it's thundering) when the night is skipped
   reset-phantom-statistic: true # Treats everyone online as if they have slept in the last 3 days after the night is skipped (check out /gamerule doInsomnia on 1.15+)

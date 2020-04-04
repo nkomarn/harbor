@@ -47,10 +47,10 @@ public class HarborCommand implements TabExecutor {
             new AccelerateNightTask(world).runTaskTimer(Harbor.getHarbor(), 0L, 1);
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
                     + "&7Forcing night skip in your world."));
+        } else {
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
+                    + Config.getString("messages.miscellaneous.unrecognized-command")));
         }
-
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
-                + Config.getString("messages.miscellaneous.unrecognized-command")));
         return true;
     }
 

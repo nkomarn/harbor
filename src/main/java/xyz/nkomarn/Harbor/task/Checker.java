@@ -30,11 +30,9 @@ public class Checker implements Runnable {
         final int needed = getNeeded(world);
 
         if (sleeping > 0 && needed > 0) {
-            // TODO redo bossbars
             final double sleepingPercentage = Math.min(1, (double) sleeping / getSkipAmount(world));
             Messages.sendBossBarMessage(world, Config.getString("messages.bossbar.players-sleeping.message"),
                     BarColor.valueOf(Config.getString("messages.bossbar.players-sleeping.color")), sleepingPercentage);
-
 
             Messages.sendActionBarMessage(world, Config.getString("messages.actionbar.players-sleeping"));
         } else if (needed == 0 && sleeping > 0) {
@@ -44,7 +42,6 @@ public class Checker implements Runnable {
             Messages.sendActionBarMessage(world, Config.getString("messages.actionbar.night-skipping"));
 
             if (!Config.getBoolean("night-skip.enabled")) return;
-
             if (Config.getBoolean("night-skip.instant-skip")) {
                 Bukkit.getScheduler().runTask(Harbor.getHarbor(), () ->
                         world.setTime(Config.getInteger("night-skip.daytime-ticks")));
@@ -63,13 +60,21 @@ public class Checker implements Runnable {
     }
 
     private boolean isBlacklisted(final World world) {
+        if (Config.getBoolean("whitelist-mode")) {
+            return !Config.getList("blacklisted-worlds").contains(world.getName());
+        }
         return Config.getList("blacklisted-worlds").contains(world.getName());
     }
 
     private boolean isNight(final World world) {
         return world.getTime() > 12950 || world.getTime() < 23950;
     }
-    
+
+    public static boolean isVanished(final Player player) {
+        for (MetadataValue meta : player.getMetadata("vanished")) if (meta.asBoolean()) return true;
+        return false;
+    }
+
     public static List<Player> getSleeping(final World world) {
         return world.getPlayers().stream().filter(Player::isSleeping).collect(toList());
     }
@@ -93,14 +98,16 @@ public class Checker implements Runnable {
     }
 
     private static boolean isExcluded(final Player player) {
-        final boolean excludedByCreative = Config.getBoolean("exclusions.exclude-creative") && player.getGameMode() == GameMode.CREATIVE;
-        final boolean excludedBySpectator = Config.getBoolean("exclusions.exclude-spectator") && player.getGameMode() == GameMode.SPECTATOR;
-        final boolean excludedByPermission = Config.getBoolean("exclusions.bypass-permission") && player.hasPermission("harbor.ignored");
-        final boolean excludedByAfk = Afk.isAfk(player);
+        final boolean excludedByCreative = Config.getBoolean("exclusions.exclude-creative")
+                && player.getGameMode() == GameMode.CREATIVE;
+        final boolean excludedBySpectator = Config.getBoolean("exclusions.exclude-spectator")
+                && player.getGameMode() == GameMode.SPECTATOR;
+        final boolean excludedByPermission = Config.getBoolean("exclusions.ignored-permission")
+                && player.hasPermission("harbor.ignored");
+        final boolean excludedByVanish = Config.getBoolean("exclusions.exclude-vanished")
+                && isVanished(player);
 
-        if (Config.getBoolean("exclusions.exclude-vanished")) {
-            for (MetadataValue meta : player.getMetadata("vanished")) if (meta.asBoolean()) return true;
-        }
-        return excludedByCreative || excludedBySpectator || excludedByPermission || excludedByAfk || player.isSleepingIgnored();
+        return excludedByCreative || excludedBySpectator || excludedByPermission || excludedByVanish ||
+                Afk.isAfk(player) || player.isSleepingIgnored();
     }
 }

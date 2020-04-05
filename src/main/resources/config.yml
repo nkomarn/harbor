@@ -32,6 +32,7 @@ afk-detection:
 blacklisted-worlds:
   - "world_nether"
   - "world_the_end"
+whitelist-mode: false # Will treat the above list as a whitelist instead of a blacklist
 
 messages:
   chat:
@@ -46,6 +47,7 @@ messages:
       - "&eThe night has been skipped."
       - "&eAhhh, finally morning."
       - "&eArghh, it's so bright outside."
+      - "&eRise and shine."
   actionbar:
     enabled: true
     players-sleeping: "&e[sleeping] out of [needed] players are sleeping ([more] more needed to skip)"

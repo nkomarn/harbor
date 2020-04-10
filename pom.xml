@@ -46,7 +46,7 @@
     <dependency>
       <groupId>com.ohneemc</groupId>
       <artifactId>OhneeMC</artifactId>
-      <version>1.0.8</version>
+      <version>1.0.12</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

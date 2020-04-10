@@ -21,6 +21,10 @@
       <url>https://ci.ender.zone/plugin/repository/everything/</url>
     </repository>
     <repository>
+      <id>ohnee-repo</id>
+      <url>http://ci.ohneemc.com:8080/plugin/repository/everything/</url>
+    </repository>
+    <repository>
       <id>placeholderapi</id>
       <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
     </repository>
@@ -37,6 +41,12 @@
       <groupId>net.ess3</groupId>
       <artifactId>EssentialsX</artifactId>
       <version>2.17.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.ohneemc</groupId>
+      <artifactId>OhneeMC</artifactId>
+      <version>1.0.8</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

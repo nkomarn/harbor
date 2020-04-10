@@ -16,6 +16,10 @@ public class Afk {
             return Harbor.getEssentials().getUser(player).isAfk();
         }
 
+        if (Harbor.getOhneemc() != null){
+            return Harbor.getOhneemc().api.getAfk(player);
+        }
+
         if (!activity.containsKey(player)) return false;
         long minutes = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - activity.get(player));
         return minutes >= Config.getInteger("afk-detection.timeout");

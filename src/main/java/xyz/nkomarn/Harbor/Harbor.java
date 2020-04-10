@@ -1,6 +1,7 @@
 package xyz.nkomarn.Harbor;
 
 import com.earth2me.essentials.Essentials;
+import com.ohneemc.OhneeMC;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.nkomarn.Harbor.command.HarborCommand;
 import xyz.nkomarn.Harbor.listener.AfkListener;
@@ -12,6 +13,7 @@ import xyz.nkomarn.Harbor.util.Metrics;
 public class Harbor extends JavaPlugin {
     private static Harbor harbor;
     private static Essentials essentials;
+    private static OhneeMC ohneemc;
     public static final String version = "1.6.2";
 
     public void onEnable() {
@@ -29,6 +31,12 @@ public class Harbor extends JavaPlugin {
             getLogger().info("Essentials not present- registering fallback AFK detection system.");
             getServer().getPluginManager().registerEvents(new AfkListener(), this);
         }
+
+        ohneemc = (OhneeMC) getServer().getPluginManager().getPlugin("OhneeMC");
+        if (ohneemc == null) {
+            getLogger().info("OhneeMC not present- registering fallback AFK detection system.");
+            getServer().getPluginManager().registerEvents(new AfkListener(), this);
+        }
     }
 
     public static Harbor getHarbor() {
@@ -37,5 +45,9 @@ public class Harbor extends JavaPlugin {
 
     public static Essentials getEssentials() {
         return essentials;
+    }
+
+    public static OhneeMC getOhneemc() {
+        return ohneemc;
     }
 }

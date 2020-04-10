@@ -4,7 +4,7 @@ main: xyz.nkomarn.Harbor.Harbor
 version: 1.6.2-SNAPSHOT
 author: TechToolbox (@nkomarn)
 website: https://nkomarn.xyz
-softdepend: [Essentials]
+softdepend: [Essentials, OhneeMC]
 api-version: 1.14
 
 commands:

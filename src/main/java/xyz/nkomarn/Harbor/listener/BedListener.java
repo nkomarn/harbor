@@ -22,6 +22,7 @@ public class BedListener implements Listener {
     public void onBedEnter(final PlayerBedEnterEvent event) {
         if (event.getBedEnterResult() != PlayerBedEnterEvent.BedEnterResult.OK) return;
         if (Checker.skippingWorlds.contains(event.getPlayer().getWorld())) return;
+        if (Checker.isVanished(event.getPlayer())) return;
 
         Bukkit.getScheduler().runTaskLater(Harbor.getHarbor(), () -> {
             final UUID playerUuid = event.getPlayer().getUniqueId();
@@ -39,6 +40,7 @@ public class BedListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onBedLeave(final PlayerBedLeaveEvent event) {
         if (Checker.skippingWorlds.contains(event.getPlayer().getWorld())) return;
+        if (Checker.isVanished(event.getPlayer())) return;
 
         Bukkit.getScheduler().runTaskLater(Harbor.getHarbor(), () -> {
             final UUID playerUuid = event.getPlayer().getUniqueId();

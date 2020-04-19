@@ -20,17 +20,17 @@ public class HarborCommand implements TabExecutor {
         final String prefix = Config.getString("messages.miscellaneous.chat-prefix");
 
         if (args.length < 1 || !sender.hasPermission("harbor.admin")) {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + "&7Harbor version "
-                    + Harbor.version + " by TechToolbox (@nkomarn)."));
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', String.format(
+                    "%sHarbor version %s by TechToolbox (@nkomarn).", prefix, Harbor.version)));
         } else if (args[0].equalsIgnoreCase("reload")) {
             Harbor.getHarbor().reloadConfig();
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
-                    + "&7Reloaded configuration."));
+                    + "Reloaded configuration."));
         }
         else if (args[0].equalsIgnoreCase("forceskip")) {
             if (!(sender instanceof Player)) {
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
-                        + "&7This command requires you to be a player."));
+                        + "This command requires you to be a player."));
                 return true;
             }
 
@@ -39,14 +39,13 @@ public class HarborCommand implements TabExecutor {
 
             if (Checker.skippingWorlds.contains(world)) {
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
-                    + "&7This world's time is already being accelerated."));
-                return true;
+                    + "This world's time is already being accelerated."));
+            } else {
+                Checker.skippingWorlds.add(world);
+                new AccelerateNightTask(world).runTaskTimer(Harbor.getHarbor(), 0L, 1);
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
+                    + "Forcing night skip in your world."));
             }
-
-            Checker.skippingWorlds.add(world);
-            new AccelerateNightTask(world).runTaskTimer(Harbor.getHarbor(), 0L, 1);
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
-                    + "&7Forcing night skip in your world."));
         } else {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
                     + Config.getString("messages.miscellaneous.unrecognized-command")));

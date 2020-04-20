@@ -3,7 +3,8 @@
 # https://github.com/nkomarn/Harbor
 
 # Important note regarding Essentials:
-# Please make sure you negate the permission "essentials.sleepingignored" to prevent issues with Harbor and server operators
+# Please make sure you negate the permission "essentials.sleepingignored" to
+# prevent issues with Harbor and server operators when running Essentials.
 
 night-skip:
   enabled: true # Skip the night if a percentage of the players in a world are sleeping

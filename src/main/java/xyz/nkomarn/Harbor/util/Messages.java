@@ -34,9 +34,9 @@ public class Messages {
                 TextComponent.fromLegacyText(prepareMessage(world, message))));
     }
 
-    public static void sendBossBarMessage(final World world, final String message, final BarColor color, final double percentage) {
+    public static void sendBossBarMessage(final World world, final String message, final String color, final double percentage) {
         if (!Config.getBoolean("messages.bossbar.enabled") || message.length() < 1) return;
-        BossBar bar = Bukkit.createBossBar(Messages.prepareMessage(world, message), color, BarStyle.SOLID);
+        BossBar bar = Bukkit.createBossBar(Messages.prepareMessage(world, message), getBarColor(color), BarStyle.SOLID);
         bar.setProgress(percentage);
         world.getPlayers().forEach(bar::addPlayer);
         Bukkit.getScheduler().runTaskLater(Harbor.getHarbor(), bar::removeAll, Config.getInteger("interval") * 20);
@@ -48,5 +48,15 @@ public class Messages {
                 .replace("[players]", String.valueOf(Checker.getPlayers(world)))
                 .replace("[needed]", String.valueOf(Checker.getSkipAmount(world)))
                 .replace("[more]", String.valueOf(Checker.getNeeded(world))));
+    }
+
+    private static BarColor getBarColor(final String enumString) {
+        BarColor barColor;
+        try {
+            barColor = BarColor.valueOf(enumString.toUpperCase().trim());
+        } catch (IllegalArgumentException e) {
+            barColor = BarColor.BLUE;
+        }
+        return barColor;
     }
 }

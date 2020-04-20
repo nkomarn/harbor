@@ -31,13 +31,14 @@ public class Checker implements Runnable {
 
         if (sleeping > 0 && needed > 0) {
             final double sleepingPercentage = Math.min(1, (double) sleeping / getSkipAmount(world));
+
             Messages.sendBossBarMessage(world, Config.getString("messages.bossbar.players-sleeping.message"),
-                    BarColor.valueOf(Config.getString("messages.bossbar.players-sleeping.color")), sleepingPercentage);
+                    Config.getString("messages.bossbar.players-sleeping.color"), sleepingPercentage);
 
             Messages.sendActionBarMessage(world, Config.getString("messages.actionbar.players-sleeping"));
         } else if (needed == 0 && sleeping > 0) {
             Messages.sendBossBarMessage(world, Config.getString("messages.bossbar.night-skipping.message"),
-                    BarColor.valueOf(Config.getString("messages.bossbar.night-skipping.color")), 1);
+                    Config.getString("messages.bossbar.night-skipping.color"), 1);
 
             Messages.sendActionBarMessage(world, Config.getString("messages.actionbar.night-skipping"));
 

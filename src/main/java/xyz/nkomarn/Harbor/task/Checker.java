@@ -98,6 +98,8 @@ public class Checker implements Runnable {
     }
 
     private static boolean isExcluded(final Player player) {
+        final boolean excludedByAdventure = Config.getBoolean("exclusions.exclude-adventure")
+                && player.getGameMode() == GameMode.ADVENTURE;
         final boolean excludedByCreative = Config.getBoolean("exclusions.exclude-creative")
                 && player.getGameMode() == GameMode.CREATIVE;
         final boolean excludedBySpectator = Config.getBoolean("exclusions.exclude-spectator")
@@ -107,7 +109,7 @@ public class Checker implements Runnable {
         final boolean excludedByVanish = Config.getBoolean("exclusions.exclude-vanished")
                 && isVanished(player);
 
-        return excludedByCreative || excludedBySpectator || excludedByPermission || excludedByVanish ||
-                Afk.isAfk(player) || player.isSleepingIgnored();
+        return excludedByAdventure || excludedByCreative || excludedBySpectator || excludedByPermission ||
+                excludedByVanish || Afk.isAfk(player) || player.isSleepingIgnored();
     }
 }

@@ -43,7 +43,7 @@ public class AccelerateNightTask extends BukkitRunnable {
                 world.getPlayers().forEach(player -> player.setStatistic(Statistic.TIME_SINCE_REST, 0));
             }
 
-            Checker.skippingWorlds.remove(world);
+            Checker.SKIPPING_WORLDS.remove(world);
             Messages.sendRandomChatMessage(world, "messages.chat.night-skipped");
             this.cancel();
         } else {

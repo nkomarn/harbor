@@ -3,7 +3,6 @@ package xyz.nkomarn.Harbor.task;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
-import org.bukkit.boss.BarColor;
 import org.bukkit.entity.Player;
 
 import org.bukkit.metadata.MetadataValue;
@@ -12,13 +11,14 @@ import xyz.nkomarn.Harbor.util.Afk;
 import xyz.nkomarn.Harbor.util.Config;
 import xyz.nkomarn.Harbor.util.Messages;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 
 public class Checker implements Runnable {
-    public static final List<World> skippingWorlds = new ArrayList<>();
+    public static final Set<World> SKIPPING_WORLDS = new HashSet<>();
 
     @Override
     public void run() {
@@ -48,7 +48,7 @@ public class Checker implements Runnable {
                         world.setTime(Config.getInteger("night-skip.daytime-ticks")));
                 Messages.sendRandomChatMessage(world, "messages.chat.night-skipped");
             } else {
-                skippingWorlds.add(world);
+                SKIPPING_WORLDS.add(world);
                 new AccelerateNightTask(world).runTaskTimer(Harbor.getHarbor(), 1, 1);
             }
         }
@@ -56,7 +56,7 @@ public class Checker implements Runnable {
 
     private boolean validateWorld(final World world) {
         return !isBlacklisted(world)
-            && !skippingWorlds.contains(world) 
+            && !SKIPPING_WORLDS.contains(world)
             && isNight(world);
     }
 

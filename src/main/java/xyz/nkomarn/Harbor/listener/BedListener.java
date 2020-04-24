@@ -21,7 +21,7 @@ public class BedListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onBedEnter(final PlayerBedEnterEvent event) {
         if (event.getBedEnterResult() != PlayerBedEnterEvent.BedEnterResult.OK) return;
-        if (Checker.skippingWorlds.contains(event.getPlayer().getWorld())) return;
+        if (Checker.SKIPPING_WORLDS.contains(event.getPlayer().getWorld())) return;
         if (Checker.isVanished(event.getPlayer())) return;
 
         Bukkit.getScheduler().runTaskLater(Harbor.getHarbor(), () -> {
@@ -39,7 +39,7 @@ public class BedListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onBedLeave(final PlayerBedLeaveEvent event) {
-        if (Checker.skippingWorlds.contains(event.getPlayer().getWorld())) return;
+        if (Checker.SKIPPING_WORLDS.contains(event.getPlayer().getWorld())) return;
         if (Checker.isVanished(event.getPlayer())) return;
 
         Bukkit.getScheduler().runTaskLater(Harbor.getHarbor(), () -> {

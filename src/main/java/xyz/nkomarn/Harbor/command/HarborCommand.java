@@ -37,11 +37,11 @@ public class HarborCommand implements TabExecutor {
             Player player = (Player) sender;
             World world = player.getWorld();
 
-            if (Checker.skippingWorlds.contains(world)) {
+            if (Checker.SKIPPING_WORLDS.contains(world)) {
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
                     + "This world's time is already being accelerated."));
             } else {
-                Checker.skippingWorlds.add(world);
+                Checker.SKIPPING_WORLDS.add(world);
                 new AccelerateNightTask(world).runTaskTimer(Harbor.getHarbor(), 0L, 1);
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
                     + "Forcing night skip in your world."));

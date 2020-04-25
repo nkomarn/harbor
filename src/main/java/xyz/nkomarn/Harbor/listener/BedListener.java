@@ -16,7 +16,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class BedListener implements Listener {
-    private Map<UUID, Long> cooldowns = new HashMap<>();
+    private static final Map<UUID, Long> COOLDOWNS = new HashMap<>();
 
     @EventHandler(ignoreCancelled = true)
     public void onBedEnter(final PlayerBedEnterEvent event) {
@@ -33,7 +33,7 @@ public class BedListener implements Listener {
                     Config.getString("messages.chat.player-sleeping")
                             .replace("[player]", event.getPlayer().getName())
                             .replace("[displayname]", event.getPlayer().getDisplayName()));
-            cooldowns.put(playerUuid, System.currentTimeMillis());
+            COOLDOWNS.put(playerUuid, System.currentTimeMillis());
         }, 1);
     }
 
@@ -51,12 +51,12 @@ public class BedListener implements Listener {
                     Config.getString("messages.chat.player-left-bed")
                             .replace("[player]", event.getPlayer().getName())
                             .replace("[displayname]", event.getPlayer().getDisplayName()));
-            cooldowns.put(playerUuid, System.currentTimeMillis());
+            COOLDOWNS.put(playerUuid, System.currentTimeMillis());
         }, 1);
     }
 
     private long getCooldown(final UUID playerUuid) {
-        if (!cooldowns.containsKey(playerUuid)) return 0;
-        return cooldowns.get(playerUuid);
+        if (!COOLDOWNS.containsKey(playerUuid)) return 0;
+        return COOLDOWNS.get(playerUuid);
     }
 }

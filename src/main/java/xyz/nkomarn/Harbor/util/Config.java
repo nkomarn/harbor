@@ -8,8 +8,7 @@ import java.util.List;
 public class Config {
     /**
      * Fetches a boolean from the configuration
-     * if location is not found, <code>false</code> is returned
-     *
+     * if location is not found, false is returned
      * @param location Configuration location of the boolean
      */
     public static boolean getBoolean(final String location) {
@@ -18,8 +17,7 @@ public class Config {
 
     /**
      * Fetches a string from the configuration
-     * if location is not found, <code>empty string</code> is returned
-     *
+     * if location is not found, empty string is returned
      * @param location Configuration location of the string
      */
     public static String getString(final String location) {
@@ -28,8 +26,7 @@ public class Config {
 
     /**
      * Fetches an integer from the configuration
-     * if location is not found, <code>0</code> is returned
-     *
+     * if location is not found, 0 is returned
      * @param location Configuration location of the integer
      */
     public static int getInteger(final String location) {
@@ -38,8 +35,7 @@ public class Config {
 
     /**
      * Fetches a double from the configuration
-     * if location is not found, <code>0.0</code> is returned
-     *
+     * if location is not found, 0.0 is returned
      * @param location Configuration location of the double
      */
     public static double getDouble(final String location) {
@@ -48,8 +44,7 @@ public class Config {
 
     /**
      * Fetches a list from the configuration
-     * if location is not found, <code>empty list</code> is returned
-     *
+     * if location is not found, empty list is returned
      * @param location Configuration location of the list
      */
     public static List<String> getList(final String location) {

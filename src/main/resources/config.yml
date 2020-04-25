@@ -68,5 +68,5 @@ messages:
 
 # Spooky internal controls
 version: 1.6.2
-interval: 2
+interval: 1
 debug: false

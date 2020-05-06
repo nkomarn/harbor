@@ -16,7 +16,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class BedListener implements Listener {
-    private static final Map<UUID, Long> COOLDOWNS = new HashMap<>();
+    public static final Map<UUID, Long> COOLDOWNS = new HashMap<>();
 
     @EventHandler(ignoreCancelled = true)
     public void onBedEnter(final PlayerBedEnterEvent event) {

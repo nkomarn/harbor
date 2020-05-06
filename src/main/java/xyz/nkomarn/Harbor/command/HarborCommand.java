@@ -26,8 +26,7 @@ public class HarborCommand implements TabExecutor {
             Harbor.getHarbor().reloadConfig();
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
                     + "Reloaded configuration."));
-        }
-        else if (args[0].equalsIgnoreCase("forceskip")) {
+        } else if (args[0].equalsIgnoreCase("forceskip")) {
             if (!(sender instanceof Player)) {
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix
                         + "This command requires you to be a player."));

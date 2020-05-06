@@ -5,6 +5,7 @@ import org.bukkit.Statistic;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 import xyz.nkomarn.Harbor.Harbor;
+import xyz.nkomarn.Harbor.listener.BedListener;
 import xyz.nkomarn.Harbor.util.Config;
 import xyz.nkomarn.Harbor.util.Messages;
 
@@ -44,6 +45,7 @@ public class AccelerateNightTask extends BukkitRunnable {
             }
 
             Checker.SKIPPING_WORLDS.remove(world);
+            BedListener.COOLDOWNS.clear();
             Messages.sendRandomChatMessage(world, "messages.chat.night-skipped");
             this.cancel();
         } else {

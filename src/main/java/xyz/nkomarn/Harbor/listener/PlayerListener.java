@@ -10,9 +10,10 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(final PlayerJoinEvent event) {
         if (event.getPlayer().hasPermission("harbor.admin")) {
-            event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', String.format(
-                    "%sYour Harbor configuration is outdated- please regenerate it or Harbor may not work properly.",
-                    Config.getString("messages.miscellaneous.prefix") // Use old prefix location
+            if (!Config.getString("version").equals("1.6.2")) event.getPlayer().sendMessage(
+                    ChatColor.translateAlternateColorCodes('&', String.format(
+                        "%sYour Harbor configuration is outdated- please regenerate it or Harbor may not work properly.",
+                        Config.getString("messages.miscellaneous.prefix") // Use old prefix location
             )));
         }
     }

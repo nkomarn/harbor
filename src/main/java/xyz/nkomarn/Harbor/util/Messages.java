@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class Messages {
     public static void sendRandomChatMessage(final World world, final String messageList) {
-        final List<String> messages = Config.getList(messageList);
+        final List<String> messages = Config.getConfig().getStringList(messageList);
         if (messages.size() < 1) return;
         final int index = new Random().nextInt(Math.max(0, messages.size()));
         sendWorldChatMessage(world, messages.get(index));

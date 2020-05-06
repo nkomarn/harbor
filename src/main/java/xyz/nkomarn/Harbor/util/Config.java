@@ -1,5 +1,6 @@
 package xyz.nkomarn.Harbor.util;
 
+import org.bukkit.configuration.file.FileConfiguration;
 import xyz.nkomarn.Harbor.Harbor;
 
 import java.util.ArrayList;
@@ -7,12 +8,20 @@ import java.util.List;
 
 public class Config {
     /**
+     * Fetches an instance of the FileConfiguration.
+     * @return The configuration for this server.
+     */
+    public static FileConfiguration getConfig() {
+        return Harbor.getHarbor().getConfig();
+    }
+
+    /**
      * Fetches a boolean from the configuration
      * if location is not found, false is returned
      * @param location Configuration location of the boolean
      */
-    public static boolean getBoolean(final String location) {
-        return Harbor.getHarbor().getConfig().getBoolean(location, false);
+    public static boolean getBoolean(String location) {
+        return getConfig().getBoolean(location, false);
     }
 
     /**
@@ -20,8 +29,8 @@ public class Config {
      * if location is not found, empty string is returned
      * @param location Configuration location of the string
      */
-    public static String getString(final String location) {
-        return Harbor.getHarbor().getConfig().getString(location, "");
+    public static String getString(String location) {
+        return getConfig().getString(location, "");
     }
 
     /**
@@ -29,8 +38,8 @@ public class Config {
      * if location is not found, 0 is returned
      * @param location Configuration location of the integer
      */
-    public static int getInteger(final String location) {
-        return Harbor.getHarbor().getConfig().getInt(location, 0);
+    public static int getInteger(String location) {
+        return getConfig().getInt(location, 0);
     }
 
     /**
@@ -38,16 +47,7 @@ public class Config {
      * if location is not found, 0.0 is returned
      * @param location Configuration location of the double
      */
-    public static double getDouble(final String location) {
-        return Harbor.getHarbor().getConfig().getDouble(location, 0.0);
-    }
-
-    /**
-     * Fetches a list from the configuration
-     * if location is not found, empty list is returned
-     * @param location Configuration location of the list
-     */
-    public static List<String> getList(final String location) {
-        return (List<String>) Harbor.getHarbor().getConfig().getList(location, new ArrayList<>());
+    public static double getDouble(String location) {
+        return getConfig().getDouble(location, 0.0);
     }
 }

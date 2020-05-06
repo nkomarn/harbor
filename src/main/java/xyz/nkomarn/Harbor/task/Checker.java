@@ -62,9 +62,9 @@ public class Checker implements Runnable {
 
     private boolean isBlacklisted(final World world) {
         if (Config.getBoolean("whitelist-mode")) {
-            return !Config.getList("blacklisted-worlds").contains(world.getName());
+            return !Config.getConfig().getStringList("blacklisted-worlds").contains(world.getName());
         }
-        return Config.getList("blacklisted-worlds").contains(world.getName());
+        return Config.getConfig().getStringList("blacklisted-worlds").contains(world.getName());
     }
 
     private boolean isNight(final World world) {

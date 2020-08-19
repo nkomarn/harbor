@@ -1,4 +1,4 @@
-package xyz.nkomarn.Harbor.util;
+package xyz.nkomarn.harbor.util;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

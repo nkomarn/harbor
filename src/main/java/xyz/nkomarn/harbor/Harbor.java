@@ -17,6 +17,7 @@ import xyz.nkomarn.harbor.util.Metrics;
 import xyz.nkomarn.harbor.util.PlayerManager;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 public class Harbor extends JavaPlugin {
 
@@ -27,12 +28,13 @@ public class Harbor extends JavaPlugin {
     private Essentials essentials;
 
     public void onEnable() {
+        PluginManager pluginManager = getServer().getPluginManager();
+
         config = new Config(this);
         checker = new Checker(this);
         messages = new Messages(this);
         playerManager = new PlayerManager(this);
-
-        PluginManager pluginManager = getServer().getPluginManager();
+        essentials = (Essentials) pluginManager.getPlugin("Essentials");
 
         Arrays.asList(
                 messages,
@@ -43,10 +45,9 @@ public class Harbor extends JavaPlugin {
 
         getCommand("harbor").setExecutor(new HarborCommand(this));
 
-        essentials = (Essentials) getServer().getPluginManager().getPlugin("Essentials");
         if (essentials == null) {
             getLogger().info("Essentials not present- registering fallback AFK detection system.");
-            // TODO IDK LOL getServer().getPluginManager().registerEvents(new PlayerManager.AfkListener(), this);
+            playerManager.registerFallbackListeners();
         }
 
         if (config.getBoolean("metrics")) {
@@ -90,8 +91,8 @@ public class Harbor extends JavaPlugin {
         return playerManager;
     }
 
-    @Nullable
-    public Essentials getEssentials() {
-        return essentials;
+    @NotNull
+    public Optional<Essentials> getEssentials() {
+        return Optional.ofNullable(essentials);
     }
 }

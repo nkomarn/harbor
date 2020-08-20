@@ -63,7 +63,7 @@ messages:
       message: "&f&lEveryone is sleeping. Sweet dreams!"
       color: GREEN
   miscellaneous:
-    chat-prefix: "&8&l(&6&lHarbor&8&l)&7 "
+    chat-prefix: "&8&l(&6&lHarbor&8&l)&f "
     unrecognized-command: "Unrecognized command."
 
 # Spooky internal controls

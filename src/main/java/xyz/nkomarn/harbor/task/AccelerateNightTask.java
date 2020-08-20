@@ -6,9 +6,7 @@ import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
-import xyz.nkomarn.harbor.listener.BedListener;
 import xyz.nkomarn.harbor.util.Config;
-import xyz.nkomarn.harbor.util.Messages;
 
 public class AccelerateNightTask extends BukkitRunnable {
 
@@ -46,10 +44,8 @@ public class AccelerateNightTask extends BukkitRunnable {
         int dayTime = Math.max(150, config.getInteger("night-skip.daytime-ticks"));
         int sleeping = checker.getSleepingPlayers(world).size();
 
-        if (config.getBoolean("night-skip.proportional-acceleration")) {
-            if (sleeping != 0) {
-                timeRate = Math.min(timeRate, Math.round(timeRate / world.getPlayers().size() * sleeping));
-            }
+        if (config.getBoolean("night-skip.proportional-acceleration") && sleeping != 0) {
+            timeRate = Math.min(timeRate, Math.round(timeRate / world.getPlayers().size() * sleeping));
         }
 
         if (time >= (dayTime - timeRate * 1.5) && time <= dayTime) {
@@ -61,8 +57,9 @@ public class AccelerateNightTask extends BukkitRunnable {
             harbor.getPlayerManager().clearCooldowns();
             harbor.getMessages().sendRandomChatMessage(world, "messages.chat.night-skipped");
             cancel();
-        } else {
-            world.setTime(time + (int) timeRate);
+            return;
         }
+
+        world.setTime(time + (int) timeRate);
     }
 }

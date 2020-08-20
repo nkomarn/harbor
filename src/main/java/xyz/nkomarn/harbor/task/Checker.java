@@ -72,20 +72,12 @@ public class Checker extends BukkitRunnable {
             double sleepingPercentage = Math.min(1, (double) sleeping / getSkipAmount(world));
 
             messages.sendActionBarMessage(world, config.getString("messages.actionbar.players-sleeping"));
-            messages.sendBossBarMessage(
-                    world,
-                    config.getString("messages.bossbar.players-sleeping.message"),
-                    config.getString("messages.bossbar.players-sleeping.color"),
-                    sleepingPercentage
-            );
+            messages.sendBossBarMessage(world, config.getString("messages.bossbar.players-sleeping.message"),
+                    config.getString("messages.bossbar.players-sleeping.color"), sleepingPercentage);
         } else if (needed == 0) {
             messages.sendActionBarMessage(world, config.getString("messages.actionbar.night-skipping"));
-            messages.sendBossBarMessage(
-                    world,
-                    config.getString("messages.bossbar.night-skipping.message"),
-                    config.getString("messages.bossbar.night-skipping.color"),
-                    1
-            );
+            messages.sendBossBarMessage(world, config.getString("messages.bossbar.night-skipping.message"),
+                    config.getString("messages.bossbar.night-skipping.color"), 1);
 
             if (!config.getBoolean("night-skip.enabled")) {
                 return;
@@ -207,7 +199,7 @@ public class Checker extends BukkitRunnable {
      * @param player The player to check.
      * @return Whether the given player is excluded.
      */
-    private boolean isExcluded(final Player player) {
+    private boolean isExcluded(@NotNull Player player) {
         ConfigurationSection exclusions = harbor.getConfig().getConfigurationSection("exclusions");
 
         if (exclusions == null) {

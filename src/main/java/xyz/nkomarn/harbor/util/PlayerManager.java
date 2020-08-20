@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -32,6 +33,7 @@ public class PlayerManager implements Listener {
 
     /**
      * Gets the last tracked cooldown time for a given player.
+     *
      * @param player The player for which to return cooldown time.
      * @return The player's last cooldown time.
      */
@@ -39,12 +41,19 @@ public class PlayerManager implements Listener {
         return cooldowns.getOrDefault(player.getUniqueId(), 0);
     }
 
-    // TODO javadoc
+    /**
+     * Sets a player's cooldown to a specific, fixed value.
+     *
+     * @param player   The player for which to set cooldown.
+     * @param cooldown The cooldown value.
+     */
     public void setCooldown(@NotNull Player player, long cooldown) {
         cooldowns.put(player.getUniqueId(), cooldown);
     }
 
-    // TODO javadocs
+    /**
+     * Resets every players' message cooldown.
+     */
     public void clearCooldowns() {
         cooldowns.clear();
     }
@@ -60,9 +69,9 @@ public class PlayerManager implements Listener {
             return false;
         }
 
-        Essentials essentials = harbor.getEssentials();
-        if (essentials != null) {
-            User user = essentials.getUser(player);
+        Optional<Essentials> essentials = harbor.getEssentials();
+        if (essentials.isPresent()) {
+            User user = essentials.get().getUser(player);
 
             if (user != null) {
                 return user.isAfk();
@@ -86,6 +95,13 @@ public class PlayerManager implements Listener {
         playerActivity.put(player.getUniqueId(), System.currentTimeMillis());
     }
 
+    /**
+     * Registers Harbor's fallback listeners for AFK detection if Essentials is not present.
+     */
+    public void registerFallbackListeners() {
+        harbor.getServer().getPluginManager().registerEvents(new AfkListeners(), harbor);
+    }
+
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
@@ -93,23 +109,26 @@ public class PlayerManager implements Listener {
         playerActivity.removeLong(uuid);
     }
 
-    @EventHandler
-    public void onChat(AsyncPlayerChatEvent event) {
-        updateActivity(event.getPlayer());
-    }
+    private final class AfkListeners implements Listener {
 
-    @EventHandler
-    public void onCommand(PlayerCommandPreprocessEvent event) {
-        updateActivity(event.getPlayer());
-    }
+        @EventHandler(ignoreCancelled = true)
+        public void onChat(AsyncPlayerChatEvent event) {
+            updateActivity(event.getPlayer());
+        }
 
-    @EventHandler
-    public void onMove(PlayerMoveEvent event) {
-        updateActivity(event.getPlayer());
-    }
+        @EventHandler(ignoreCancelled = true)
+        public void onCommand(PlayerCommandPreprocessEvent event) {
+            updateActivity(event.getPlayer());
+        }
 
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
-        updateActivity((Player) event.getWhoClicked());
+        @EventHandler(ignoreCancelled = true)
+        public void onMove(PlayerMoveEvent event) {
+            updateActivity(event.getPlayer());
+        }
+
+        @EventHandler(ignoreCancelled = true)
+        public void onInventoryClick(InventoryClickEvent event) {
+            updateActivity((Player) event.getWhoClicked());
+        }
     }
 }

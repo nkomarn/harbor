@@ -1,5 +1,6 @@
 package xyz.nkomarn.harbor.util;
 
+import com.google.common.base.Enums;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -18,17 +19,13 @@ import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
 import xyz.nkomarn.harbor.task.Checker;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class Messages implements Listener {
 
     private final Harbor harbor;
     private final Config config;
     private final Random random;
-
     private final HashMap<UUID, BossBar> bossBars;
 
     public Messages(@NotNull Harbor harbor) {
@@ -46,6 +43,12 @@ public class Messages implements Listener {
         }
     }
 
+    /**
+     * Sends a message to all players in a given world.
+     *
+     * @param world   The world context.
+     * @param message The message to send.
+     */
     public void sendWorldChatMessage(@NotNull World world, @NotNull String message) {
         if (!config.getBoolean("messages.chat.enabled") || message.length() < 1) {
             return;
@@ -57,6 +60,12 @@ public class Messages implements Listener {
         }
     }
 
+    /**
+     * Sends an actionbar message to all players in a given world.
+     *
+     * @param world   The world context.
+     * @param message The message to send.
+     */
     public void sendActionBarMessage(@NotNull World world, @NotNull String message) {
         if (!config.getBoolean("messages.actionbar.enabled") || message.length() < 1) {
             return;
@@ -68,6 +77,12 @@ public class Messages implements Listener {
         }
     }
 
+    /**
+     * Selects a random message from a string list and sends it to the given world.
+     *
+     * @param world        The world context.
+     * @param listLocation The location of the message list in the configuration.
+     */
     public void sendRandomChatMessage(@NotNull World world, @NotNull String listLocation) {
         List<String> messages = config.getStringList(listLocation);
 
@@ -78,6 +93,14 @@ public class Messages implements Listener {
         sendWorldChatMessage(world, messages.get(random.nextInt(Math.max(0, messages.size()))));
     }
 
+    /**
+     * Sets the message for the given world's bossbar.
+     *
+     * @param world      The world in which the bossbar exists.
+     * @param message    The message to set.
+     * @param color      The bossbar color to set.
+     * @param percentage The bossbar percentage to set.
+     */
     public void sendBossBarMessage(@NotNull World world, @NotNull String message, @NotNull String color, double percentage) {
         if (!config.getBoolean("messages.bossbar.enabled") || message.length() < 1) {
             return;
@@ -86,7 +109,6 @@ public class Messages implements Listener {
         BossBar bar = bossBars.get(world.getUID());
 
         if (bar == null) {
-            System.out.println("bar null");
             return;
         }
 
@@ -96,11 +118,18 @@ public class Messages implements Listener {
         }
 
         bar.setTitle(harbor.getMessages().prepareMessage(world, message));
-        bar.setColor(getBarColor(color));
+        bar.setColor(Enums.getIfPresent(BarColor.class, color).or(BarColor.BLUE));
         bar.setProgress(percentage);
         world.getPlayers().forEach(bar::addPlayer);
     }
 
+    /**
+     * Replaces all available placeholders in a given string.
+     *
+     * @param world   The world context.
+     * @param message The raw message with placeholders.
+     * @return The provided message with placeholders replaced with correct values for the world context.
+     */
     @NotNull
     private String prepareMessage(final World world, final String message) {
         Checker checker = harbor.getChecker();
@@ -111,38 +140,22 @@ public class Messages implements Listener {
                 .replace("[more]", String.valueOf(checker.getNeeded(world))));
     }
 
-    @NotNull
-    private BarColor getBarColor(final String enumString) {
-        BarColor barColor;
-
-        try {
-            barColor = BarColor.valueOf(enumString.toUpperCase().trim());
-        } catch (IllegalArgumentException e) {
-            barColor = BarColor.BLUE;
-        }
-
-        return barColor;
-    }
-
-    public void clearBar(@NotNull World world) {
-        BossBar bar = bossBars.get(world.getUID());
-
-        if (bar == null) {
-            return;
-        }
-
-        bar.removeAll();
-    }
-
+    /**
+     * Creates a new bossbar for the given world if one isn't already present.
+     *
+     * @param world The world in which to create the bossbar.
+     */
     private void registerBar(@NotNull World world) {
-        BossBar bar = bossBars.get(world.getUID());
+        bossBars.computeIfAbsent(world.getUID(), uuid -> Bukkit.createBossBar("", BarColor.WHITE, BarStyle.SOLID));
+    }
 
-        if (bar != null) {
-            return;
-        }
-
-        bossBars.put(world.getUID(), Bukkit.createBossBar("", BarColor.WHITE, BarStyle.SOLID));
-        System.out.println("registered bossbar for world " + world.getName());
+    /**
+     * Hides the bossbar for the given world if one is present.
+     *
+     * @param world The world in which to hide the bossbar.
+     */
+    public void clearBar(@NotNull World world) {
+        Optional.ofNullable(bossBars.get(world.getUID())).ifPresent(BossBar::removeAll);
     }
 
     @EventHandler

@@ -8,8 +8,6 @@ import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
-import xyz.nkomarn.harbor.task.Checker;
-import xyz.nkomarn.harbor.util.Config;
 import xyz.nkomarn.harbor.util.PlayerManager;
 
 import java.util.concurrent.TimeUnit;
@@ -30,27 +28,14 @@ public class BedListener implements Listener {
             return;
         }
 
-        Checker checker = harbor.getChecker();
         Player player = event.getPlayer();
-
-        if (checker.isSkipping(player.getWorld())) {
-            return;
-        }
-
-        if (checker.isVanished(player)) {
+        if (isMessageSilenced(player)) {
             return;
         }
 
         Bukkit.getScheduler().runTaskLater(harbor, () -> {
-            Config config = harbor.getConfiguration();
-
-            int cooldown = config.getInteger("messages.chat.message-cooldown");
-            if (!(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - playerManager.getCooldown(player)) > cooldown)) {
-                return;
-            }
-
             playerManager.setCooldown(player, System.currentTimeMillis());
-            harbor.getMessages().sendWorldChatMessage(event.getBed().getWorld(), config.getString("messages.chat.player-sleeping")
+            harbor.getMessages().sendWorldChatMessage(event.getBed().getWorld(), harbor.getConfiguration().getString("messages.chat.player-sleeping")
                     .replace("[player]", event.getPlayer().getName())
                     .replace("[displayname]", event.getPlayer().getDisplayName()));
         }, 1);
@@ -58,29 +43,34 @@ public class BedListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onBedLeave(PlayerBedLeaveEvent event) {
-        Checker checker = harbor.getChecker();
-        Player player = event.getPlayer();
-
-        if (checker.isSkipping(player.getWorld())) {
-            return;
-        }
-
-        if (checker.isVanished(player)) {
+        if (isMessageSilenced(event.getPlayer())) {
             return;
         }
 
         Bukkit.getScheduler().runTaskLater(harbor, () -> {
-            Config config = harbor.getConfiguration();
-
-            int cooldown = config.getInteger("messages.chat.message-cooldown");
-            if (!(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - playerManager.getCooldown(player)) > cooldown)) {
-                return;
-            }
-
-            playerManager.setCooldown(player, System.currentTimeMillis());
-            harbor.getMessages().sendWorldChatMessage(event.getBed().getWorld(), config.getString("messages.chat.player-left-bed")
+            playerManager.setCooldown(event.getPlayer(), System.currentTimeMillis());
+            harbor.getMessages().sendWorldChatMessage(event.getBed().getWorld(), harbor.getConfiguration().getString("messages.chat.player-left-bed")
                     .replace("[player]", event.getPlayer().getName())
                     .replace("[displayname]", event.getPlayer().getDisplayName()));
         }, 1);
+    }
+
+    /**
+     * Checks if a message should be silenced from chat (i.e. if the player is under cooldown).
+     *
+     * @param player The player context.
+     * @return Whether the message should be silenced.
+     */
+    private boolean isMessageSilenced(@NotNull Player player) {
+        if (harbor.getChecker().isSkipping(player.getWorld())) {
+            return true;
+        }
+
+        if (harbor.getChecker().isVanished(player)) {
+            return true;
+        }
+
+        int cooldown = harbor.getConfiguration().getInteger("messages.chat.message-cooldown");
+        return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - playerManager.getCooldown(player)) < cooldown;
     }
 }

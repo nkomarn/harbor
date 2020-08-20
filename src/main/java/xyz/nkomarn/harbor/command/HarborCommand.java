@@ -28,7 +28,7 @@ public class HarborCommand implements TabExecutor {
         String prefix = ChatColor.translateAlternateColorCodes('&', config.getString("messages.miscellaneous.chat-prefix"));
 
         if (args.length < 1 || !sender.hasPermission("harbor.admin")) {
-            sender.sendMessage(prefix + "Harbor version " + harbor.getVersion() + " by TechToolbox (@nkomarn).");
+            sender.sendMessage(prefix + "Harbor " + harbor.getVersion() + " by TechToolbox (@nkomarn).");
             return true;
         }
 
@@ -51,8 +51,8 @@ public class HarborCommand implements TabExecutor {
             if (checker.isSkipping(world)) {
                 sender.sendMessage(prefix + "This world's time is already being accelerated.");
             } else {
-                checker.forceSkip(world);
                 sender.sendMessage(prefix + "Forcing night skip in your world.");
+                checker.forceSkip(world);
             }
 
             return true;

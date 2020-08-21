@@ -82,7 +82,7 @@ public class PlayerManager implements Listener {
             return false;
         }
 
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - playerActivity.getLong(player));
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - playerActivity.getLong(player.getUniqueId()));
         return minutes >= harbor.getConfiguration().getInteger("afk-detection.timeout");
     }
 

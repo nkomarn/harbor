@@ -13,6 +13,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.jetbrains.annotations.NotNull;
@@ -161,5 +162,10 @@ public class Messages implements Listener {
     @EventHandler
     public void onWorldLoad(@NotNull WorldLoadEvent event) {
         registerBar(event.getWorld());
+    }
+
+    @EventHandler
+    public void onWorldChanged(PlayerChangedWorldEvent event) {
+        Optional.ofNullable(bossBars.get(event.getFrom().getUID())).ifPresent(bossBar -> bossBar.removePlayer(event.getPlayer()));
     }
 }

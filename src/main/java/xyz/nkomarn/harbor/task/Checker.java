@@ -206,11 +206,11 @@ public class Checker extends BukkitRunnable {
             return false;
         }
 
-        boolean excludedByAdventure = exclusions.getBoolean("exclude-adventure") && player.getGameMode() == GameMode.ADVENTURE;
-        boolean excludedByCreative = exclusions.getBoolean("exclude-creative") && player.getGameMode() == GameMode.CREATIVE;
-        boolean excludedBySpectator = exclusions.getBoolean("exclude-spectator") && player.getGameMode() == GameMode.SPECTATOR;
-        boolean excludedByPermission = exclusions.getBoolean("ignored-permission") && player.hasPermission("harbor.ignored");
-        boolean excludedByVanish = exclusions.getBoolean("exclude-vanished") && isVanished(player);
+        boolean excludedByAdventure = exclusions.getBoolean("exclude-adventure", false) && player.getGameMode() == GameMode.ADVENTURE;
+        boolean excludedByCreative = exclusions.getBoolean("exclude-creative", false) && player.getGameMode() == GameMode.CREATIVE;
+        boolean excludedBySpectator = exclusions.getBoolean("exclude-spectator", false) && player.getGameMode() == GameMode.SPECTATOR;
+        boolean excludedByPermission = exclusions.getBoolean("ignored-permission", false) && player.hasPermission("harbor.ignored");
+        boolean excludedByVanish = exclusions.getBoolean("exclude-vanished", false) && isVanished(player);
 
         return excludedByAdventure
                 || excludedByCreative

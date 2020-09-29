@@ -7,6 +7,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.nkomarn.harbor.command.ForceSkipCommand;
 import xyz.nkomarn.harbor.command.HarborCommand;
 import xyz.nkomarn.harbor.listener.BedListener;
 import xyz.nkomarn.harbor.listener.PlayerListener;
@@ -44,6 +45,7 @@ public class Harbor extends JavaPlugin {
         ).forEach(listener -> pluginManager.registerEvents(listener, this));
 
         getCommand("harbor").setExecutor(new HarborCommand(this));
+        getCommand("forceskip").setExecutor(new ForceSkipCommand(this));
 
         if (essentials == null) {
             getLogger().info("Essentials not present- registering fallback AFK detection system.");

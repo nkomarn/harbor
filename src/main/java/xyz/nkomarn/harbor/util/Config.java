@@ -1,5 +1,6 @@
 package xyz.nkomarn.harbor.util;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
@@ -30,6 +31,15 @@ public class Config {
      */
     public void reload() {
         harbor.reloadConfig();
+    }
+
+    /**
+     * Returns the prefix for Harbor messages.
+     * @return Harbor message prefix.
+     */
+    @NotNull
+    public String getPrefix() {
+        return ChatColor.translateAlternateColorCodes('&', getString("messages.miscellaneous.chat-prefix"));
     }
 
     /**

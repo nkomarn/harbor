@@ -1,19 +1,27 @@
-name: Harbor
-description: Harbor is a Spigot plugin that redefines how sleep works in your server, making it easier for all the online players to get in bed quickly and skip through the night!
-main: xyz.nkomarn.harbor.Harbor
-version: 1.6.2-SNAPSHOT
-author: TechToolbox (@nkomarn)
-website: https://nkomarn.xyz
-softdepend: [Essentials]
-api-version: 1.14
+name: "Harbor"
+description: "Harbor redefines how sleep works in your server, making it easier for all the online players to get in bed quickly and skip through the night!"
+main: "xyz.nkomarn.harbor.Harbor"
+author: "TechToolbox (@nkomarn)"
+website: "https://nkomarn.xyz"
+version: "1.6.2"
+api-version: "1.14"
+
+softdepend:
+  - "Essentials"
 
 commands:
   harbor:
-    description: "Base command for Harbor!"
-    usage: "/harbor [subcommand]"
+    description: "Base command for Harbor."
+    usage: "/harbor <subcommand>"
+  forceskip:
+    description: "Allows players to accelerate the night of their current world."
+    permission: "harbor.forceskip"
 
 permissions:
-  harbor.ignored:
-    default: false
   harbor.admin:
     default: op
+  harbor.forceskip:
+    description: "Permits usage of the /forceskip command."
+    default: op
+  harbor.ignored:
+    default: false

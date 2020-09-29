@@ -91,7 +91,7 @@ public class Messages implements Listener {
             return;
         }
 
-        sendWorldChatMessage(world, messages.get(random.nextInt(Math.max(0, messages.size()))));
+        sendWorldChatMessage(world, messages.get(random.nextInt(messages.size())));
     }
 
     /**

@@ -11,7 +11,7 @@ night-skip:
   percentage: 50 # Percentage of players required to be sleeping to skip the night (0 - 100)
   time-rate: 70 # The amount of ticks added to the current time every tick when skipping the night
   daytime-ticks: 1200 # The time in ticks that Harbor considers day
-  instant-skip: false # Instantly skip the night instead of showing the full animation
+  instant-skip: false # Instantly skip the night when the percentage threshold is reached instead of showing the full animation
   proportional-acceleration: false # Increase the night skipping speed based on the amount of sleeping players
   clear-rain: true # Clear rain (if it's raining) when the night is skipped
   clear-thunder: true # Clear thunder (if it's thundering) when the night is skipped

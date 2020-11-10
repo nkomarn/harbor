@@ -3,6 +3,7 @@ package xyz.nkomarn.harbor.task;
 import org.bukkit.Bukkit;
 import org.bukkit.Statistic;
 import org.bukkit.World;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
@@ -53,9 +54,15 @@ public class AccelerateNightTask extends BukkitRunnable {
                 world.getPlayers().forEach(player -> player.setStatistic(Statistic.TIME_SINCE_REST, 0));
             }
 
-            checker.resetStatus(world);
-            harbor.getPlayerManager().clearCooldowns();
-            harbor.getMessages().sendRandomChatMessage(world, "messages.chat.night-skipped");
+            world.getPlayers().stream()
+                    .filter(LivingEntity::isSleeping)
+                    .forEach(player -> player.wakeup(true));
+
+            harbor.getServer().getScheduler().runTaskLater(harbor, () -> {
+                checker.resetStatus(world);
+                harbor.getPlayerManager().clearCooldowns();
+                harbor.getMessages().sendRandomChatMessage(world, "messages.chat.night-skipped");
+            }, 20L);
             cancel();
             return;
         }

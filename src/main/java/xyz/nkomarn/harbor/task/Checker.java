@@ -217,8 +217,7 @@ public class Checker extends BukkitRunnable {
                 || excludedBySpectator
                 || excludedByPermission
                 || excludedByVanish
-                || harbor.getPlayerManager().isAfk(player)
-                || player.isSleepingIgnored();
+                || harbor.getPlayerManager().isAfk(player);
     }
 
     /**

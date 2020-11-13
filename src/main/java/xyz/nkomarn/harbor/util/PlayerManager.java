@@ -2,8 +2,6 @@ package xyz.nkomarn.harbor.util;
 
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
-import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2LongMap;
-import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,6 +13,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -22,13 +22,13 @@ import java.util.concurrent.TimeUnit;
 public class PlayerManager implements Listener {
 
     private final Harbor harbor;
-    private final Object2LongMap<UUID> cooldowns;
-    private final Object2LongMap<UUID> playerActivity;
+    private final Map<UUID, Long> cooldowns;
+    private final Map<UUID, Long> playerActivity;
 
     public PlayerManager(@NotNull Harbor harbor) {
         this.harbor = harbor;
-        this.cooldowns = new Object2LongOpenHashMap<>();
-        this.playerActivity = new Object2LongOpenHashMap<>();
+        this.cooldowns = new HashMap<>();
+        this.playerActivity = new HashMap<>();
     }
 
     /**
@@ -38,7 +38,7 @@ public class PlayerManager implements Listener {
      * @return The player's last cooldown time.
      */
     public long getCooldown(@NotNull Player player) {
-        return cooldowns.getOrDefault(player.getUniqueId(), 0);
+        return cooldowns.getOrDefault(player.getUniqueId(), 0L);
     }
 
     /**
@@ -82,7 +82,7 @@ public class PlayerManager implements Listener {
             return false;
         }
 
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - playerActivity.getLong(player.getUniqueId()));
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - playerActivity.get(player.getUniqueId()));
         return minutes >= harbor.getConfiguration().getInteger("afk-detection.timeout");
     }
 
@@ -105,8 +105,8 @@ public class PlayerManager implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
-        cooldowns.removeLong(uuid);
-        playerActivity.removeLong(uuid);
+        cooldowns.remove(uuid);
+        playerActivity.remove(uuid);
     }
 
     private final class AfkListeners implements Listener {

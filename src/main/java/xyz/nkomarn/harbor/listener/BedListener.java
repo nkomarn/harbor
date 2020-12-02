@@ -1,5 +1,6 @@
 package xyz.nkomarn.harbor.listener;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,10 +17,18 @@ public class BedListener implements Listener {
 
     private final Harbor harbor;
     private final PlayerManager playerManager;
+    private final boolean papiPresent = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
 
     public BedListener(@NotNull Harbor harbor) {
         this.harbor = harbor;
         this.playerManager = harbor.getPlayerManager();
+    }
+
+    public String formatForChat(Player sender, String message) {
+        String output = message.replace("[player]", sender.getName())
+                .replace("[displayname]", sender.getDisplayName());
+        if(papiPresent) output = PlaceholderAPI.setPlaceholders(sender, output);
+        return output;
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -35,9 +44,8 @@ public class BedListener implements Listener {
 
         Bukkit.getScheduler().runTaskLater(harbor, () -> {
             playerManager.setCooldown(player, System.currentTimeMillis());
-            harbor.getMessages().sendWorldChatMessage(event.getBed().getWorld(), harbor.getConfiguration().getString("messages.chat.player-sleeping")
-                    .replace("[player]", event.getPlayer().getName())
-                    .replace("[displayname]", event.getPlayer().getDisplayName()));
+            harbor.getMessages().sendWorldChatMessage(event.getBed().getWorld(),
+                    formatForChat(player, harbor.getConfiguration().getString("messages.chat.player-sleeping")));
         }, 1);
     }
 
@@ -49,9 +57,8 @@ public class BedListener implements Listener {
 
         Bukkit.getScheduler().runTaskLater(harbor, () -> {
             playerManager.setCooldown(event.getPlayer(), System.currentTimeMillis());
-            harbor.getMessages().sendWorldChatMessage(event.getBed().getWorld(), harbor.getConfiguration().getString("messages.chat.player-left-bed")
-                    .replace("[player]", event.getPlayer().getName())
-                    .replace("[displayname]", event.getPlayer().getDisplayName()));
+            harbor.getMessages().sendWorldChatMessage(event.getBed().getWorld(), formatForChat(event.getPlayer(),
+                    harbor.getConfiguration().getString("messages.chat.player-left-bed")));
         }, 1);
     }
 

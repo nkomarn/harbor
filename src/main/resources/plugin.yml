@@ -8,6 +8,7 @@ api-version: "1.14"
 
 softdepend:
   - "Essentials"
+  - "PlaceholderAPI"
 
 commands:
   harbor:

@@ -1,6 +1,7 @@
 package xyz.nkomarn.harbor.util;
 
 import com.google.common.base.Enums;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -14,7 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
@@ -28,12 +28,14 @@ public class Messages implements Listener {
     private final Config config;
     private final Random random;
     private final HashMap<UUID, BossBar> bossBars;
+    private final boolean papiPresent;
 
     public Messages(@NotNull Harbor harbor) {
         this.harbor = harbor;
         this.config = harbor.getConfiguration();
         this.random = new Random();
         this.bossBars = new HashMap<>();
+        this.papiPresent = harbor.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI");
 
         for (World world : Bukkit.getWorlds()) {
             if (harbor.getChecker().isBlacklisted(world)) {
@@ -132,13 +134,26 @@ public class Messages implements Listener {
      * @return The provided message with placeholders replaced with correct values for the world context.
      */
     @NotNull
-    private String prepareMessage(final World world, final String message) {
+    public String prepareMessage(@NotNull World world, @NotNull String message) {
         Checker checker = harbor.getChecker();
         return ChatColor.translateAlternateColorCodes('&', message
                 .replace("[sleeping]", String.valueOf(checker.getSleepingPlayers(world).size()))
                 .replace("[players]", String.valueOf(checker.getPlayers(world)))
                 .replace("[needed]", String.valueOf(checker.getSkipAmount(world)))
                 .replace("[more]", String.valueOf(checker.getNeeded(world))));
+    }
+
+    @NotNull
+    public String prepareMessage(@NotNull Player player, @NotNull String message) {
+        String output = ChatColor.translateAlternateColorCodes('&', message
+                .replace("[player]", player.getName()
+                        .replace("[displayname]", player.getDisplayName())));
+
+        if (papiPresent) {
+            output = PlaceholderAPI.setPlaceholders(player, output);
+        }
+
+        return output;
     }
 
     /**

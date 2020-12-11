@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import org.bukkit.metadata.MetadataValue;
@@ -84,9 +85,11 @@ public class Checker extends BukkitRunnable {
             }
 
             if (config.getBoolean("night-skip.instant-skip")) {
-                messages.sendRandomChatMessage(world, "messages.chat.night-skipped");
-                clearWeather(world);
-                Bukkit.getScheduler().runTask(harbor, () -> world.setTime(config.getInteger("night-skip.daytime-ticks")));
+                Bukkit.getScheduler().runTask(harbor, () -> {
+                    world.setTime(config.getInteger("night-skip.daytime-ticks"));
+                    clearWeather(world);
+                    resetStatus(world);
+                });
                 return;
             }
 
@@ -247,7 +250,23 @@ public class Checker extends BukkitRunnable {
      * @param world The world for which to reset status.
      */
     public void resetStatus(@NotNull World world) {
-        skippingWorlds.remove(world.getUID());
+        wakeUpPlayers(world);
+        harbor.getServer().getScheduler().runTaskLater(harbor, () -> {
+            skippingWorlds.remove(world.getUID());
+            harbor.getPlayerManager().clearCooldowns();
+            harbor.getMessages().sendRandomChatMessage(world, "messages.chat.night-skipped");
+        }, 20L);
+    }
+
+    /**
+     * Kicks all sleeping players out of bed in the provided world.
+     *
+     * @param world The world for which to kick players out of bed.
+     */
+    public void wakeUpPlayers(@NotNull World world) {
+        ensureMain(() -> world.getPlayers().stream()
+                .filter(LivingEntity::isSleeping)
+                .forEach(player -> player.wakeup(true)));
     }
 
     /**
@@ -256,7 +275,7 @@ public class Checker extends BukkitRunnable {
      * @param world The world for which to clear weather.
      */
     public void clearWeather(@NotNull World world) {
-        Bukkit.getScheduler().runTask(harbor, () -> {
+        ensureMain(() -> {
             Config config = harbor.getConfiguration();
 
             if (world.hasStorm() && config.getBoolean("night-skip.clear-rain")) {

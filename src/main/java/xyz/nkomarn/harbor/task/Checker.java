@@ -268,4 +268,17 @@ public class Checker extends BukkitRunnable {
             }
         });
     }
+
+    /**
+     * Ensures the provided task is ran on the server thread.
+     *
+     * @param runnable The task to run on the server thread.
+     */
+    public void ensureMain(@NotNull Runnable runnable) {
+        if (!Bukkit.isPrimaryThread()) {
+            Bukkit.getScheduler().runTask(harbor, runnable);
+        } else {
+            runnable.run();
+        }
+    }
 }

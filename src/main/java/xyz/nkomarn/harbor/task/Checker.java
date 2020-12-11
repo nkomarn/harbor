@@ -85,6 +85,7 @@ public class Checker extends BukkitRunnable {
 
             if (config.getBoolean("night-skip.instant-skip")) {
                 messages.sendRandomChatMessage(world, "messages.chat.night-skipped");
+                clearWeather(world);
                 Bukkit.getScheduler().runTask(harbor, () -> world.setTime(config.getInteger("night-skip.daytime-ticks")));
                 return;
             }
@@ -247,5 +248,24 @@ public class Checker extends BukkitRunnable {
      */
     public void resetStatus(@NotNull World world) {
         skippingWorlds.remove(world.getUID());
+    }
+
+    /**
+     * Resets the weather states in the provided world.
+     *
+     * @param world The world for which to clear weather.
+     */
+    public void clearWeather(@NotNull World world) {
+        Bukkit.getScheduler().runTask(harbor, () -> {
+            Config config = harbor.getConfiguration();
+
+            if (world.hasStorm() && config.getBoolean("night-skip.clear-rain")) {
+                world.setStorm(false);
+            }
+
+            if (world.isThundering() && config.getBoolean("night-skip.clear-thunder")) {
+                world.setThundering(false);
+            }
+        });
     }
 }

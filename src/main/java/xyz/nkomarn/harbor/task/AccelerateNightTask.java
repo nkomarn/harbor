@@ -21,18 +21,7 @@ public class AccelerateNightTask extends BukkitRunnable {
         this.world = world;
 
         harbor.getMessages().sendRandomChatMessage(world, "messages.chat.night-skipping");
-        Bukkit.getScheduler().runTask(harbor, () -> {
-            Config config = harbor.getConfiguration();
-
-            if (config.getBoolean("night-skip.clear-rain")) {
-                world.setStorm(false);
-            }
-
-            if (config.getBoolean("night-skip.clear-thunder")) {
-                world.setThundering(false);
-            }
-        });
-
+        checker.clearWeather(world);
         runTaskTimer(harbor, 1, 1);
     }
 

@@ -146,8 +146,8 @@ public class Messages implements Listener {
     @NotNull
     public String prepareMessage(@NotNull Player player, @NotNull String message) {
         String output = ChatColor.translateAlternateColorCodes('&', message
-                .replace("[player]", player.getName()
-                        .replace("[displayname]", player.getDisplayName())));
+                .replace("[player]", player.getName())
+                .replace("[displayname]", player.getDisplayName()));
 
         if (papiPresent) {
             output = PlaceholderAPI.setPlaceholders(player, output);

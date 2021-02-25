@@ -7,6 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import org.bukkit.entity.Pose;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -159,7 +160,7 @@ public class Checker extends BukkitRunnable {
     @NotNull
     public List<Player> getSleepingPlayers(@NotNull World world) {
         return world.getPlayers().stream()
-                .filter(Player::isSleeping)
+                .filter(player -> player.getPose() == Pose.SLEEPING)
                 .collect(toList());
     }
 

@@ -23,6 +23,7 @@ exclusions:
   exclude-creative: true # Exclude players in creative mode from the sleeping count
   exclude-spectator: true # Exclude players in spectator mode from the sleeping count
   exclude-vanished: true # Exclude vanished players from the sleeping count
+  exclude-afk: true # Exclude players who are considered afk from the sleeping count
 
 # Detect AFK players and automatically remove them from the required sleeping count
 # Essentials API is used for AFK detection when available- otherwise a fallback system is used

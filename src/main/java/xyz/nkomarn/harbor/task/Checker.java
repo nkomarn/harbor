@@ -216,13 +216,14 @@ public class Checker extends BukkitRunnable {
         boolean excludedBySpectator = exclusions.getBoolean("exclude-spectator", false) && player.getGameMode() == GameMode.SPECTATOR;
         boolean excludedByPermission = exclusions.getBoolean("ignored-permission", false) && player.hasPermission("harbor.ignored");
         boolean excludedByVanish = exclusions.getBoolean("exclude-vanished", false) && isVanished(player);
+        boolean excludedByAfk = exclusions.getBoolean("exclude-afk", false) && harbor.getPlayerManager().isAfk(player);
 
         return excludedByAdventure
                 || excludedByCreative
                 || excludedBySpectator
                 || excludedByPermission
                 || excludedByVanish
-                || harbor.getPlayerManager().isAfk(player);
+                || excludedByAfk;
     }
 
     /**

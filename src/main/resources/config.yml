@@ -19,10 +19,10 @@ night-skip:
 
 exclusions:
   ignored-permission: true # Exclude players with the permission "harbor.ignored" from the sleeping count
-  exclude-adventure: true # Exclude players in adventure mode from the sleeping count
-  exclude-creative: true # Exclude players in creative mode from the sleeping count
-  exclude-spectator: true # Exclude players in spectator mode from the sleeping count
-  exclude-vanished: true # Exclude vanished players from the sleeping count
+  exclude-adventure: false # Exclude players in adventure mode from the sleeping count
+  exclude-creative: false # Exclude players in creative mode from the sleeping count
+  exclude-spectator: false # Exclude players in spectator mode from the sleeping count
+  exclude-vanished: false # Exclude vanished players from the sleeping count
   exclude-afk: true # Exclude players who are considered afk from the sleeping count
 
 # Detect AFK players and automatically remove them from the required sleeping count

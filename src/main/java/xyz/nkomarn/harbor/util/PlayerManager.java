@@ -108,27 +108,4 @@ public class PlayerManager implements Listener {
         cooldowns.remove(uuid);
         playerActivity.remove(uuid);
     }
-
-    private final class AfkListeners implements Listener {
-
-        @EventHandler(ignoreCancelled = true)
-        public void onChat(AsyncPlayerChatEvent event) {
-            updateActivity(event.getPlayer());
-        }
-
-        @EventHandler(ignoreCancelled = true)
-        public void onCommand(PlayerCommandPreprocessEvent event) {
-            updateActivity(event.getPlayer());
-        }
-
-        @EventHandler(ignoreCancelled = true)
-        public void onMove(PlayerMoveEvent event) {
-            updateActivity(event.getPlayer());
-        }
-
-        @EventHandler(ignoreCancelled = true)
-        public void onInventoryClick(InventoryClickEvent event) {
-            updateActivity((Player) event.getWhoClicked());
-        }
-    }
 }

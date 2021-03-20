@@ -5,25 +5,23 @@ import com.earth2me.essentials.User;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
+import xyz.nkomarn.harbor.listener.AfkListeners;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class PlayerManager implements Listener {
 
     private final Harbor harbor;
-    private final Map<UUID, Long> cooldowns;
-    private final Map<UUID, Long> playerActivity;
+    private final Map<UUID, Instant> cooldowns;
+    private final Map<UUID, Instant> playerActivity;
 
     public PlayerManager(@NotNull Harbor harbor) {
         this.harbor = harbor;
@@ -35,10 +33,11 @@ public class PlayerManager implements Listener {
      * Gets the last tracked cooldown time for a given player.
      *
      * @param player The player for which to return cooldown time.
+     *
      * @return The player's last cooldown time.
      */
-    public long getCooldown(@NotNull Player player) {
-        return cooldowns.getOrDefault(player.getUniqueId(), 0L);
+    public Instant getCooldown(@NotNull Player player) {
+        return cooldowns.getOrDefault(player.getUniqueId(), Instant.MIN);
     }
 
     /**
@@ -47,7 +46,7 @@ public class PlayerManager implements Listener {
      * @param player   The player for which to set cooldown.
      * @param cooldown The cooldown value.
      */
-    public void setCooldown(@NotNull Player player, long cooldown) {
+    public void setCooldown(@NotNull Player player, Instant cooldown) {
         cooldowns.put(player.getUniqueId(), cooldown);
     }
 
@@ -62,6 +61,7 @@ public class PlayerManager implements Listener {
      * Checks if a player is considered "AFK" for Harbor's player checks.
      *
      * @param player The player to check.
+     *
      * @return Whether the player is considered AFK.
      */
     public boolean isAfk(@NotNull Player player) {
@@ -82,7 +82,7 @@ public class PlayerManager implements Listener {
             return false;
         }
 
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - playerActivity.get(player.getUniqueId()));
+        long minutes = playerActivity.get(player.getUniqueId()).until(Instant.now(), ChronoUnit.MINUTES);
         return minutes >= harbor.getConfiguration().getInteger("afk-detection.timeout");
     }
 
@@ -92,14 +92,16 @@ public class PlayerManager implements Listener {
      * @param player The player to update.
      */
     public void updateActivity(@NotNull Player player) {
-        playerActivity.put(player.getUniqueId(), System.currentTimeMillis());
+        playerActivity.put(player.getUniqueId(), Instant.now());
     }
 
     /**
      * Registers Harbor's fallback listeners for AFK detection if Essentials is not present.
      */
     public void registerFallbackListeners() {
-        harbor.getServer().getPluginManager().registerEvents(new AfkListeners(), harbor);
+        AfkListeners afkListeners = new AfkListeners(this);
+        afkListeners.runTaskTimer(harbor, 1, 1);
+        harbor.getServer().getPluginManager().registerEvents(afkListeners, harbor);
     }
 
     @EventHandler

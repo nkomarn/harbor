@@ -5,6 +5,8 @@ import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import xyz.nkomarn.harbor.api.AFKProvider;
+import xyz.nkomarn.harbor.api.ExclusionProvider;
 import xyz.nkomarn.harbor.command.ForceSkipCommand;
 import xyz.nkomarn.harbor.command.HarborCommand;
 import xyz.nkomarn.harbor.listener.BedListener;
@@ -18,7 +20,6 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public class Harbor extends JavaPlugin {
-
     private Config config;
     private Checker checker;
     private Messages messages;
@@ -83,6 +84,14 @@ public class Harbor extends JavaPlugin {
     @NotNull
     public PlayerManager getPlayerManager() {
         return playerManager;
+    }
+
+    public void addExclusionProvider(ExclusionProvider provider){
+        checker.addExclusionProvider(provider);
+    }
+
+    public void addAFKProvider(AFKProvider provider){
+        playerManager.addAFKProvider(provider);
     }
 
     @NotNull

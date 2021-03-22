@@ -12,23 +12,29 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
+import xyz.nkomarn.harbor.api.AFKProvider;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 public class PlayerManager implements Listener {
 
     private final Harbor harbor;
     private final Map<UUID, Long> cooldowns;
     private final Map<UUID, Long> playerActivity;
+    private final List<AFKProvider> afkProviders;
 
     public PlayerManager(@NotNull Harbor harbor) {
         this.harbor = harbor;
         this.cooldowns = new HashMap<>();
         this.playerActivity = new HashMap<>();
+        this.afkProviders = new ArrayList<>();
     }
 
     /**
@@ -78,6 +84,10 @@ public class PlayerManager implements Listener {
             }
         }
 
+        if(afkProviders.stream().anyMatch(provider -> provider.isAFK(player))) {
+            return true;
+        }
+
         if (!playerActivity.containsKey(player.getUniqueId())) {
             return false;
         }
@@ -107,6 +117,10 @@ public class PlayerManager implements Listener {
         UUID uuid = event.getPlayer().getUniqueId();
         cooldowns.remove(uuid);
         playerActivity.remove(uuid);
+    }
+
+    public void addAFKProvider(AFKProvider provider) {
+        afkProviders.add(provider);
     }
 
     private final class AfkListeners implements Listener {

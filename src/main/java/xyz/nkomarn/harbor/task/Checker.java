@@ -12,13 +12,18 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
+import xyz.nkomarn.harbor.api.AFKProvider;
+import xyz.nkomarn.harbor.api.ExclusionProvider;
 import xyz.nkomarn.harbor.util.Config;
 import xyz.nkomarn.harbor.util.Messages;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
 
@@ -26,10 +31,13 @@ public class Checker extends BukkitRunnable {
 
     private final Harbor harbor;
     private final Set<UUID> skippingWorlds;
+    private final List<ExclusionProvider> exclusionProviders;
 
     public Checker(@NotNull Harbor harbor) {
         this.harbor = harbor;
         this.skippingWorlds = new HashSet<>();
+        this.exclusionProviders = new ArrayList<>();
+
 
         runTaskTimerAsynchronously(harbor, 0L, harbor.getConfiguration().getInteger("interval") * 20);
     }
@@ -217,13 +225,15 @@ public class Checker extends BukkitRunnable {
         boolean excludedByPermission = exclusions.getBoolean("ignored-permission", false) && player.hasPermission("harbor.ignored");
         boolean excludedByVanish = exclusions.getBoolean("exclude-vanished", false) && isVanished(player);
         boolean excludedByAfk = exclusions.getBoolean("exclude-afk", false) && harbor.getPlayerManager().isAfk(player);
+        boolean excludedByProvider = exclusions.getBoolean("exclude-provider") && exclusionProviders.stream().anyMatch(provider -> provider.isExcluded(player));
 
         return excludedByAdventure
                 || excludedByCreative
                 || excludedBySpectator
                 || excludedByPermission
                 || excludedByVanish
-                || excludedByAfk;
+                || excludedByAfk
+                || excludedByProvider;
     }
 
     /**
@@ -301,5 +311,9 @@ public class Checker extends BukkitRunnable {
         } else {
             runnable.run();
         }
+    }
+
+    public void addExclusionProvider(ExclusionProvider provider) {
+        exclusionProviders.add(provider);
     }
 }

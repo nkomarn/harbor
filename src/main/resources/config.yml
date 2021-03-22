@@ -24,6 +24,7 @@ exclusions:
   exclude-spectator: false # Exclude players in spectator mode from the sleeping count
   exclude-vanished: false # Exclude vanished players from the sleeping count
   exclude-afk: true # Exclude players who are considered afk from the sleeping count
+  exclude-provider: true # Allow external plugins to exclude players from the sleeping count
 
 # Detect AFK players and automatically remove them from the required sleeping count
 # Essentials API is used for AFK detection when available- otherwise a fallback system is used

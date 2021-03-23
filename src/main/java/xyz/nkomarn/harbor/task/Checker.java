@@ -225,7 +225,7 @@ public class Checker extends BukkitRunnable {
         boolean excludedByPermission = exclusions.getBoolean("ignored-permission", false) && player.hasPermission("harbor.ignored");
         boolean excludedByVanish = exclusions.getBoolean("exclude-vanished", false) && isVanished(player);
         boolean excludedByAfk = exclusions.getBoolean("exclude-afk", false) && harbor.getPlayerManager().isAfk(player);
-        boolean excludedByProvider = exclusions.getBoolean("exclude-provider") && exclusionProviders.stream().anyMatch(provider -> provider.isExcluded(player));
+        boolean excludedByProvider = exclusionProviders.stream().anyMatch(provider -> provider.isExcluded(player));
 
         return excludedByAdventure
                 || excludedByCreative

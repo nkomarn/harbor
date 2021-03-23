@@ -1,6 +1,7 @@
 package xyz.nkomarn.harbor;
 
 import com.earth2me.essentials.Essentials;
+import me.xtomyserrax.StaffFacilities.SFAPI;
 import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -10,6 +11,8 @@ import xyz.nkomarn.harbor.api.ExclusionProvider;
 import xyz.nkomarn.harbor.command.ForceSkipCommand;
 import xyz.nkomarn.harbor.command.HarborCommand;
 import xyz.nkomarn.harbor.listener.BedListener;
+import xyz.nkomarn.harbor.provider.EssentialsAFKProvider;
+import xyz.nkomarn.harbor.provider.StaffFacilitiesExclusionProvider;
 import xyz.nkomarn.harbor.task.Checker;
 import xyz.nkomarn.harbor.util.Config;
 import xyz.nkomarn.harbor.util.Messages;
@@ -47,7 +50,11 @@ public class Harbor extends JavaPlugin {
         if (essentials == null) {
             getLogger().info("Essentials not present- registering fallback AFK detection system.");
             playerManager.registerFallbackListeners();
+        } else {
+            addAFKProvider(new EssentialsAFKProvider(this));
         }
+
+        addExclusionProvider(new StaffFacilitiesExclusionProvider(this));
 
         if (config.getBoolean("metrics")) {
             new Metrics(this);

@@ -79,15 +79,6 @@ public class PlayerManager implements Listener {
             return false;
         }
 
-        Optional<Essentials> essentials = harbor.getEssentials();
-        if (essentials.isPresent()) {
-            User user = essentials.get().getUser(player);
-
-            if (user != null) {
-                return user.isAfk();
-            }
-        }
-
         if(afkProviders.stream().anyMatch(provider -> provider.isAFK(player))) {
             return true;
         }

@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 public interface ExclusionProvider {
     /**
      * Tests if a {@link Player} is excluded from the sleep checks for Harbor
+     *
      * @param player The {@link Player} that is being checked
      * @return If the player is excluded (true) or not (false)
      */

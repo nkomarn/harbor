@@ -16,7 +16,7 @@ import java.util.Optional;
 public class EssentialsAFKProvider implements AFKProvider {
     private final Harbor harbor;
 
-    public EssentialsAFKProvider(@NotNull Harbor harbor){
+    public EssentialsAFKProvider(@NotNull Harbor harbor) {
         this.harbor = harbor;
     }
 

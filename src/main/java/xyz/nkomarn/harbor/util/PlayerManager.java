@@ -79,7 +79,7 @@ public class PlayerManager implements Listener {
             return false;
         }
 
-        if(afkProviders.stream().anyMatch(provider -> provider.isAFK(player))) {
+        if (afkProviders.stream().anyMatch(provider -> provider.isAFK(player))) {
             return true;
         }
 
@@ -104,7 +104,7 @@ public class PlayerManager implements Listener {
      * Registers Harbor's fallback listeners for AFK detection if Essentials is not present.
      */
     public void registerFallbackListeners() {
-        if(afkListeners == null) {
+        if (afkListeners == null) {
             afkListeners = new AfkListeners();
             harbor.getServer().getPluginManager().registerEvents(afkListeners, harbor);
         }
@@ -116,8 +116,8 @@ public class PlayerManager implements Listener {
      * conflicts
      */
     public void unregisterFallbackListeners() {
-        if(afkListeners != null) {
-            for(HandlerList handlerList : HandlerList.getHandlerLists()){
+        if (afkListeners != null) {
+            for (HandlerList handlerList : HandlerList.getHandlerLists()) {
                 handlerList.unregister(afkListeners);
             }
             afkListeners = null;

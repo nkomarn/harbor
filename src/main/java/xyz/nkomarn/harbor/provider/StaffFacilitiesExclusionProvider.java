@@ -18,24 +18,24 @@ public class StaffFacilitiesExclusionProvider implements ExclusionProvider {
         this.harbor = harbor;
         ConfigurationSection exclusions = harbor.getConfig().getConfigurationSection("exclusions");
         enabled = exclusions != null &&
-                  exclusions.getBoolean("exclude-active-staff") &&
-                  harbor.getServer().getPluginManager().getPlugin("StaffFacilities") != null;
+                exclusions.getBoolean("exclude-active-staff") &&
+                harbor.getServer().getPluginManager().getPlugin("StaffFacilities") != null;
     }
 
     @Override
     public boolean isExcluded(Player player) {
-        if(!enabled)
+        if (!enabled)
             return false;
         ConfigurationSection exclusions = harbor.getConfig().getConfigurationSection("exclusions");
         // Suppress Constant Conditions checking due to the way SFAPI is implemented in maven
         //noinspection ConstantConditions
-        return  SFAPI.isPlayerOnDuty(player) ||
+        return SFAPI.isPlayerOnDuty(player) ||
                 SFAPI.isPlayerOnWatchover(player) ||
                 SFAPI.isPlayerOnStaffwatch(player) ||
                 SFAPI.isPlayerFakeleaved(player) ||
-                    ((exclusions != null && exclusions.getBoolean("exclude-vanished")) && (
-                            SFAPI.isPlayerVanished(player) ||
-                            SFAPI.isPlayerStaffVanished(player)));
+                ((exclusions != null && exclusions.getBoolean("exclude-vanished")) && (
+                        SFAPI.isPlayerVanished(player) ||
+                                SFAPI.isPlayerStaffVanished(player)));
 
     }
 }

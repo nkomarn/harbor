@@ -2,8 +2,10 @@ package xyz.nkomarn.harbor.util;
 
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -13,6 +15,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
 import xyz.nkomarn.harbor.api.AFKProvider;
+import xyz.nkomarn.harbor.api.ExclusionProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +31,7 @@ public class PlayerManager implements Listener {
     private final Harbor harbor;
     private final Map<UUID, Long> cooldowns;
     private final Map<UUID, Long> playerActivity;
+    private AfkListeners afkListeners;
     private final List<AFKProvider> afkProviders;
 
     public PlayerManager(@NotNull Harbor harbor) {
@@ -109,7 +113,24 @@ public class PlayerManager implements Listener {
      * Registers Harbor's fallback listeners for AFK detection if Essentials is not present.
      */
     public void registerFallbackListeners() {
-        harbor.getServer().getPluginManager().registerEvents(new AfkListeners(), harbor);
+        if(afkListeners == null) {
+            afkListeners = new AfkListeners();
+            harbor.getServer().getPluginManager().registerEvents(afkListeners, harbor);
+        }
+    }
+
+    /**
+     * Unregisters Harbor's fallback listeners for AFK detection; can be used by
+     * an external plugin that is using an {@link AFKProvider} in order to prevent
+     * conflicts
+     */
+    public void unregisterFallbackListeners() {
+        if(afkListeners != null) {
+            for(HandlerList handlerList : HandlerList.getHandlerLists()){
+                handlerList.unregister(afkListeners);
+            }
+            afkListeners = null;
+        }
     }
 
     @EventHandler
@@ -119,6 +140,10 @@ public class PlayerManager implements Listener {
         playerActivity.remove(uuid);
     }
 
+    /**
+     * Adds an {@link AFKProvider}, which will be used to check if a
+     * Player is AFK
+     */
     public void addAFKProvider(AFKProvider provider) {
         afkProviders.add(provider);
     }

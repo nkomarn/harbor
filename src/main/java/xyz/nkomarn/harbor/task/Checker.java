@@ -313,6 +313,10 @@ public class Checker extends BukkitRunnable {
         }
     }
 
+    /**
+     * Adds an {@link ExclusionProvider}, which will be checked as a condition
+     * on which to exclude a given player
+     */
     public void addExclusionProvider(ExclusionProvider provider) {
         exclusionProviders.add(provider);
     }

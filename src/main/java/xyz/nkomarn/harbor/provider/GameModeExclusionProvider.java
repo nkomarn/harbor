@@ -10,12 +10,12 @@ import xyz.nkomarn.harbor.api.ExclusionProvider;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GameModeExclusionProvider extends HarborProvider implements ExclusionProvider {
+public class GameModeExclusionProvider implements ExclusionProvider {
     private final Map<GameMode, Boolean> exclusionMap;
+
     public GameModeExclusionProvider(@NotNull Harbor harbor) {
-        super(harbor);
         ConfigurationSection exclusions = harbor.getConfig().getConfigurationSection("exclusions");
-        if(exclusions != null) {
+        if (exclusions != null) {
             exclusionMap = new HashMap<>();
             exclusionMap.put(GameMode.ADVENTURE, exclusions.getBoolean("exclude-adventure", false));
             exclusionMap.put(GameMode.CREATIVE, exclusions.getBoolean("exclude-creative", false));
@@ -28,6 +28,6 @@ public class GameModeExclusionProvider extends HarborProvider implements Exclusi
 
     @Override
     public boolean isExcluded(Player player) {
-        return exclusionMap != null ? exclusionMap.get(player.getGameMode()) : false;
+        return exclusionMap != null ? exclusionMap.getOrDefault(player.getGameMode(), false) : false;
     }
 }

@@ -9,34 +9,34 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import xyz.nkomarn.harbor.provider.DefaultAFKProvider;
 import xyz.nkomarn.harbor.util.PlayerManager;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
 
 public final class AfkListeners extends BukkitRunnable implements Listener {
-
-    private final PlayerManager playerManager;
+    private final DefaultAFKProvider afkProvider;
     private double checksToMake = 0;
     private final Queue<AfkPlayer> players = new ArrayDeque<>();
 
-    public AfkListeners(PlayerManager playerManager) {
-        this.playerManager = playerManager;
+    public AfkListeners(DefaultAFKProvider afkProvider) {
+        this.afkProvider = afkProvider;
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event) {
-        playerManager.updateActivity(event.getPlayer());
+        afkProvider.updateActivity(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onCommand(PlayerCommandPreprocessEvent event) {
-        playerManager.updateActivity(event.getPlayer());
+        afkProvider.updateActivity(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent event) {
-        playerManager.updateActivity((Player) event.getWhoClicked());
+        afkProvider.updateActivity((Player) event.getWhoClicked());
     }
 
     @EventHandler
@@ -62,11 +62,16 @@ public final class AfkListeners extends BukkitRunnable implements Listener {
         while (System.currentTimeMillis() - start < 20 && checksToMake > 0) {
             AfkPlayer afkPlayer = players.poll();
             if (afkPlayer.changed()) {
-                playerManager.updateActivity(afkPlayer.player);
+                afkProvider.updateActivity(afkPlayer.player);
             }
             players.add(afkPlayer);
             checksToMake--;
         }
+    }
+
+    @Override
+    public void cancel() {
+        super.cancel();
     }
 
     private static class AfkPlayer {
@@ -79,6 +84,7 @@ public final class AfkListeners extends BukkitRunnable implements Listener {
 
         /**
          * Check if the player changed its position since the last check
+         *
          * @return true if the position changed
          */
         private boolean changed() {

@@ -1,19 +1,15 @@
 package xyz.nkomarn.harbor.api;
 
-import java.util.function.BiFunction;
+import org.bukkit.configuration.Configuration;
+import org.jetbrains.annotations.NotNull;
 
-public enum LogicType implements BiFunction<Boolean, Boolean, Boolean> {
-    AND, OR, XOR;
+/**
+ * An enum to represent the type of logic to be used when combining multiple Providers
+ */
+public enum LogicType {
+    AND, OR;
 
-    @Override
-    public Boolean apply(Boolean a, Boolean b) {
-        if(this.equals(AND))
-            return a && b;
-        else if(this.equals(OR))
-            return a || b;
-        else if(this.equals(XOR))
-            return a ^ b;
-        else
-            throw new UnsupportedOperationException("Unsupported logic type");
+    public static LogicType fromConfig(@NotNull Configuration configuration, String path, LogicType defaultType) {
+        return valueOf(configuration.getString(path, defaultType.toString()).toUpperCase().trim());
     }
 }

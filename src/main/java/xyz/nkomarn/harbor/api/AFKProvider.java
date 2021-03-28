@@ -14,6 +14,7 @@ public interface AFKProvider {
      * Tests if a {@link Player} is AFK
      *
      * @param player The {@link Player} that is being checked
+     *
      * @return If the player is afk (true) or not (false)
      */
     boolean isAFK(Player player);

@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
 import xyz.nkomarn.harbor.api.AFKProvider;
 import xyz.nkomarn.harbor.api.ExclusionProvider;
+import xyz.nkomarn.harbor.provider.GameModeExclusionProvider;
 import xyz.nkomarn.harbor.util.Config;
 import xyz.nkomarn.harbor.util.Messages;
 
@@ -28,16 +29,28 @@ import java.util.function.Predicate;
 import static java.util.stream.Collectors.toList;
 
 public class Checker extends BukkitRunnable {
-
+    private final Set<ExclusionProvider> providers;
     private final Harbor harbor;
     private final Set<UUID> skippingWorlds;
-    private final List<ExclusionProvider> exclusionProviders;
 
     public Checker(@NotNull Harbor harbor) {
         this.harbor = harbor;
         this.skippingWorlds = new HashSet<>();
-        this.exclusionProviders = new ArrayList<>();
+        this.providers = new HashSet<>();
 
+        ConfigurationSection exclusions = harbor.getConfig().getConfigurationSection("exclusions");
+
+
+        if(exclusions != null) {
+            // Add inbuilt exclusions
+            providers.add(new GameModeExclusionProvider(harbor));
+            if(exclusions.getBoolean("ignored-permission", false))
+                providers.add(player -> player.hasPermission("harbor.ignored"));
+            if(exclusions.getBoolean("exclude-vanished", false))
+                providers.add(Checker::isVanished);
+            if(exclusions.getBoolean("exclude-afk", false))
+                providers.add(player -> harbor.getPlayerManager().isAfk(player));
+        }
 
         runTaskTimerAsynchronously(harbor, 0L, harbor.getConfiguration().getInteger("interval") * 20);
     }
@@ -139,7 +152,7 @@ public class Checker extends BukkitRunnable {
      * @param player The player to check.
      * @return Whether the provided player is vanished.
      */
-    public boolean isVanished(@NotNull Player player) {
+    public static boolean isVanished(@NotNull Player player) {
         for (MetadataValue meta : player.getMetadata("vanished")) {
             if (meta.asBoolean()) {
                 return true;
@@ -213,27 +226,7 @@ public class Checker extends BukkitRunnable {
      * @return Whether the given player is excluded.
      */
     private boolean isExcluded(@NotNull Player player) {
-        ConfigurationSection exclusions = harbor.getConfig().getConfigurationSection("exclusions");
-
-        if (exclusions == null) {
-            return false;
-        }
-
-        boolean excludedByAdventure = exclusions.getBoolean("exclude-adventure", false) && player.getGameMode() == GameMode.ADVENTURE;
-        boolean excludedByCreative = exclusions.getBoolean("exclude-creative", false) && player.getGameMode() == GameMode.CREATIVE;
-        boolean excludedBySpectator = exclusions.getBoolean("exclude-spectator", false) && player.getGameMode() == GameMode.SPECTATOR;
-        boolean excludedByPermission = exclusions.getBoolean("ignored-permission", false) && player.hasPermission("harbor.ignored");
-        boolean excludedByVanish = exclusions.getBoolean("exclude-vanished", false) && isVanished(player);
-        boolean excludedByAfk = exclusions.getBoolean("exclude-afk", false) && harbor.getPlayerManager().isAfk(player);
-        boolean excludedByProvider = exclusionProviders.stream().anyMatch(provider -> provider.isExcluded(player));
-
-        return excludedByAdventure
-                || excludedByCreative
-                || excludedBySpectator
-                || excludedByPermission
-                || excludedByVanish
-                || excludedByAfk
-                || excludedByProvider;
+        return providers.stream().anyMatch(provider -> provider.isExcluded(player));
     }
 
     /**
@@ -314,10 +307,10 @@ public class Checker extends BukkitRunnable {
     }
 
     /**
-     * Adds an {@link ExclusionProvider}, which will be checked as a condition
+     * Adds an {@link ExclusionProvider}, which will be checked as a condition. All Exclusions will be ORed together
      * on which to exclude a given player
      */
     public void addExclusionProvider(ExclusionProvider provider) {
-        exclusionProviders.add(provider);
+        providers.add(provider);
     }
 }

@@ -11,7 +11,6 @@ import xyz.nkomarn.harbor.api.LogicType;
 import xyz.nkomarn.harbor.command.ForceSkipCommand;
 import xyz.nkomarn.harbor.command.HarborCommand;
 import xyz.nkomarn.harbor.listener.BedListener;
-import xyz.nkomarn.harbor.provider.EssentialsAFKProvider;
 import xyz.nkomarn.harbor.task.Checker;
 import xyz.nkomarn.harbor.util.Config;
 import xyz.nkomarn.harbor.util.Messages;
@@ -46,16 +45,14 @@ public class Harbor extends JavaPlugin {
         getCommand("harbor").setExecutor(new HarborCommand(this));
         getCommand("forceskip").setExecutor(new ForceSkipCommand(this));
 
-        registerDefaultProviders();
+
 
         if (config.getBoolean("metrics")) {
             new Metrics(this);
         }
     }
 
-    private void registerDefaultProviders() {
 
-    }
 
     @Override
     public void onDisable() {
@@ -108,11 +105,11 @@ public class Harbor extends JavaPlugin {
      * @param provider An external implementation of an {@link AFKProvider}, provided by an implementing plugin
      *
      * @see AFKProvider
-     * @see PlayerManager#addAFKProvider(AFKProvider)
+     * @see PlayerManager#addAfkProvider(AFKProvider, LogicType)
      */
     @SuppressWarnings("unused")
     public void addAFKProvider(AFKProvider provider, LogicType type) {
-        playerManager.addAFKProvider(provider);
+        playerManager.addAfkProvider(provider, type);
     }
 
     @NotNull

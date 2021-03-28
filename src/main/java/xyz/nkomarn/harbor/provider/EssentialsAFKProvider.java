@@ -2,6 +2,7 @@ package xyz.nkomarn.harbor.provider;
 
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
@@ -14,22 +15,28 @@ import java.util.Optional;
  * plugins can implement an {@link AFKProvider}
  */
 public class EssentialsAFKProvider implements AFKProvider {
-    private final Harbor harbor;
+    private final Essentials essentials;
 
-    public EssentialsAFKProvider(@NotNull Harbor harbor) {
-        this.harbor = harbor;
+    private EssentialsAFKProvider(@NotNull Essentials essentials) {
+        this.essentials = essentials;
     }
+
 
     @Override
     public boolean isAFK(Player player) {
-        Optional<Essentials> essentials = harbor.getEssentials();
-        if (essentials.isPresent()) {
-            User user = essentials.get().getUser(player);
+        User user = essentials.getUser(player);
+        return user != null && user.isAfk();
+    }
 
-            if (user != null) {
-                return user.isAfk();
+    public static void registerEssentials(Harbor harbor) {
+        ConfigurationSection afk = harbor.getConfig().getConfigurationSection("afk-detection");
+        if(afk != null && afk.getBoolean("essentials-enabled")) {
+            if(harbor.getEssentials().isPresent()) {
+                EssentialsAFKProvider provider = new EssentialsAFKProvider(harbor.getEssentials().get());
+            } else {
+                harbor.getLogger().info("Essentials not present- skipping registering Essentials AFK detection");
             }
         }
-        return false;
+
     }
 }

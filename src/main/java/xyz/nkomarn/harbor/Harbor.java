@@ -1,18 +1,17 @@
 package xyz.nkomarn.harbor;
 
 import com.earth2me.essentials.Essentials;
-import me.xtomyserrax.StaffFacilities.SFAPI;
 import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.api.AFKProvider;
 import xyz.nkomarn.harbor.api.ExclusionProvider;
+import xyz.nkomarn.harbor.api.LogicType;
 import xyz.nkomarn.harbor.command.ForceSkipCommand;
 import xyz.nkomarn.harbor.command.HarborCommand;
 import xyz.nkomarn.harbor.listener.BedListener;
 import xyz.nkomarn.harbor.provider.EssentialsAFKProvider;
-import xyz.nkomarn.harbor.provider.StaffFacilitiesExclusionProvider;
 import xyz.nkomarn.harbor.task.Checker;
 import xyz.nkomarn.harbor.util.Config;
 import xyz.nkomarn.harbor.util.Messages;
@@ -47,18 +46,15 @@ public class Harbor extends JavaPlugin {
         getCommand("harbor").setExecutor(new HarborCommand(this));
         getCommand("forceskip").setExecutor(new ForceSkipCommand(this));
 
-        if (essentials == null) {
-            getLogger().info("Essentials not present- registering fallback AFK detection system.");
-            playerManager.registerFallbackListeners();
-        } else {
-            addAFKProvider(new EssentialsAFKProvider(this));
-        }
-
-        addExclusionProvider(new StaffFacilitiesExclusionProvider(this));
+        registerDefaultProviders();
 
         if (config.getBoolean("metrics")) {
             new Metrics(this);
         }
+    }
+
+    private void registerDefaultProviders() {
+
     }
 
     @Override
@@ -115,7 +111,7 @@ public class Harbor extends JavaPlugin {
      * @see PlayerManager#addAFKProvider(AFKProvider)
      */
     @SuppressWarnings("unused")
-    public void addAFKProvider(AFKProvider provider) {
+    public void addAFKProvider(AFKProvider provider, LogicType type) {
         playerManager.addAFKProvider(provider);
     }
 

@@ -29,8 +29,11 @@ exclusions:
 # Detect AFK players and automatically remove them from the required sleeping count
 # Essentials API is used for AFK detection when available- otherwise a fallback system is used
 afk-detection:
-  enabled: true
-  timeout: 15 # Time in minutes until a player is considered AFK
+  # old syntax: enabled: true
+  fallback-enabled: true
+  essentials-enabled: true
+  essentials-mode: and # Can be ANDed, ORed, or XORed with other AFKProviders. This changes how it interacts with other AFKProviders If you don't know what this is, leave it alone.
+  fallback-timeout: 15 # Time in minutes until a player is considered AFK
 
 # Blacklist for worlds- Harbor will ignore these worlds
 blacklisted-worlds:
@@ -69,7 +72,7 @@ messages:
     unrecognized-command: "Unrecognized command."
 
 # Spooky internal controls
-version: 1.6.3
+version: 1.6.4
 interval: 1
 metrics: true
 debug: false

@@ -117,9 +117,7 @@ public class PlayerManager implements Listener {
      */
     public void unregisterFallbackListeners() {
         if (afkListeners != null) {
-            for (HandlerList handlerList : HandlerList.getHandlerLists()) {
-                handlerList.unregister(afkListeners);
-            }
+            HandlerList.unregisterAll(afkListeners);
             afkListeners = null;
         }
     }

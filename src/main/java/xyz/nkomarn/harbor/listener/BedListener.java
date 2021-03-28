@@ -12,7 +12,8 @@ import xyz.nkomarn.harbor.Harbor;
 import xyz.nkomarn.harbor.util.Messages;
 import xyz.nkomarn.harbor.util.PlayerManager;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 public class BedListener implements Listener {
 
@@ -38,7 +39,7 @@ public class BedListener implements Listener {
         }
 
         Bukkit.getScheduler().runTaskLater(harbor, () -> {
-            playerManager.setCooldown(player, System.currentTimeMillis());
+            playerManager.setCooldown(player, Instant.now());
             harbor.getMessages().sendWorldChatMessage(event.getBed().getWorld(), messages.prepareMessage(
                     player, harbor.getConfiguration().getString("messages.chat.player-sleeping"))
             );
@@ -52,7 +53,7 @@ public class BedListener implements Listener {
         }
 
         Bukkit.getScheduler().runTaskLater(harbor, () -> {
-            playerManager.setCooldown(event.getPlayer(), System.currentTimeMillis());
+            playerManager.setCooldown(event.getPlayer(), Instant.now());
             harbor.getMessages().sendWorldChatMessage(event.getBed().getWorld(), messages.prepareMessage(
                     event.getPlayer(), harbor.getConfiguration().getString("messages.chat.player-left-bed"))
             );
@@ -75,6 +76,6 @@ public class BedListener implements Listener {
         }
 
         int cooldown = harbor.getConfiguration().getInteger("messages.chat.message-cooldown");
-        return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - playerManager.getCooldown(player)) < cooldown;
+        return playerManager.getCooldown(player).until(Instant.now(), ChronoUnit.MINUTES) < cooldown;
     }
 }

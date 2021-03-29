@@ -28,7 +28,7 @@ public class PlayerManager implements Listener {
         this.cooldowns = new HashMap<>();
         andedProviders = new HashSet<>();
         oredProviders = new HashSet<>();
-        defaultProvider = new DefaultAFKProvider(harbor);
+        defaultProvider = new DefaultAFKProvider();
         updateListeners();
         if(harbor.getConfig().getBoolean("afk-detection.essentials-enabled", false)) {
             if(harbor.getEssentials().isPresent()) {

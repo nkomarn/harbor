@@ -1,16 +1,14 @@
 package xyz.nkomarn.harbor.provider;
 
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
 import xyz.nkomarn.harbor.api.AFKProvider;
-import xyz.nkomarn.harbor.listener.AfkListeners;
+import xyz.nkomarn.harbor.listener.AfkListener;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -18,22 +16,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class DefaultAFKProvider implements AFKProvider, Listener {
-    private final Harbor harbor;
+public final class DefaultAFKProvider implements AFKProvider, Listener {
     private final boolean enabled;
-    private final Map<UUID, Instant> playerActivity;
-    private final AfkListeners listeners;
+    private Map<UUID, Instant> playerActivity;
+    private final AfkListener listener;
+    private final int timeout;
 
-    public DefaultAFKProvider(@NotNull Harbor harbor) {
-        this.harbor = harbor;
-        playerActivity = new HashMap<>();
+    public DefaultAFKProvider() {
+        Harbor harbor = JavaPlugin.getPlugin(Harbor.class);
         if (enabled = (harbor.getConfig().getBoolean("afk-detection.fallback-enabled", true))) {
-            harbor.getLogger().info("Registering fallback AFK detection system.");
-            listeners = new AfkListeners(this);
-            harbor.getServer().getPluginManager().registerEvents(this, harbor);
+            timeout = harbor.getConfiguration().getInteger("afk-detection.timeout");
+            listener = new AfkListener(this);
+            enableListeners();
         } else {
             harbor.getLogger().info("Not registering fallback AFK detection system.");
-            listeners = null;
+            listener = null;
+            timeout = -1;
         }
     }
 
@@ -44,7 +42,7 @@ public class DefaultAFKProvider implements AFKProvider, Listener {
         }
 
         long minutes = playerActivity.get(player.getUniqueId()).until(Instant.now(), ChronoUnit.MINUTES);
-        return minutes >= harbor.getConfiguration().getInteger("afk-detection.timeout");
+        return minutes >= timeout;
     }
 
     /**
@@ -62,24 +60,22 @@ public class DefaultAFKProvider implements AFKProvider, Listener {
      */
     public void enableListeners() {
         if (enabled) {
-            listeners.runTaskTimer(harbor, 1, 1);
-            harbor.getServer().getPluginManager().registerEvents(listeners, harbor);
+            playerActivity = new HashMap<>();
+            listener.start();
         }
     }
 
     /**
      * Disables Harbor's fallback listeners for AFK detection if other AFKProviders are present.
      */
-
     public void disableListeners() {
         if (enabled) {
-            listeners.cancel();
-            harbor.getLogger().info("Unregistering fallback AFK detection system.");
+            playerActivity = null;
         }
     }
 
-    @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
-        playerActivity.remove(event.getPlayer().getUniqueId());
+
+    public void removePlayer(UUID uniqueId) {
+        playerActivity.remove(uniqueId);
     }
 }

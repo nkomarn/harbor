@@ -40,8 +40,10 @@ public class Checker extends BukkitRunnable {
             providers.add(new GameModeExclusionProvider());
             if(exclusions.getBoolean("ignored-permission", false))
                 providers.add(player -> player.hasPermission("harbor.ignored"));
+            // Example using a method reference
             if(exclusions.getBoolean("exclude-vanished", false))
                 providers.add(Checker::isVanished);
+            // Example using a lambda
             if(exclusions.getBoolean("exclude-afk", false))
                 providers.add(player -> harbor.getPlayerManager().isAfk(player));
         }

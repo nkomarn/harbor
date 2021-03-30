@@ -30,8 +30,8 @@ public class PlayerManager implements Listener {
         oredProviders = new HashSet<>();
         defaultProvider = new DefaultAFKProvider();
         updateListeners();
-        if(harbor.getConfig().getBoolean("afk-detection.essentials-enabled", false)) {
-            if(harbor.getEssentials().isPresent()) {
+        if (harbor.getConfig().getBoolean("afk-detection.essentials-enabled", false)) {
+            if (harbor.getEssentials().isPresent()) {
                 addAfkProvider(new EssentialsAFKProvider(harbor.getEssentials().get()),
                         LogicType.fromConfig(harbor.getConfig(), "essentials-anded-detection", LogicType.AND));
             } else {
@@ -77,8 +77,9 @@ public class PlayerManager implements Listener {
      */
     public boolean isAfk(@NotNull Player player) {
         return !(andedProviders.isEmpty() && oredProviders.isEmpty()) ?
-                andedProviders.stream().allMatch(provider -> provider.isAFK(player)) && oredProviders.stream().anyMatch(provider -> provider.isAFK(player)) :
-                defaultProvider.isAFK(player);
+                (!andedProviders.isEmpty() && andedProviders.stream().allMatch(provider -> provider.isAFK(player)))
+                        && (oredProviders.stream().anyMatch(provider -> provider.isAFK(player)))
+                : defaultProvider.isAFK(player);
     }
 
     @EventHandler
@@ -90,20 +91,23 @@ public class PlayerManager implements Listener {
 
     /**
      * Add an AFK Provider to harbor, so an external plugin can provide an AFK status to harbor
-     * @param provider The {@link AFKProvider} to be added
+     *
+     * @param provider  The {@link AFKProvider} to be added
      * @param logicType The type of logic (And or Or, {@link LogicType}) to be used with the given provider
      */
-    public void addAfkProvider(AFKProvider provider, LogicType logicType){
+    public void addAfkProvider(AFKProvider provider, LogicType logicType) {
         (logicType == LogicType.AND ? andedProviders : oredProviders).add(provider);
+        updateListeners();
     }
 
     public void removeAfkProvider(AFKProvider provider) {
         andedProviders.remove(provider);
         oredProviders.remove(provider);
+        updateListeners();
     }
 
-    private void updateListeners(){
-        if(andedProviders.isEmpty() && oredProviders.isEmpty()){
+    private void updateListeners() {
+        if (andedProviders.isEmpty() && oredProviders.isEmpty()) {
             defaultProvider.enableListeners();
         } else {
             defaultProvider.disableListeners();

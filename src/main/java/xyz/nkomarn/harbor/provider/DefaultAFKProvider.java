@@ -1,5 +1,6 @@
 package xyz.nkomarn.harbor.provider;
 
+import jdk.jfr.internal.LogLevel;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,21 +14,25 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public final class DefaultAFKProvider implements AFKProvider, Listener {
     private final boolean enabled;
     private Map<UUID, Instant> playerActivity;
     private final AfkListener listener;
     private final int timeout;
+    private final Logger logger;
 
     public DefaultAFKProvider() {
         Harbor harbor = JavaPlugin.getPlugin(Harbor.class);
+        this.logger = harbor.getLogger();
         if (enabled = (harbor.getConfig().getBoolean("afk-detection.fallback-enabled", true))) {
             timeout = harbor.getConfiguration().getInteger("afk-detection.timeout");
             listener = new AfkListener(this);
             enableListeners();
         } else {
-            harbor.getLogger().info("Not registering fallback AFK detection system.");
+            logger.info("Not registering fallback AFK detection system.");
             listener = null;
             timeout = -1;
         }
@@ -58,6 +63,7 @@ public final class DefaultAFKProvider implements AFKProvider, Listener {
      */
     public void enableListeners() {
         if (enabled) {
+            logger.log(Level.FINE, "Enabling listeners for Default AFK Provider");
             playerActivity = new HashMap<>();
             listener.start();
         }
@@ -68,6 +74,8 @@ public final class DefaultAFKProvider implements AFKProvider, Listener {
      */
     public void disableListeners() {
         if (enabled) {
+            logger.log(Level.FINE, "Disabling listeners for Default AFK Provider");
+            listener.stop();
             playerActivity = null;
         }
     }

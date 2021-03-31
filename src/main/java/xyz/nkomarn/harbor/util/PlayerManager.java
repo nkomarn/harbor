@@ -26,14 +26,15 @@ public class PlayerManager implements Listener {
 
     public PlayerManager(@NotNull Harbor harbor) {
         this.cooldowns = new HashMap<>();
-        andedProviders = new HashSet<>();
-        oredProviders = new HashSet<>();
-        defaultProvider = new DefaultAFKProvider();
+        this.andedProviders = new HashSet<>();
+        this.oredProviders = new HashSet<>();
+        this.defaultProvider = new DefaultAFKProvider();
+
         updateListeners();
         if (harbor.getConfig().getBoolean("afk-detection.essentials-enabled", false)) {
             if (harbor.getEssentials().isPresent()) {
                 addAfkProvider(new EssentialsAFKProvider(harbor.getEssentials().get()),
-                        LogicType.fromConfig(harbor.getConfig(), "essentials-anded-detection", LogicType.AND));
+                        LogicType.fromConfig(harbor.getConfig(), "essentials-detection-mode", LogicType.AND));
             } else {
                 harbor.getLogger().info("Essentials not present- skipping registering Essentials AFK detection");
             }
@@ -76,10 +77,12 @@ public class PlayerManager implements Listener {
      * @return Whether the player is considered AFK.
      */
     public boolean isAfk(@NotNull Player player) {
-        return !(andedProviders.isEmpty() && oredProviders.isEmpty()) ?
-                (!andedProviders.isEmpty() && andedProviders.stream().allMatch(provider -> provider.isAFK(player)))
-                        && (oredProviders.stream().anyMatch(provider -> provider.isAFK(player)))
-                : defaultProvider.isAFK(player);
+        // If there are no providers registered, we go to the default provider
+        if(oredProviders.isEmpty() && andedProviders.isEmpty()){
+            return defaultProvider.isAFK(player);
+        }
+        return oredProviders.stream().anyMatch(provider -> provider.isAFK(player)) ||
+                (!andedProviders.isEmpty() && andedProviders.stream().allMatch(provider -> provider.isAFK(player)));
     }
 
     @EventHandler
@@ -100,6 +103,10 @@ public class PlayerManager implements Listener {
         updateListeners();
     }
 
+    /**
+     * Remove an AFK provider from Harbor, provided for external plugins. Slightly more hidden to prevent accidental use
+     * @param provider the {@link AFKProvider} to be removed.
+     */
     public void removeAfkProvider(AFKProvider provider) {
         andedProviders.remove(provider);
         oredProviders.remove(provider);

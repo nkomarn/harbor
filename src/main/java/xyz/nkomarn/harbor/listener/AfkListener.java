@@ -31,7 +31,7 @@ public final class AfkListener implements Listener {
 
     public AfkListener(DefaultAFKProvider afkProvider) {
         this.afkProvider = afkProvider;
-        JavaPlugin.getPlugin(Harbor.class).getLogger().info("Registering fallback AFK detection system.");
+        JavaPlugin.getPlugin(Harbor.class).getLogger().info("Initializing fallback AFK detection system. Fallback AFK system is not enabled at this time");
     }
 
     /**
@@ -90,6 +90,9 @@ public final class AfkListener implements Listener {
         afkProvider.removePlayer(event.getPlayer().getUniqueId());
     }
 
+    /**
+     * Internal class for handling the task of checking player movement; Is a separate task so that we can cancel and restart it easily
+     */
     private class PlayerMovementChecker extends BukkitRunnable {
         @Override
         public synchronized void run() {

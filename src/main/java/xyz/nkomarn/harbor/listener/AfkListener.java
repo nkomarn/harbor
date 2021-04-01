@@ -1,8 +1,6 @@
 package xyz.nkomarn.harbor.listener;
 
-import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -17,14 +15,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import xyz.nkomarn.harbor.Harbor;
 import xyz.nkomarn.harbor.provider.DefaultAFKProvider;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayDeque;
+import java.util.Queue;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public final class AfkListener implements Listener {
     private final DefaultAFKProvider afkProvider;
-    private Set<AfkPlayer> players;
+    private Queue<AfkPlayer> players;
     private PlayerMovementChecker movementChecker;
 
     public AfkListener(DefaultAFKProvider afkProvider) {
@@ -37,16 +35,18 @@ public final class AfkListener implements Listener {
      */
     public void start() {
         JavaPlugin plugin = JavaPlugin.getPlugin(Harbor.class);
-        players = new HashSet<>();
+        players = new ArrayDeque<>();
         movementChecker = new PlayerMovementChecker();
 
+        // Populate the queue with any existing players
         players.addAll(Bukkit.getOnlinePlayers().stream().map((Function<Player, AfkPlayer>) AfkPlayer::new).collect(Collectors.toSet()));
 
         // Register listeners after populating the queue
         Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
 
-        // We want every player to get a check every 20 ticks.
-        movementChecker.runTaskTimer(plugin, 0, 20);
+        // We want every player to get a check every 20 ticks. The runnable smooths out checking a certain
+        // percentage of players over all 20 ticks. Thusly, the runnable must run on every tick
+        movementChecker.runTaskTimer(plugin, 0, 1);
 
         JavaPlugin.getPlugin(Harbor.class).getLogger().info("Fallback AFK detection system is enabled");
     }
@@ -92,11 +92,22 @@ public final class AfkListener implements Listener {
      * Internal class for handling the task of checking player movement; Is a separate task so that we can cancel and restart it easily
      */
     private final class PlayerMovementChecker extends BukkitRunnable {
+        private int checksToMake = 0;
         @Override
         public void run() {
-            // This might cause lag if there are a TON of players on the server, but by keeping things minimalistic,
-            // we can try hard to reduce it. This also short-circuits if there are no players to check.
-            players.stream().filter(AfkPlayer::changed).forEach(afkPlayer -> afkProvider.updateActivity(afkPlayer.player));
+            if(players.isEmpty()){
+                checksToMake = 0;
+                return;
+            }
+
+            // We want every player to get a check every 20 ticks. Therefore we check 1/20th of the players
+            for (checksToMake += Math.ceil(players.size() / 20.0); checksToMake > 0 && !players.isEmpty(); checksToMake--) {
+                AfkPlayer afkPlayer = players.poll();
+                if (afkPlayer.changed()) {
+                    afkProvider.updateActivity(afkPlayer.player);
+                }
+                players.add(afkPlayer);
+            }
         }
     }
 

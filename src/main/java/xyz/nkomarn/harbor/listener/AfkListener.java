@@ -1,6 +1,8 @@
 package xyz.nkomarn.harbor.listener;
 
+import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -15,19 +17,15 @@ import org.bukkit.scheduler.BukkitRunnable;
 import xyz.nkomarn.harbor.Harbor;
 import xyz.nkomarn.harbor.provider.DefaultAFKProvider;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public final class AfkListener implements Listener {
     private final DefaultAFKProvider afkProvider;
-    private Queue<AfkPlayer> playerQueue;
+    private Set<AfkPlayer> players;
     private PlayerMovementChecker movementChecker;
-
-    // We assume that a tick should take 50 ms at max.
-    // To leave some space for other plugins we only take 20 ms of a tick.
-    private static final long MAX_PROCESS_TIME_MS = 20L;
 
     public AfkListener(DefaultAFKProvider afkProvider) {
         this.afkProvider = afkProvider;
@@ -39,16 +37,16 @@ public final class AfkListener implements Listener {
      */
     public void start() {
         JavaPlugin plugin = JavaPlugin.getPlugin(Harbor.class);
-        playerQueue = new ArrayDeque<>();
+        players = new HashSet<>();
         movementChecker = new PlayerMovementChecker();
 
-        playerQueue.addAll(Bukkit.getOnlinePlayers().stream().map((Function<Player, AfkPlayer>) AfkPlayer::new).collect(Collectors.toSet()));
+        players.addAll(Bukkit.getOnlinePlayers().stream().map((Function<Player, AfkPlayer>) AfkPlayer::new).collect(Collectors.toSet()));
 
         // Register listeners after populating the queue
         Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
 
         // We want every player to get a check every 20 ticks.
-        movementChecker.runTaskTimer(plugin, 20, 20);
+        movementChecker.runTaskTimer(plugin, 0, 20);
 
         JavaPlugin.getPlugin(Harbor.class).getLogger().info("Fallback AFK detection system is enabled");
     }
@@ -59,7 +57,7 @@ public final class AfkListener implements Listener {
     public void stop() {
         movementChecker.cancel();
         HandlerList.unregisterAll(this);
-        playerQueue = null;
+        players = null;
         JavaPlugin.getPlugin(Harbor.class).getLogger().info("Fallback AFK detection system is disabled");
     }
 
@@ -80,43 +78,31 @@ public final class AfkListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        playerQueue.add(new AfkPlayer(event.getPlayer()));
+        players.add(new AfkPlayer(event.getPlayer()));
         afkProvider.updateActivity(event.getPlayer());
     }
 
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
-        playerQueue.remove(new AfkPlayer(event.getPlayer()));
+        players.remove(new AfkPlayer(event.getPlayer()));
         afkProvider.removePlayer(event.getPlayer().getUniqueId());
     }
 
     /**
      * Internal class for handling the task of checking player movement; Is a separate task so that we can cancel and restart it easily
      */
-    private class PlayerMovementChecker extends BukkitRunnable {
+    private final class PlayerMovementChecker extends BukkitRunnable {
         @Override
-        public synchronized void run() {
-            // Short circuit exit if there aren't any players to check
-            if (playerQueue.isEmpty())
-                return;
-
-
-            AfkPlayer firstPlayer = playerQueue.peek();
-            AfkPlayer player = firstPlayer;
-
-            long start = System.currentTimeMillis();
-            do {
-                if (player.changed()) {
-                    afkProvider.updateActivity(player.player);
-                }
-                playerQueue.add(player);
-            } while (System.currentTimeMillis() - start < MAX_PROCESS_TIME_MS &&
-                    !playerQueue.isEmpty() &&
-                    !(player = playerQueue.poll()).equals(firstPlayer));
+        public void run() {
+            // This might cause lag if there are a TON of players on the server, but by keeping things minimalistic,
+            // we can try hard to reduce it. This also short-circuits if there are no players to check.
+            players.stream().filter(AfkPlayer::changed).forEach(afkPlayer -> afkProvider.updateActivity(afkPlayer.player));
         }
     }
 
-    private static class AfkPlayer {
+
+
+    private static final class AfkPlayer {
         private final Player player;
         private int hash;
 
@@ -129,8 +115,7 @@ public final class AfkListener implements Listener {
          *
          * @return true if the position changed
          */
-        private synchronized boolean changed() {
-
+        boolean changed() {
             int hash = player.getLocation().hashCode();
             boolean changed = hash != this.hash;
             this.hash = hash;

@@ -17,6 +17,9 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The default AFK provider, which should be disabled if any others are registered
+ */
 public final class DefaultAFKProvider implements AFKProvider, Listener {
     private final boolean enabled;
     private Map<UUID, Instant> playerActivity;

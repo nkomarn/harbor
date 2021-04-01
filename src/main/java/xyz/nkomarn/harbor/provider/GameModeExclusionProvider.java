@@ -10,6 +10,9 @@ import xyz.nkomarn.harbor.api.ExclusionProvider;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A class-based exclusion provider example, which handles exclusions based on gamemode
+ */
 public final class GameModeExclusionProvider implements ExclusionProvider {
     private final Map<GameMode, Boolean> exclusionMap;
 

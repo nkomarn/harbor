@@ -112,6 +112,9 @@ public class Harbor extends JavaPlugin {
         playerManager.addAfkProvider(provider, type);
     }
 
+    /**
+     * @return The current instance of Essentials ({@link Essentials}, wrapped in {@link Optional}
+     */
     @NotNull
     public Optional<Essentials> getEssentials() {
         return Optional.ofNullable(essentials);

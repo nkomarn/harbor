@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
+import xyz.nkomarn.harbor.task.Checker;
 import xyz.nkomarn.harbor.util.Messages;
 import xyz.nkomarn.harbor.util.PlayerManager;
 
@@ -71,7 +72,7 @@ public class BedListener implements Listener {
             return true;
         }
 
-        if (harbor.getChecker().isVanished(player)) {
+        if (Checker.isVanished(player)) {
             return true;
         }
 

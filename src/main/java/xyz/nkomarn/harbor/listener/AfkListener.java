@@ -3,6 +3,7 @@ package xyz.nkomarn.harbor.listener;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -61,28 +62,28 @@ public final class AfkListener implements Listener {
         JavaPlugin.getPlugin(Harbor.class).getLogger().info("Fallback AFK detection system is disabled");
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onChat(AsyncPlayerChatEvent event) {
         afkProvider.updateActivity(event.getPlayer());
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onCommand(PlayerCommandPreprocessEvent event) {
         afkProvider.updateActivity(event.getPlayer());
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onInventoryClick(InventoryClickEvent event) {
         afkProvider.updateActivity((Player) event.getWhoClicked());
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onJoin(PlayerJoinEvent event) {
         players.add(new AfkPlayer(event.getPlayer()));
         afkProvider.updateActivity(event.getPlayer());
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onLeave(PlayerQuitEvent event) {
         players.remove(new AfkPlayer(event.getPlayer()));
         afkProvider.removePlayer(event.getPlayer().getUniqueId());

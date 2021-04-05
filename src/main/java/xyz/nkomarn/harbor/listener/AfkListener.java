@@ -92,7 +92,7 @@ public final class AfkListener implements Listener {
      * Internal class for handling the task of checking player movement; Is a separate task so that we can cancel and restart it easily
      */
     private final class PlayerMovementChecker extends BukkitRunnable {
-        private int checksToMake = 0;
+        private double checksToMake = 0;
         @Override
         public void run() {
             if(players.isEmpty()){
@@ -101,7 +101,7 @@ public final class AfkListener implements Listener {
             }
 
             // We want every player to get a check every 20 ticks. Therefore we check 1/20th of the players
-            for (checksToMake += Math.ceil(players.size() / 20.0); checksToMake > 0 && !players.isEmpty(); checksToMake--) {
+            for (checksToMake += players.size() / 20.0D; checksToMake > 0 && !players.isEmpty(); checksToMake--) {
                 AfkPlayer afkPlayer = players.poll();
                 if (afkPlayer.changed()) {
                     afkProvider.updateActivity(afkPlayer.player);

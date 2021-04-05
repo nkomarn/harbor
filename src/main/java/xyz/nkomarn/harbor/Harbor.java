@@ -87,7 +87,7 @@ public class Harbor extends JavaPlugin {
     }
 
     /**
-     * Add an Exclusion Provider to harbor, so an external plugin can set a player to be excluded from the sleep count
+     * Add an {@link ExclusionProvider} to harbor, so an external plugin can set a player to be excluded from the sleep count
      *
      * @param provider An external implementation of an {@link ExclusionProvider}, provided by an implementing plugin
      *
@@ -100,7 +100,19 @@ public class Harbor extends JavaPlugin {
     }
 
     /**
-     * Add an AFK Provider to harbor, so an external plugin can provide an AFK status to harbor
+     * Remove an {@link ExclusionProvider}, for use by an external plugin
+     *
+     * @param provider The provider to remove
+     *
+     * @see #addExclusionProvider(ExclusionProvider)
+     */
+    @SuppressWarnings("unused")
+    public void removeExclusionProvider(ExclusionProvider provider){
+        checker.removeExclusionProvider(provider);
+    }
+
+    /**
+     * Add an {@link AFKProvider} to harbor, so an external plugin can provide an AFK status to harbor
      *
      * @param provider An external implementation of an {@link AFKProvider}, provided by an implementing plugin
      *
@@ -110,6 +122,17 @@ public class Harbor extends JavaPlugin {
     @SuppressWarnings("unused")
     public void addAFKProvider(AFKProvider provider, LogicType type) {
         playerManager.addAfkProvider(provider, type);
+    }
+
+    /**
+     * Removes an {@link ExclusionProvider}
+     * @param provider The provider to remove
+     *
+     * @see #addAFKProvider(AFKProvider, LogicType)
+     */
+    @SuppressWarnings("unused")
+    public void removeAFKProvider(AFKProvider provider){
+        playerManager.removeAfkProvider(provider);
     }
 
     /**

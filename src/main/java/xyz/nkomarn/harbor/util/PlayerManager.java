@@ -104,7 +104,7 @@ public class PlayerManager implements Listener {
     }
 
     /**
-     * Remove an AFK provider from Harbor, provided for external plugins. Slightly more hidden to prevent accidental use
+     * Remove an AFK provider from Harbor, provided for external plugins.
      * @param provider the {@link AFKProvider} to be removed.
      */
     public void removeAfkProvider(AFKProvider provider) {

@@ -303,4 +303,11 @@ public class Checker extends BukkitRunnable {
     public void addExclusionProvider(ExclusionProvider provider) {
         providers.add(provider);
     }
+
+    /**
+     * Removes an {@link ExclusionProvider}
+     */
+    public void removeExclusionProvider(ExclusionProvider provider) {
+        providers.remove(provider);
+    }
 }

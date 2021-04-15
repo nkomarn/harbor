@@ -37,7 +37,7 @@ public class Checker extends BukkitRunnable {
 
         if(exclusions != null) {
             // Add inbuilt exclusions
-            providers.add(new GameModeExclusionProvider());
+            providers.add(new GameModeExclusionProvider(harbor));
             if(exclusions.getBoolean("ignored-permission", false))
                 providers.add(player -> player.hasPermission("harbor.ignored"));
             // Example using a method reference
@@ -47,8 +47,11 @@ public class Checker extends BukkitRunnable {
             if(exclusions.getBoolean("exclude-afk", false))
                 providers.add(player -> harbor.getPlayerManager().isAfk(player));
         }
-
-        runTaskTimerAsynchronously(harbor, 0L, harbor.getConfiguration().getInteger("interval") * 20L);
+        int interval = harbor.getConfiguration().getInteger("interval");
+        // Default to 1 if its invalid
+        if(interval <= 0)
+            interval = 1;
+        runTaskTimerAsynchronously(harbor, 0L,  interval * 20L);
     }
 
     @Override

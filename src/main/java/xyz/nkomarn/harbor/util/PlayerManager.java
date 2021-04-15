@@ -28,7 +28,7 @@ public class PlayerManager implements Listener {
         this.cooldowns = new HashMap<>();
         this.andedProviders = new HashSet<>();
         this.oredProviders = new HashSet<>();
-        this.defaultProvider = new DefaultAFKProvider();
+        this.defaultProvider = new DefaultAFKProvider(harbor);
 
         updateListeners();
         if (harbor.getConfig().getBoolean("afk-detection.essentials-enabled", false)) {
@@ -86,7 +86,7 @@ public class PlayerManager implements Listener {
     }
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
+    public void onQuit(@NotNull PlayerQuitEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
         cooldowns.remove(uuid);
     }
@@ -98,8 +98,17 @@ public class PlayerManager implements Listener {
      * @param provider  The {@link AFKProvider} to be added
      * @param logicType The type of logic (And or Or, {@link LogicType}) to be used with the given provider
      */
-    public void addAfkProvider(AFKProvider provider, LogicType logicType) {
-        (logicType == LogicType.AND ? andedProviders : oredProviders).add(provider);
+    public void addAfkProvider(@NotNull AFKProvider provider, @NotNull LogicType logicType) {
+        switch (logicType){
+            case AND:
+                andedProviders.add(provider);
+                break;
+            case OR:
+                oredProviders.add(provider);
+                break;
+            default:
+                throw new IllegalStateException("Invalid logic type specified");
+        }
         updateListeners();
     }
 
@@ -107,7 +116,7 @@ public class PlayerManager implements Listener {
      * Remove an AFK provider from Harbor, provided for external plugins.
      * @param provider the {@link AFKProvider} to be removed.
      */
-    public void removeAfkProvider(AFKProvider provider) {
+    public void removeAfkProvider(@NotNull AFKProvider provider) {
         andedProviders.remove(provider);
         oredProviders.remove(provider);
         updateListeners();

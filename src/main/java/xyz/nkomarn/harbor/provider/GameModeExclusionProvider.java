@@ -4,6 +4,7 @@ import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
 import xyz.nkomarn.harbor.api.ExclusionProvider;
 
@@ -16,8 +17,8 @@ import java.util.Map;
 public final class GameModeExclusionProvider implements ExclusionProvider {
     private final Map<GameMode, Boolean> exclusionMap;
 
-    public GameModeExclusionProvider() {
-        ConfigurationSection exclusions = JavaPlugin.getPlugin(Harbor.class).getConfig().getConfigurationSection("exclusions");
+    public GameModeExclusionProvider(@NotNull Harbor harbor) {
+        ConfigurationSection exclusions = harbor.getConfig().getConfigurationSection("exclusions");
         if (exclusions != null) {
             exclusionMap = new HashMap<>();
             exclusionMap.put(GameMode.ADVENTURE, exclusions.getBoolean("exclude-adventure", false));

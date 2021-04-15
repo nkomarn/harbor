@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
 import xyz.nkomarn.harbor.provider.DefaultAFKProvider;
 
@@ -25,17 +26,18 @@ public final class AfkListener implements Listener {
     private final DefaultAFKProvider afkProvider;
     private Queue<AfkPlayer> players;
     private PlayerMovementChecker movementChecker;
+    private final Harbor harbor;
 
-    public AfkListener(DefaultAFKProvider afkProvider) {
+    public AfkListener(@NotNull DefaultAFKProvider afkProvider) {
         this.afkProvider = afkProvider;
-        JavaPlugin.getPlugin(Harbor.class).getLogger().info("Initializing fallback AFK detection system. Fallback AFK system is not enabled at this time");
+        this.harbor = afkProvider.getHarbor();
+        harbor.getLogger().info("Initializing fallback AFK detection system. Fallback AFK system is not enabled at this time");
     }
 
     /**
      * Provides a way to start the listener
      */
     public void start() {
-        JavaPlugin plugin = JavaPlugin.getPlugin(Harbor.class);
         players = new ArrayDeque<>();
         movementChecker = new PlayerMovementChecker();
 
@@ -43,13 +45,13 @@ public final class AfkListener implements Listener {
         players.addAll(Bukkit.getOnlinePlayers().stream().map((Function<Player, AfkPlayer>) AfkPlayer::new).collect(Collectors.toSet()));
 
         // Register listeners after populating the queue
-        Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
+        Bukkit.getServer().getPluginManager().registerEvents(this, harbor);
 
         // We want every player to get a check every 20 ticks. The runnable smooths out checking a certain
         // percentage of players over all 20 ticks. Thusly, the runnable must run on every tick
-        movementChecker.runTaskTimer(plugin, 0, 1);
+        movementChecker.runTaskTimer(harbor, 0, 1);
 
-        JavaPlugin.getPlugin(Harbor.class).getLogger().info("Fallback AFK detection system is enabled");
+        harbor.getLogger().info("Fallback AFK detection system is enabled");
     }
 
     /**

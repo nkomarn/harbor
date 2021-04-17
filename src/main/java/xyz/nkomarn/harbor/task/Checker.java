@@ -2,7 +2,6 @@ package xyz.nkomarn.harbor.task;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
@@ -32,26 +31,19 @@ public class Checker extends BukkitRunnable {
         this.skippingWorlds = new HashSet<>();
         this.providers = new HashSet<>();
 
-        ConfigurationSection exclusions = harbor.getConfig().getConfigurationSection("exclusions");
+        // GameModeExclusionProvider checks each case on its own
+        providers.add(new GameModeExclusionProvider(harbor));
 
+        // The others are simple enough that we can use lambdas
+        providers.add(player -> harbor.getConfig().getBoolean("exclusions.ignored-permission", true) && player.hasPermission("harbor.ignored"));
+        providers.add(player -> harbor.getConfig().getBoolean("exclusions.exclude-vanished", false) && isVanished(player));
+        providers.add(player -> harbor.getConfig().getBoolean("exclusions.exclude-afk", false) && harbor.getPlayerManager().isAfk(player));
 
-        if(exclusions != null) {
-            // Add inbuilt exclusions
-            providers.add(new GameModeExclusionProvider(harbor));
-            if(exclusions.getBoolean("ignored-permission", false))
-                providers.add(player -> player.hasPermission("harbor.ignored"));
-            // Example using a method reference
-            if(exclusions.getBoolean("exclude-vanished", false))
-                providers.add(Checker::isVanished);
-            // Example using a lambda
-            if(exclusions.getBoolean("exclude-afk", false))
-                providers.add(player -> harbor.getPlayerManager().isAfk(player));
-        }
         int interval = harbor.getConfiguration().getInteger("interval");
         // Default to 1 if its invalid
-        if(interval <= 0)
+        if (interval <= 0)
             interval = 1;
-        runTaskTimerAsynchronously(harbor, 0L,  interval * 20L);
+        runTaskTimerAsynchronously(harbor, 0L, interval * 20L);
     }
 
     @Override
@@ -65,6 +57,7 @@ public class Checker extends BukkitRunnable {
      * Checks if a given world is applicable for night skipping.
      *
      * @param world The world to check.
+     *
      * @return Whether Harbor should run the night skipping check below.
      */
     private boolean validateWorld(@NotNull World world) {
@@ -123,6 +116,7 @@ public class Checker extends BukkitRunnable {
      * Checks if the time in a given world is considered to be night.
      *
      * @param world The world to check.
+     *
      * @return Whether it is currently night in the provided world.
      */
     private boolean isNight(@NotNull World world) {
@@ -133,6 +127,7 @@ public class Checker extends BukkitRunnable {
      * Checks if a current world has been blacklisted (or whitelisted) in the configuration.
      *
      * @param world The world to check.
+     *
      * @return Whether a world is excluded from Harbor checks.
      */
     public boolean isBlacklisted(@NotNull World world) {
@@ -149,6 +144,7 @@ public class Checker extends BukkitRunnable {
      * Checks if a given player is in a vanished state.
      *
      * @param player The player to check.
+     *
      * @return Whether the provided player is vanished.
      */
     public static boolean isVanished(@NotNull Player player) {
@@ -159,6 +155,7 @@ public class Checker extends BukkitRunnable {
      * Returns the amount of players that should be counted for Harbor's checks, ignoring excluded players.
      *
      * @param world The world for which to check player count.
+     *
      * @return The amount of players in a given world, minus excluded players.
      */
     public int getPlayers(@NotNull World world) {
@@ -169,6 +166,7 @@ public class Checker extends BukkitRunnable {
      * Returns a list of all sleeping players in a given world.
      *
      * @param world The world in which to check for sleeping players.
+     *
      * @return A list of all currently sleeping players in the provided world.
      */
     @NotNull
@@ -182,6 +180,7 @@ public class Checker extends BukkitRunnable {
      * Returns the amount of players that must be sleeping to skip the night in the given world.
      *
      * @param world The world for which to check skip amount.
+     *
      * @return The amount of players that need to sleep to skip the night.
      */
     public int getSkipAmount(@NotNull World world) {
@@ -192,6 +191,7 @@ public class Checker extends BukkitRunnable {
      * Returns the amount of players that are still needed to skip the night in a given world.
      *
      * @param world The world for which to check the amount of needed players.
+     *
      * @return The amount of players that still need to get into bed to start the night skipping task.
      */
     public int getNeeded(@NotNull World world) {
@@ -203,6 +203,7 @@ public class Checker extends BukkitRunnable {
      * Returns a list of players that are considered to be excluded from Harbor's player count checks.
      *
      * @param world The world for which to check for excluded players.
+     *
      * @return A list of excluded players in the given world.
      */
     @NotNull
@@ -216,6 +217,7 @@ public class Checker extends BukkitRunnable {
      * Checks if a given player is considered excluded from Harbor's checks.
      *
      * @param player The player to check.
+     *
      * @return Whether the given player is excluded.
      */
     private boolean isExcluded(@NotNull Player player) {
@@ -226,6 +228,7 @@ public class Checker extends BukkitRunnable {
      * Checks whether the night is currently being skipped in the given world.
      *
      * @param world The world to check.
+     *
      * @return Whether the night is currently skipping in the provided world.
      */
     public boolean isSkipping(@NotNull World world) {

@@ -5,14 +5,17 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Config {
+    private final List<ReloadListener> reloadListeners;
 
     private final Harbor harbor;
 
     public Config(@NotNull Harbor harbor) {
         this.harbor = harbor;
+        reloadListeners = new ArrayList<>();
         harbor.saveDefaultConfig();
     }
 
@@ -86,5 +89,10 @@ public class Config {
     @NotNull
     public List<String> getStringList(@NotNull String location) {
         return getConfig().getStringList(location);
+    }
+
+
+    public interface ReloadListener {
+        void onReload();
     }
 }

@@ -27,7 +27,7 @@ public final class DefaultAFKProvider implements AFKProvider, Listener {
     public DefaultAFKProvider(@NotNull Harbor harbor) {
         this.harbor = harbor;
         if (enabled = (harbor.getConfig().getBoolean("afk-detection.fallback-enabled", true))) {
-            timeout = harbor.getConfiguration().getInteger("afk-detection.timeout");
+            timeout = harbor.getConfig().getInt("afk-detection.fallback-timeout", 15);
             listener = new AfkListener(this);
             enableListeners();
         } else {

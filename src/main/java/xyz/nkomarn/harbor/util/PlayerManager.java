@@ -31,13 +31,11 @@ public class PlayerManager implements Listener {
         this.defaultProvider = new DefaultAFKProvider(harbor);
 
         updateListeners();
-        if (harbor.getConfig().getBoolean("afk-detection.essentials-enabled", false)) {
-            if (harbor.getEssentials().isPresent()) {
-                addAfkProvider(new EssentialsAFKProvider(harbor.getEssentials().get()),
-                        LogicType.fromConfig(harbor.getConfig(), "essentials-detection-mode", LogicType.AND));
-            } else {
-                harbor.getLogger().info("Essentials not present- skipping registering Essentials AFK detection");
-            }
+        if (harbor.getEssentials().isPresent()) {
+            addAfkProvider(new EssentialsAFKProvider(harbor, harbor.getEssentials().get()),
+                    LogicType.fromConfig(harbor.getConfig(), "essentials-detection-mode", LogicType.AND));
+        } else {
+            harbor.getLogger().info("Essentials not present - not registering Essentials integration");
         }
     }
 

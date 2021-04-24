@@ -1,7 +1,6 @@
 package xyz.nkomarn.harbor.listener;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -130,11 +129,11 @@ public final class AfkListener implements Listener {
 
     private static final class AfkPlayer {
         private final Player player;
-        private Location location;
+        private int locationHash;
 
         public AfkPlayer(Player player) {
             this.player = player;
-            location = player.getEyeLocation();
+            locationHash = player.getEyeLocation().hashCode();
         }
 
         /**
@@ -143,9 +142,9 @@ public final class AfkListener implements Listener {
          * @return true if the position changed
          */
         boolean changed() {
-            Location prev = location;
-            location = player.getEyeLocation();
-            return !prev.equals(location);
+            int previousLocation = locationHash;
+            locationHash = player.getEyeLocation().hashCode();
+            return previousLocation != locationHash;
         }
 
         @Override

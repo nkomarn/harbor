@@ -1,44 +1,53 @@
 package xyz.nkomarn.harbor.util;
 
-import com.earth2me.essentials.Essentials;
-import com.earth2me.essentials.User;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
+import xyz.nkomarn.harbor.api.AFKProvider;
+import xyz.nkomarn.harbor.api.LogicType;
+import xyz.nkomarn.harbor.provider.DefaultAFKProvider;
+import xyz.nkomarn.harbor.provider.EssentialsAFKProvider;
 
+import java.time.Instant;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class PlayerManager implements Listener {
-
-    private final Harbor harbor;
-    private final Map<UUID, Long> cooldowns;
-    private final Map<UUID, Long> playerActivity;
+    private final Map<UUID, Instant> cooldowns;
+    private final Set<AFKProvider> andedProviders;
+    private final Set<AFKProvider> oredProviders;
+    private final DefaultAFKProvider defaultProvider;
 
     public PlayerManager(@NotNull Harbor harbor) {
-        this.harbor = harbor;
         this.cooldowns = new HashMap<>();
-        this.playerActivity = new HashMap<>();
+        this.andedProviders = new HashSet<>();
+        this.oredProviders = new HashSet<>();
+        this.defaultProvider = new DefaultAFKProvider(harbor);
+
+        updateListeners();
+        if (harbor.getEssentials().isPresent()) {
+            addAfkProvider(new EssentialsAFKProvider(harbor, harbor.getEssentials().get()),
+                    LogicType.fromConfig(harbor.getConfig(), "essentials-detection-mode", LogicType.AND));
+        } else {
+            harbor.getLogger().info("Essentials not present - not registering Essentials integration");
+        }
     }
 
     /**
      * Gets the last tracked cooldown time for a given player.
      *
      * @param player The player for which to return cooldown time.
+     *
      * @return The player's last cooldown time.
      */
-    public long getCooldown(@NotNull Player player) {
-        return cooldowns.getOrDefault(player.getUniqueId(), 0L);
+    public Instant getCooldown(@NotNull Player player) {
+        return cooldowns.getOrDefault(player.getUniqueId(), Instant.MIN);
     }
 
     /**
@@ -47,7 +56,7 @@ public class PlayerManager implements Listener {
      * @param player   The player for which to set cooldown.
      * @param cooldown The cooldown value.
      */
-    public void setCooldown(@NotNull Player player, long cooldown) {
+    public void setCooldown(@NotNull Player player, Instant cooldown) {
         cooldowns.put(player.getUniqueId(), cooldown);
     }
 
@@ -62,73 +71,60 @@ public class PlayerManager implements Listener {
      * Checks if a player is considered "AFK" for Harbor's player checks.
      *
      * @param player The player to check.
+     *
      * @return Whether the player is considered AFK.
      */
     public boolean isAfk(@NotNull Player player) {
-        if (!harbor.getConfiguration().getBoolean("afk-detection.enabled")) {
-            return false;
+        // If there are no providers registered, we go to the default provider
+        if(oredProviders.isEmpty() && andedProviders.isEmpty()){
+            return defaultProvider.isAFK(player);
         }
-
-        Optional<Essentials> essentials = harbor.getEssentials();
-        if (essentials.isPresent()) {
-            User user = essentials.get().getUser(player);
-
-            if (user != null) {
-                return user.isAfk();
-            }
-        }
-
-        if (!playerActivity.containsKey(player.getUniqueId())) {
-            return false;
-        }
-
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - playerActivity.get(player.getUniqueId()));
-        return minutes >= harbor.getConfiguration().getInteger("afk-detection.timeout");
-    }
-
-    /**
-     * Sets the given player's last activity to the current timestamp.
-     *
-     * @param player The player to update.
-     */
-    public void updateActivity(@NotNull Player player) {
-        playerActivity.put(player.getUniqueId(), System.currentTimeMillis());
-    }
-
-    /**
-     * Registers Harbor's fallback listeners for AFK detection if Essentials is not present.
-     */
-    public void registerFallbackListeners() {
-        harbor.getServer().getPluginManager().registerEvents(new AfkListeners(), harbor);
+        return oredProviders.stream().anyMatch(provider -> provider.isAFK(player)) ||
+                (!andedProviders.isEmpty() && andedProviders.stream().allMatch(provider -> provider.isAFK(player)));
     }
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
+    public void onQuit(@NotNull PlayerQuitEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
         cooldowns.remove(uuid);
-        playerActivity.remove(uuid);
     }
 
-    private final class AfkListeners implements Listener {
 
-        @EventHandler(ignoreCancelled = true)
-        public void onChat(AsyncPlayerChatEvent event) {
-            updateActivity(event.getPlayer());
+    /**
+     * Add an AFK Provider to harbor, so an external plugin can provide an AFK status to harbor
+     *
+     * @param provider  The {@link AFKProvider} to be added
+     * @param logicType The type of logic (And or Or, {@link LogicType}) to be used with the given provider
+     */
+    public void addAfkProvider(@NotNull AFKProvider provider, @NotNull LogicType logicType) {
+        switch (logicType){
+            case AND:
+                andedProviders.add(provider);
+                break;
+            case OR:
+                oredProviders.add(provider);
+                break;
+            default:
+                throw new IllegalStateException("Invalid logic type specified");
         }
+        updateListeners();
+    }
 
-        @EventHandler(ignoreCancelled = true)
-        public void onCommand(PlayerCommandPreprocessEvent event) {
-            updateActivity(event.getPlayer());
-        }
+    /**
+     * Remove an AFK provider from Harbor, provided for external plugins.
+     * @param provider the {@link AFKProvider} to be removed.
+     */
+    public void removeAfkProvider(@NotNull AFKProvider provider) {
+        andedProviders.remove(provider);
+        oredProviders.remove(provider);
+        updateListeners();
+    }
 
-        @EventHandler(ignoreCancelled = true)
-        public void onMove(PlayerMoveEvent event) {
-            updateActivity(event.getPlayer());
-        }
-
-        @EventHandler(ignoreCancelled = true)
-        public void onInventoryClick(InventoryClickEvent event) {
-            updateActivity((Player) event.getWhoClicked());
+    private void updateListeners() {
+        if (andedProviders.isEmpty() && oredProviders.isEmpty()) {
+            defaultProvider.enableListeners();
+        } else {
+            defaultProvider.disableListeners();
         }
     }
 }

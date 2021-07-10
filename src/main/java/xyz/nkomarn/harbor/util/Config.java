@@ -8,7 +8,6 @@ import xyz.nkomarn.harbor.Harbor;
 import java.util.List;
 
 public class Config {
-
     private final Harbor harbor;
 
     public Config(@NotNull Harbor harbor) {

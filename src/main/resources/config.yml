@@ -19,17 +19,20 @@ night-skip:
 
 exclusions:
   ignored-permission: true # Exclude players with the permission "harbor.ignored" from the sleeping count
+  exclude-survival: false # Exclude players in survival mode from the sleeping count
   exclude-adventure: false # Exclude players in adventure mode from the sleeping count
   exclude-creative: false # Exclude players in creative mode from the sleeping count
-  exclude-spectator: false # Exclude players in spectator mode from the sleeping count
-  exclude-vanished: false # Exclude vanished players from the sleeping count
+  exclude-spectator: true # Exclude players in spectator mode from the sleeping count
+  exclude-vanished: true # Exclude vanished players from the sleeping count
   exclude-afk: true # Exclude players who are considered afk from the sleeping count
 
 # Detect AFK players and automatically remove them from the required sleeping count
 # Essentials API is used for AFK detection when available- otherwise a fallback system is used
 afk-detection:
-  enabled: true
-  timeout: 15 # Time in minutes until a player is considered AFK
+  fallback-enabled: true
+  essentials-enabled: true
+  essentials-detection-mode: and # Plugins providing an AFK status, such as Essentials, can either have that AFK check ANDed or ORed with other plugin's checks. By default, we use ANDed detection (Essentials AND any other plugins must report the player as AFK)
+  fallback-timeout: 15 # Time in minutes until a player is considered AFK
 
 # Blacklist for worlds- Harbor will ignore these worlds
 blacklisted-worlds:
@@ -68,7 +71,7 @@ messages:
     unrecognized-command: "Unrecognized command."
 
 # Spooky internal controls
-version: 1.6.3
+version: 1.6.4
 interval: 1
 metrics: true
 debug: false

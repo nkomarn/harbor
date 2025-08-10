@@ -11,9 +11,10 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
+import xyz.nkomarn.harbor.folia.FoliaRunnable;
+import xyz.nkomarn.harbor.folia.SchedulerUtils;
 import xyz.nkomarn.harbor.provider.DefaultAFKProvider;
 
 import java.util.ArrayDeque;
@@ -52,7 +53,7 @@ public final class AfkListener implements Listener {
 
             // We want every player to get a check every 20 ticks. The runnable smooths out checking a certain
             // percentage of players over all 20 ticks. Thusly, the runnable must run on every tick
-            movementChecker.runTaskTimer(harbor, 0, 1);
+            SchedulerUtils.runTaskTimer(null, movementChecker, 1, 1);
 
             harbor.getLogger().info("Fallback AFK detection system is enabled");
         } else {
@@ -105,7 +106,7 @@ public final class AfkListener implements Listener {
     /**
      * Internal class for handling the task of checking player movement; Is a separate task so that we can cancel and restart it easily
      */
-    private final class PlayerMovementChecker extends BukkitRunnable {
+    private final class PlayerMovementChecker extends FoliaRunnable {
         private double checksToMake = 0;
         @Override
         public void run() {

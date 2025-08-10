@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
+import xyz.nkomarn.harbor.folia.SchedulerUtils;
 import xyz.nkomarn.harbor.task.Checker;
 import xyz.nkomarn.harbor.util.Messages;
 import xyz.nkomarn.harbor.util.PlayerManager;
@@ -39,7 +40,7 @@ public class BedListener implements Listener {
             return;
         }
 
-        Bukkit.getScheduler().runTaskLater(harbor, () -> {
+        SchedulerUtils.runTaskLater(event.getBed().getLocation(), () -> {
             playerManager.setCooldown(player, Instant.now());
             harbor.getMessages().sendWorldChatMessage(event.getBed().getWorld(), messages.prepareMessage(
                     player, harbor.getConfiguration().getString("messages.chat.player-sleeping"))
@@ -53,7 +54,7 @@ public class BedListener implements Listener {
             return;
         }
 
-        Bukkit.getScheduler().runTaskLater(harbor, () -> {
+        SchedulerUtils.runTaskLater(event.getBed().getLocation(), () -> {
             playerManager.setCooldown(event.getPlayer(), Instant.now());
             harbor.getMessages().sendWorldChatMessage(event.getBed().getWorld(), messages.prepareMessage(
                     event.getPlayer(), harbor.getConfiguration().getString("messages.chat.player-left-bed"))

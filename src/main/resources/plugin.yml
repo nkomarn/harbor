@@ -5,6 +5,7 @@ author: "TechToolbox (@nkomarn)"
 website: "https://nkomarn.xyz"
 version: "1.6.4-SNAPSHOT"
 api-version: "1.14"
+folia-supported: true
 
 softdepend:
   - "Essentials"

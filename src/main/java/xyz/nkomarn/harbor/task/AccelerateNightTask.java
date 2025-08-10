@@ -2,12 +2,13 @@ package xyz.nkomarn.harbor.task;
 
 import org.bukkit.Statistic;
 import org.bukkit.World;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
+import xyz.nkomarn.harbor.folia.FoliaRunnable;
+import xyz.nkomarn.harbor.folia.SchedulerUtils;
 import xyz.nkomarn.harbor.util.Config;
 
-public class AccelerateNightTask extends BukkitRunnable {
+public class AccelerateNightTask extends FoliaRunnable {
 
     private final Harbor harbor;
     private final Checker checker;
@@ -20,7 +21,7 @@ public class AccelerateNightTask extends BukkitRunnable {
 
         harbor.getMessages().sendRandomChatMessage(world, "messages.chat.night-skipping");
         checker.clearWeather(world);
-        runTaskTimer(harbor, 1, 1);
+        SchedulerUtils.runTaskTimer(null, this, 1, 1);
     }
 
     @Override

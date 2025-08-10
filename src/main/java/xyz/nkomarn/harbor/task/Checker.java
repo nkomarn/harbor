@@ -6,10 +6,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 import org.bukkit.metadata.MetadataValue;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
 import xyz.nkomarn.harbor.api.ExclusionProvider;
+import xyz.nkomarn.harbor.folia.FoliaRunnable;
+import xyz.nkomarn.harbor.folia.SchedulerUtils;
 import xyz.nkomarn.harbor.provider.GameModeExclusionProvider;
 import xyz.nkomarn.harbor.util.Config;
 import xyz.nkomarn.harbor.util.Messages;
@@ -21,7 +22,7 @@ import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
 
-public class Checker extends BukkitRunnable {
+public class Checker extends FoliaRunnable {
     private final Set<ExclusionProvider> providers;
     private final Harbor harbor;
     private final Set<UUID> skippingWorlds;
@@ -43,7 +44,7 @@ public class Checker extends BukkitRunnable {
         // Default to 1 if its invalid
         if (interval <= 0)
             interval = 1;
-        runTaskTimerAsynchronously(harbor, 0L, interval * 20L);
+        SchedulerUtils.runTaskTimerAsynchronously(this, 1L, interval * 20L);
     }
 
     @Override
@@ -99,7 +100,7 @@ public class Checker extends BukkitRunnable {
             }
 
             if (config.getBoolean("night-skip.instant-skip")) {
-                Bukkit.getScheduler().runTask(harbor, () -> {
+                SchedulerUtils.runTask(null, () -> {
                     world.setTime(config.getInteger("night-skip.daytime-ticks"));
                     clearWeather(world);
                     resetStatus(world);
@@ -252,7 +253,7 @@ public class Checker extends BukkitRunnable {
      */
     public void resetStatus(@NotNull World world) {
         wakeUpPlayers(world);
-        harbor.getServer().getScheduler().runTaskLater(harbor, () -> {
+        SchedulerUtils.runTaskLater(null, () -> {
             skippingWorlds.remove(world.getUID());
             harbor.getPlayerManager().clearCooldowns();
             harbor.getMessages().sendRandomChatMessage(world, "messages.chat.night-skipped");
@@ -296,7 +297,7 @@ public class Checker extends BukkitRunnable {
      */
     public void ensureMain(@NotNull Runnable runnable) {
         if (!Bukkit.isPrimaryThread()) {
-            Bukkit.getScheduler().runTask(harbor, runnable);
+            SchedulerUtils.runTask(null, runnable);
         } else {
             runnable.run();
         }

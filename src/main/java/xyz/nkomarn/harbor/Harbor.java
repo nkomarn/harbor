@@ -10,6 +10,7 @@ import xyz.nkomarn.harbor.api.ExclusionProvider;
 import xyz.nkomarn.harbor.api.LogicType;
 import xyz.nkomarn.harbor.command.ForceSkipCommand;
 import xyz.nkomarn.harbor.command.HarborCommand;
+import xyz.nkomarn.harbor.folia.SchedulerUtils;
 import xyz.nkomarn.harbor.listener.BedListener;
 import xyz.nkomarn.harbor.task.Checker;
 import xyz.nkomarn.harbor.util.Config;
@@ -21,11 +22,24 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public class Harbor extends JavaPlugin {
+    public static boolean usingFolia = false;
+
     private Config config;
     private Checker checker;
     private Messages messages;
     private PlayerManager playerManager;
     private Essentials essentials;
+
+    @Override
+    public void onLoad() {
+        try {
+            Class.forName("io.papermc.paper.threadedregions.scheduler.RegionScheduler");
+            usingFolia = true;
+        } catch (ClassNotFoundException e) {
+            usingFolia = false;
+        }
+        SchedulerUtils.plugin = this;
+    }
 
     public void onEnable() {
         PluginManager pluginManager = getServer().getPluginManager();

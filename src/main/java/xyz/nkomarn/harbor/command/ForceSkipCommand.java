@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
+import xyz.nkomarn.harbor.folia.SchedulerUtils;
 import xyz.nkomarn.harbor.task.Checker;
 import xyz.nkomarn.harbor.util.Config;
 
@@ -35,7 +36,7 @@ public class ForceSkipCommand implements CommandExecutor {
             sender.sendMessage(config.getPrefix() + "This world's time is already being accelerated.");
         } else {
             sender.sendMessage(config.getPrefix() + "Forcing night skip in your world.");
-            checker.forceSkip(world);
+            SchedulerUtils.runTask(null, () -> checker.forceSkip(world));
         }
 
         return true;

@@ -1,24 +1,81 @@
 ![Harbor 1.6 banner](https://i.imgur.com/VsYoStK.png)
 
-[discord-invite]: https://discord.gg/UACRzwe
-# ⚓ Harbor 
-[![CodeFactor](https://www.codefactor.io/repository/github/nkomarn/harbor/badge)](https://www.codefactor.io/repository/github/nkomarn/harbor) [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/nkomarn/Harbor/blob/master/LICENSE) [![Discord](https://discordapp.com/api/guilds/285623631042707457/widget.png)][discord-invite]
+# ⚓ Harbor (форк для Paper 1.21+ / MC Real World)
 
-Harbor is a plugin that redefines sleep within your Spigot server! Harbor is lightweight and performant, with just the right amount of features for any survival server! 
+[!License](https://github.com/novrom1982/Harbor/blob/master/LICENSE)
+[!Platform](https://papermc.io/)
+[!Java](https://adoptium.net/)
 
-Check it out and download the latest builds [over on the releases page!](https://github.com/nkomarn/Harbor/releases)
+**Harbor** — лёгкий и производительный плагин для серверов выживания (Paper / Spigot), который переосмысливает механику сна и делает пропуск ночи удобным для всех игроков онлайн.
 
-# 🔨 Building from source
-Harbor uses Maven to handle dependecies and building! Make sure you have Java 8, Git, and Maven installed, and then run:
+Форк поддерживается для сервера **[MC Real World](https://mcrealworld.ru)** и адаптирован под современные версии **Paper (1.21+ — 26.3)** и **Java 21–25**.
+
+Скачать готовую сборку можно на странице **[Releases](https://github.com)**.
+
+---
+
+## ✨ Основные возможности
+
+* **Плавный пропуск ночи:** Ночь ускоряется с настраиваемой скоростью (`time-rate`), когда спать ложится заданный процент игроков (`percentage`), либо пропускается мгновенно (`instant-skip`).
+* **Настраиваемый рассвет (`daytime-ticks`):** Точная остановка перемотки на любом тике суток (например, `23350` для низкого рассвета у горизонта).
+* **Синхронизация нескольких миров (`sync-worlds`):** Объединяет подсчёт игроков, прогресс сна, уведомления, очистку погоды и время суток (`master-world`) сразу для группы миров (например, `world`, `oopsland`, `world_heaven`).
+* **Наглядный прогресс:** Отображение количества спящих через **BossBar**, **ActionBar** и сообщения в чат с поддержкой цветовых кодов (`&`) и **PlaceholderAPI**.
+* **Гибкие исключения игроков:** Игнорирование игроков в режимах `Creative`, `Spectator`, `Adventure`, скрытых (`vanish`), с правом `harbor.ignored`, а также **AFK-игроков** (нативная интеграция с **EssentialsX** или встроенный детектор).
+* **Защита от фантомов:** Сброс статистики бессонницы (`TIME_SINCE_REST`) всем игрокам при успешном пропуске ночи.
+* **Очистка погоды:** Автоматическое прекращение дождя и грозы после сна.
+
+---
+
+## 🔧 Что нового в форке `1.6.5-MCRW`
+
+* Добавлена секция **`sync-worlds`** (`enabled`, `master-world`) для синхронизации времени, погоды и общего счётчика спящих между мирами.
+* Исправлен расчёт целевого тика рассвета **`daytime-ticks`** в `AccelerateNightTask` и `Checker#isNight` (теперь плагин точно останавливается на раннем рассвете без повторного срабатывания сна).
+* Исправлен порядок инициализации **EssentialsX** в `onEnable` — интеграция `/afk` теперь корректно определяется при запуске сервера.
+* Переведена задача проверки сна (`Checker`) в основной поток сервера для полной потокобезопасности с API Paper 1.21+ / 26.3.
+* Исправлен кулдаун сообщений о входе/выходе из кровати (секунды вместо минут).
+* Проект обновлён под **Java 21+** и **Paper API**.
+
+---
+
+## 💬 Команды и права
+
+| Команда | Описание | Право | По умолчанию |
+| :--- | :--- | :--- | :--- |
+| `/harbor reload` | Перезагрузить `config.yml` | `harbor.admin` | `op` |
+| `/harbor version` | Показать версию плагина | `harbor.admin` | `op` |
+| `/forceskip` | Принудительно запустить перемотку ночи | `harbor.forceskip` | `op` |
+| — | Исключить игрока из общего подсчёта спящих | `harbor.ignored` | `false` |
+
+> **Примечание для EssentialsX:** чтобы администраторы с `OP` учитывались при подсчёте сна, выдайте им отрицательное право `-essentials.sleepingignored`.
+---
+
+## ⚙️ Секция синхронизации в `config.yml`
+
+```yaml
+# Список миров (чёрный или белый список в зависимости от whitelist-mode)
+blacklisted-worlds:
+  - "world_nether"
+  - "world_the_end"
+whitelist-mode: false
+
+# Синхронизация времени суток, погоды и подсчёта спящих между активными мирами
+sync-worlds:
+  enabled: true
+  master-world: "world"
 ```
-git clone https://github.com/nkomarn/Harbor.git
-cd Harbor/
-mvn package
+---
+## 🔨 Сборка из исходников
+Для сборки требуется **Java 21+** и **Maven**:
+```bash
+git clone https://github.com/novrom1982/Harbor.git
+cd Harbor
+mvn clean package
 ```
-You can find the compiled JARs in the `target` directory.
 
-# 🎺 Contributing
-Feel free to create pull requests with any changes or improvements that think would make Harbor a better plugin! Generally, try to keep core plugin features intact. Pull requests with bugfixes are welcome!
+Собранный JAR-файл появится в директории `target/Harbor-1.6.5-MCRW.jar`.
 
-# 📋 License
-Harbor is licensed under the MIT license. View `LICENSE` for more information.
+---
+
+## 📋 Лицензия
+
+Проект распространяется под лицензией **MIT** (оригинальный автор: [TechToolbox / @nkomarn](https://github.com)). Подробности в файле `LICENSE`.

@@ -78,4 +78,4 @@ mvn clean package
 
 ## 📋 Лицензия
 
-Проект распространяется под лицензией **MIT** (оригинальный автор: [TechToolbox / @nkomarn](https://github.com)). Подробности в файле `LICENSE`.
+Проект распространяется под лицензией **MIT** (оригинальный автор: [TechToolbox / @nkomarn]([https://github.com](https://github.com/nkomarn/Harbor/blob/master/LICENSE))). Подробности в файле `LICENSE`.

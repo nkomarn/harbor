@@ -61,12 +61,6 @@ public class BedListener implements Listener {
         }, 1);
     }
 
-    /**
-     * Checks if a message should be silenced from chat (i.e. if the player is under cooldown).
-     *
-     * @param player The player context.
-     * @return Whether the message should be silenced.
-     */
     private boolean isMessageSilenced(@NotNull Player player) {
         if (harbor.getChecker().isSkipping(player.getWorld())) {
             return true;
@@ -77,6 +71,6 @@ public class BedListener implements Listener {
         }
 
         int cooldown = harbor.getConfiguration().getInteger("messages.chat.message-cooldown");
-        return playerManager.getCooldown(player).until(Instant.now(), ChronoUnit.MINUTES) < cooldown;
+        return playerManager.getCooldown(player).until(Instant.now(), ChronoUnit.SECONDS) < cooldown;
     }
 }

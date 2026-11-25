@@ -7,3 +7,4 @@
 /target
 settings.json
 dependency-reduced-pom.xml
+libs/

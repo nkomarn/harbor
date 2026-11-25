@@ -38,79 +38,54 @@ public class Messages implements Listener {
         this.papiPresent = harbor.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI");
 
         for (World world : Bukkit.getWorlds()) {
-            if (harbor.getChecker().isBlacklisted(world)) {
-                return;
+            if (!harbor.getChecker().isBlacklisted(world)) {
+                registerBar(world);
             }
-
-            registerBar(world);
         }
     }
 
-    /**
-     * Sends a message to all players in a given world.
-     *
-     * @param world   The world context.
-     * @param message The message to send.
-     */
     public void sendWorldChatMessage(@NotNull World world, @NotNull String message) {
-        if (!config.getBoolean("messages.chat.enabled") || message.length() < 1) {
+        if (!config.getBoolean("messages.chat.enabled") || message.isEmpty()) {
             return;
         }
 
         String preparedMessage = prepareMessage(world, message);
-        for (Player player : world.getPlayers()) {
-            player.sendMessage(preparedMessage);
+        for (World targetWorld : harbor.getChecker().getSyncedWorlds(world)) {
+            for (Player player : targetWorld.getPlayers()) {
+                player.sendMessage(preparedMessage);
+            }
         }
     }
 
-    /**
-     * Sends an actionbar message to all players in a given world.
-     *
-     * @param world   The world context.
-     * @param message The message to send.
-     */
     public void sendActionBarMessage(@NotNull World world, @NotNull String message) {
-        if (!config.getBoolean("messages.actionbar.enabled") || message.length() < 1) {
+        if (!config.getBoolean("messages.actionbar.enabled") || message.isEmpty()) {
             return;
         }
 
         BaseComponent[] preparedMessage = TextComponent.fromLegacyText(prepareMessage(world, message));
-        for (Player player : world.getPlayers()) {
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, preparedMessage);
+        for (World targetWorld : harbor.getChecker().getSyncedWorlds(world)) {
+            for (Player player : targetWorld.getPlayers()) {
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, preparedMessage);
+            }
         }
     }
 
-    /**
-     * Selects a random message from a string list and sends it to the given world.
-     *
-     * @param world        The world context.
-     * @param listLocation The location of the message list in the configuration.
-     */
     public void sendRandomChatMessage(@NotNull World world, @NotNull String listLocation) {
         List<String> messages = config.getStringList(listLocation);
-
-        if (messages.size() < 1) {
+        if (messages.isEmpty()) {
             return;
         }
 
         sendWorldChatMessage(world, messages.get(random.nextInt(messages.size())));
     }
 
-    /**
-     * Sets the message for the given world's bossbar.
-     *
-     * @param world      The world in which the bossbar exists.
-     * @param message    The message to set.
-     * @param color      The bossbar color to set.
-     * @param percentage The bossbar percentage to set.
-     */
     public void sendBossBarMessage(@NotNull World world, @NotNull String message, @NotNull String color, double percentage) {
-        if (!config.getBoolean("messages.bossbar.enabled") || message.length() < 1) {
+        if (!config.getBoolean("messages.bossbar.enabled") || message.isEmpty()) {
             return;
         }
 
-        BossBar bar = bossBars.get(world.getUID());
-
+        World rep = harbor.getChecker().getRepresentativeWorld(world);
+        BossBar bar = bossBars.get(rep.getUID());
         if (bar == null) {
             return;
         }
@@ -120,19 +95,23 @@ public class Messages implements Listener {
             return;
         }
 
-        bar.setTitle(harbor.getMessages().prepareMessage(world, message));
+        bar.setTitle(prepareMessage(rep, message));
         bar.setColor(Enums.getIfPresent(BarColor.class, color).or(BarColor.BLUE));
         bar.setProgress(percentage);
-        world.getPlayers().forEach(bar::addPlayer);
+
+        Set<Player> activePlayers = new HashSet<>();
+        for (World targetWorld : harbor.getChecker().getSyncedWorlds(rep)) {
+            activePlayers.addAll(targetWorld.getPlayers());
+        }
+
+        for (Player current : new ArrayList<>(bar.getPlayers())) {
+            if (!activePlayers.contains(current)) {
+                bar.removePlayer(current);
+            }
+        }
+        activePlayers.forEach(bar::addPlayer);
     }
 
-    /**
-     * Replaces all available placeholders in a given string.
-     *
-     * @param world   The world context.
-     * @param message The raw message with placeholders.
-     * @return The provided message with placeholders replaced with correct values for the world context.
-     */
     @NotNull
     public String prepareMessage(@NotNull World world, @NotNull String message) {
         Checker checker = harbor.getChecker();
@@ -156,31 +135,29 @@ public class Messages implements Listener {
         return output;
     }
 
-    /**
-     * Creates a new bossbar for the given world if one isn't already present.
-     *
-     * @param world The world in which to create the bossbar.
-     */
     private void registerBar(@NotNull World world) {
         bossBars.computeIfAbsent(world.getUID(), uuid -> Bukkit.createBossBar("", BarColor.WHITE, BarStyle.SOLID));
     }
 
-    /**
-     * Hides the bossbar for the given world if one is present.
-     *
-     * @param world The world in which to hide the bossbar.
-     */
     public void clearBar(@NotNull World world) {
-        Optional.ofNullable(bossBars.get(world.getUID())).ifPresent(BossBar::removeAll);
+        for (World targetWorld : harbor.getChecker().getSyncedWorlds(world)) {
+            Optional.ofNullable(bossBars.get(targetWorld.getUID())).ifPresent(BossBar::removeAll);
+        }
     }
 
     @EventHandler
     public void onWorldLoad(@NotNull WorldLoadEvent event) {
-        registerBar(event.getWorld());
+        if (!harbor.getChecker().isBlacklisted(event.getWorld())) {
+            registerBar(event.getWorld());
+        }
     }
 
     @EventHandler
     public void onWorldChanged(PlayerChangedWorldEvent event) {
-        Optional.ofNullable(bossBars.get(event.getFrom().getUID())).ifPresent(bossBar -> bossBar.removePlayer(event.getPlayer()));
+        World fromRep = harbor.getChecker().getRepresentativeWorld(event.getFrom());
+        World toRep = harbor.getChecker().getRepresentativeWorld(event.getPlayer().getWorld());
+        if (!fromRep.getUID().equals(toRep.getUID())) {
+            Optional.ofNullable(bossBars.get(fromRep.getUID())).ifPresent(bossBar -> bossBar.removePlayer(event.getPlayer()));
+        }
     }
 }

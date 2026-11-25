@@ -4,22 +4,21 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>xyz.nkomarn</groupId>
     <artifactId>Harbor</artifactId>
-    <version>1.6.4-SNAPSHOT</version>
+    <version>1.6.5-MCRW</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.release>21</maven.compiler.release>
     </properties>
 
     <repositories>
         <repository>
-            <id>spigotmc-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
         <repository>
-            <id>ess-repo</id>
-            <url>https://ci.ender.zone/plugin/repository/everything/</url>
+            <id>essentialsx-releases</id>
+            <url>https://repo.essentialsx.net/releases/</url>
         </repository>
         <repository>
             <id>placeholderapi</id>
@@ -29,28 +28,38 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.14.4-R0.1-SNAPSHOT</version>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>[26.3.build,)</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.ess3</groupId>
+            <groupId>net.essentialsx</groupId>
             <artifactId>EssentialsX</artifactId>
-            <version>2.17.0</version>
-            <scope>provided</scope>
+            <version>2.22.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/EssentialsX-2.22.1-dev+28-f8724e2.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>20.0.0</version>
+            <version>24.1.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
-            <version>2.10.9</version>
+            <version>2.11.6</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
 </project>

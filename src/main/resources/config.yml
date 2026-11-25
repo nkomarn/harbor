@@ -40,6 +40,12 @@ blacklisted-worlds:
   - "world_the_end"
 whitelist-mode: false # Will treat the above list as a whitelist instead of a blacklist
 
+# Synchronize time, weather clearing, and sleep progress across all non-blacklisted worlds
+sync-worlds:
+  enabled: true
+  master-world: "world"
+
+
 messages:
   chat:
     enabled: true
